@@ -1,0 +1,88 @@
+void learnMove(int moveId) {
+  if(moveId == 0x2C || moveId == 0x30) {
+    moveValue = load(0x155804)
+    moveValue |= 0x00011000 // Dynamite Kick bit mask
+    store(0x155804, moveValue)
+  }
+  else if(moveId == 0x37 || mvoeId == 0x39) {
+    moveValue = load(0x155804)
+    moveValue |= 0x02800000 // Horizontal Kick bit mask
+    store(0x155804, moveValue)
+  }
+  else {
+    moveBit = moveId & 0x1F
+    
+    if(moveId < 0 && moveBit != 0) // negative input, should never happen, will bug out
+      moveBit += 0xFFE0
+    
+    moveBitflag = 0x1 << moveBit
+    moveByte = moveId >> 5
+    
+    if(moveId < 0) // negative input, should never happen, will bug out
+      moveByte = (moveId + 0x1F) >> 5
+  
+    newMoveValue = load(0x155800 + moveByte * 4) | moveBitflag
+    store(0x155800 + moveByte * 4, newMoveValue)
+  }
+}
+
+
+0x000e5f14 addiu r1,r0,0x002c
+0x000e5f18 beq r4,r1,0x000e5f2c
+0x000e5f1c nop
+0x000e5f20 addiu r1,r0,0x0030
+0x000e5f24 bne r4,r1,0x000e5f60
+0x000e5f28 nop
+0x000e5f2c lui r1,0x8015
+0x000e5f30 lw r2,0x5804(r1)
+0x000e5f34 nop
+0x000e5f38 ori r2,r2,0x1000
+0x000e5f3c lui r1,0x8015
+0x000e5f40 sw r2,0x5804(r1)
+0x000e5f44 lui r1,0x8015
+0x000e5f48 lw r3,0x5804(r1)
+0x000e5f4c lui r2,0x0001
+0x000e5f50 or r2,r3,r2
+0x000e5f54 lui r1,0x8015
+0x000e5f58 beq r0,r0,0x000e5ff8
+0x000e5f5c sw r2,0x5804(r1)
+0x000e5f60 addiu r1,r0,0x0037
+0x000e5f64 beq r4,r1,0x000e5f78
+0x000e5f68 nop
+0x000e5f6c addiu r1,r0,0x0039
+0x000e5f70 bne r4,r1,0x000e5fac
+0x000e5f74 nop
+0x000e5f78 lui r1,0x8015
+0x000e5f7c lw r3,0x5804(r1)
+0x000e5f80 lui r2,0x0080
+0x000e5f84 or r2,r3,r2
+0x000e5f88 lui r1,0x8015
+0x000e5f8c sw r2,0x5804(r1)
+0x000e5f90 lui r1,0x8015
+0x000e5f94 lw r3,0x5804(r1)
+0x000e5f98 lui r2,0x0200
+0x000e5f9c or r2,r3,r2
+0x000e5fa0 lui r1,0x8015
+0x000e5fa4 beq r0,r0,0x000e5ff8
+0x000e5fa8 sw r2,0x5804(r1)
+0x000e5fac bgez r4,0x000e5fc0
+0x000e5fb0 andi r3,r4,0x001f
+0x000e5fb4 beq r3,r0,0x000e5fc0
+0x000e5fb8 nop
+0x000e5fbc addiu r3,r3,0xffe0
+0x000e5fc0 addiu r2,r0,0x0001
+0x000e5fc4 sllv r5,r2,r3
+0x000e5fc8 bgez r4,0x000e5fd8
+0x000e5fcc sra r25,r4,0x05
+0x000e5fd0 addiu r2,r4,0x001f
+0x000e5fd4 sra r25,r2,0x05
+0x000e5fd8 lui r2,0x8015
+0x000e5fdc sll r3,r25,0x02
+0x000e5fe0 addiu r2,r2,0x5800
+0x000e5fe4 addu r3,r2,r3
+0x000e5fe8 lw r2,0x0000(r3)
+0x000e5fec nop
+0x000e5ff0 or r2,r2,r5
+0x000e5ff4 sw r2,0x0000(r3)
+0x000e5ff8 jr r31
+0x000e5ffc nop

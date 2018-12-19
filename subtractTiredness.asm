@@ -1,0 +1,23 @@
+void subtractTiredness(int amount) {
+  newTiredness = load(0x138482) - amount
+  store(0x138482, newTiredness)
+  
+  if(r2 < 0)
+    store(0x138482, 0)
+}
+
+0x000c586c lui r1,0x8014
+0x000c5870 lh r2,-0x7b7e(r1)
+0x000c5874 nop
+0x000c5878 sub r2,r2,r4
+0x000c587c lui r1,0x8014
+0x000c5880 sh r2,-0x7b7e(r1)
+0x000c5884 lui r1,0x8014
+0x000c5888 lh r2,-0x7b7e(r1)
+0x000c588c nop
+0x000c5890 bgtz r2,0x000c58a0
+0x000c5894 nop
+0x000c5898 lui r1,0x8014
+0x000c589c sh r0,-0x7b7e(r1)
+0x000c58a0 jr r31
+0x000c58a4 nop

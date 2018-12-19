@@ -1,0 +1,18 @@
+void setTrainingBoost(int flag, int mod, int duration) {
+  store(0x1384AC, flag)
+  store(0x1384AE, mod)
+  store(0x1384B0, duration * 1200)
+}
+
+0x000c59b0 lui r1,0x8014
+0x000c59b4 sll r2,r6,0x04
+0x000c59b8 sh r4,-0x7b54(r1)
+0x000c59bc sub r3,r2,r6
+0x000c59c0 lui r1,0x8014
+0x000c59c4 sll r2,r3,0x02
+0x000c59c8 sh r5,-0x7b52(r1)
+0x000c59cc add r2,r3,r2
+0x000c59d0 sll r2,r2,0x04
+0x000c59d4 lui r1,0x8014
+0x000c59d8 jr r31
+0x000c59dc sh r2,-0x7b50(r1)

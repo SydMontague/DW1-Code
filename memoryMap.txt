@@ -1,0 +1,180 @@
+== BTL_REL.BIN ==
+0x00057BD0    partnerAiTick()
+
+0x00059078    resetFlatten(combatId = r4)
+
+0x0005AF44    increaseSpeedBuffer(combatData = r4, statsData = r5)
+0x0005AFD8    handleDeath(entityPtr = r4, combatPtr = r5, combatId = r6)
+0x0005B070    hasAffordableMoves(arrayPtr = r4, combatId = r5) -> numAffordableMoves = r2
+
+0x0005B1AC    deferred call -> getEntityTileFromModel(0x12F348, 0x134D58, 0x134D57)
+0x0005B1C0    0x0005B1C0()
+
+0x0005D374    getMPCost(entityPtr = r4, combatPtr = r5, moveSlot = r6) -> mpCost = r2 // 0 if invalid
+0x0005D608    distanceSquared(entityPtr1 = r4, entityPtr2 = r5) -> distance = r2
+0x0005D658    setMoveAnim(entityPtr = r4, combatPtr = r5, unused = r6, attackId = r7)  
+0x0005D6E0    setChargeupFlag(entityPtr = r4, combatPtr = r5, techId = r6)
+
+0x0005D990    0x0005D990(entityData = r4, combatData = r5) -> result = r2
+
+0x0005DFC8    addFinisherValue(combatData = r4, amount = r5) // addToFinisher
+
+0x0005E520    removeEffectSprite(entityPtr = r4, combatPtr = r5, effectType = r6)
+
+0x0005EB0C    resetDumbCooldownTimers(combatData = r4)
+
+0x0005EC7C    removeEffectSprites(entityPtr = r4, combatPtr = r5)
+
+0x0005EE58    hasAffordableMoves(arrayPtr = r4, combatId = r5) -> numAffordableMoves = r2
+0x0005EF3C    setCooldown(entityPtr = r4, combatPtr = r5)
+0x0005EF58    selectRandomMove(arrayPtr = r4) -> randomMove = r2
+0x0005EFCC    getStrongestMove(combatId = r4, moveArray = r5) -> strongestMove = r2
+0x0005F0C0    getBestTypeMove(combatId = r4, moveArray = r5) -> bestTypeMove = r2
+
+0x0005F244    getCheapestMove(combatId = r4, moveArray = r5) -> cheapestMove = r2
+0x0005F344    getStrongestMoveArray(powerArray = r4, moveArray = r5, retPtr = r6, numMoves = r7)
+0x0005F404    getCheapestMoveArray(costArray = r4, moveArray = r5, retPtr = r6, numMoves = r7)
+0x0005F4C4    getNPCId(entityPtr = r4) -> npcId = r2
+0x0005F51C    getStatusedEnemies(entityPtr = r4) -> store(r5, enemyArray), store(r6, enemyCount)
+0x0005F61C    getWeakestEnemy(entityPtr = r4, combatPtr = r5) -> store(r5, lastScore), store(r6, bestEntity)
+0x0005F764    getWeaknessScore(entityPtr = r4, enemyPtr = r5) -> weaknessScore = r2
+0x0005F8E0    sortMoveArrayDescending(powerArray = r4, moveSlotArray = r5, rankingArray = r6, numMoves = r7)
+0x0005F9D8    sortMoveArrayAscending(powerArray = r4, moveSlotArray = r5, rankingArray = r6, numMoves = r7)
+0x0005FAD0    getTypeFactorPriority(attackerSpec, victimSpec) -> prioValue = r2
+0x0005FB54    getNumAliveNPCs() -> numEnemies = r2
+0x0005FBB4    fillRankingArray(powerArray = r4, rankingArray = r5, numMoves = r6)
+0x0005FC18    handleConfusion(entityPtr = r4, combatPtr = r5, combatId = r6)
+0x0005FCE8    getRemainingEnemies(entityPtr = r4) -> store(r5, enemyArray), store(r6, enemyCount)
+
+0x0005FDB4    getMoveCommandAttack(combatId = r4, moveArray = r5) -> moveId = r2
+0x0005FE2C    getMoveCommandModerate(combatId = r4, moveArray = r5) -> moveId = r2
+
+0x0005FEA4    aiPickTarget(entityPtr, combatPtr, currentTarget, value)
+
+0x000601AC    hasZeroHP(combatId = r4)
+0x00060218    getClosestEnemy(entityPtr = r4, hostileMap = r5) -> closestEntity = r2
+
+0x00060618    partnerYourCallSelectMove(entityPtr = r4, combatPtr = r5, combatId = r6)
+
+0x000623A0    0x000623A0()
+
+0x0006F168    removePoisonSprite(instanceId = r4, entityPtr = r5)
+
+0x0006F4DC    removeConfusionSprite(instanceId = r4, entityPtr = r5)
+
+0x0006FEE0    removeStunSprite(instanceId = r4, entityPtr = r5)
+
+== KAR_REL.BIN ==
+0x00053878    curlingInit(isTutorial = r4)
+
+== SLUS ==
+0x0009119C    abs(val = r4) -> result = r2 // BIOS call
+
+0x0009124C    memcpy(dest = r4, src = r5, length = r6)
+0x0009125C    memset(dest = r4, fillbyte = r5, length = r6)
+
+0x0009127C    rand() -> value = r2 // BIOS call
+
+0x0009B090    copy12toOffset20(dest = r4, src = r5) -> dest = r2
+0x0009B0C0    scaleMatrix(destMatrixPtr = r4, scaleVector = r5) -> matrixPtr = r2
+
+0x0009B804    rotVecToRotMatrix(rotVec = r4, destMatrixPtr = r5) -> matrixPtr = r2
+
+0x000A1CD8    resetFlattenGlobal()
+
+0x000A254C    getDigimonModelComponent(digimonType = r4, entityType = r5) -> modelComponent = r2
+0x000A2660    getEntityType(entityPtr = r4) -> entityType = r2 // 0 - NPC, 2 - Player, 3 - Partner, -1 - none
+
+0x000A2F64    setObject(objectId, instanceId, funcPtr1, funcPtr2) -> success = r2
+0x000A3008    unsetObject(objectId, instanceId) -> success = r2
+
+0x000A36D4    random(upperLimit = r4) -> r2
+
+0x000A4A08    setFoodTimer(digimonId = r4)
+
+0x000A6D00    sleepRegen()
+
+0x000AA188    setMenuState(value = r4) //set 0x134C91 to r4, 0x134C92 to 0
+
+0x000AC050    loadMenuState() -> r2   //loads 0x134C91 into r2
+
+0x000ACBF4    addTamerLevel(chance = r4, amount = r5)
+
+0x000C0F28    getModelTile(modelPtr = r4) -> store(r5, tileX), store(r6, tileY)
+
+0x000C1798    setZero36Offset18(dest = r4)
+
+0x000C19A4    setupModelMatrix(nodePtr = r4)
+0x000C1A04    startAnimation(entityPtr = r4, animId = r5)
+
+0x000C3860    handleEvoItems(itemId = r4)
+0x000C396C    handleFood(itemId = r4)
+0x000C44C0    handleChips(itemId = r4)
+0x000C4728    handleStatusItems(itemId = r4)
+0x000C4834    handleRestore(itemId = r4)
+0x000C4950    handleDoubleFloppy()
+0x000C4A08    handleMPHealingItem(itemId = r4)
+0x000C4AC0    handleHPHealingItem(itemId = r4)
+
+0x000C51E0    getItemCount(itemId = r4) -> r2 = itemCount
+
+0x000C563C    healValue(valueAddress = r4, amount = r5, upperLimit = r6)
+
+0x000C57D0    modifyLifetime(amount = r4)
+
+0x000C5804    addEnergy(amount = r4)
+0x000C586C    subtractTiredness(amount = r4)
+0x000C58A8    addHappiness(amount = r4)
+0x000C58EC    addDiscipline(amount = r4)
+0x000C5930    addWeight(amount = r4)
+0x000C5994    decreasePoopLevel()
+0x000C59B0    setTrainingBoost(flag = r4, mod = r5, duration = r6)
+0x000C59E0    handleItemSickness(chance = r4)
+
+0x000D3AEC    getEntityTileFromModel(entityPtr = r4) -> store(r5, tileX), store(r6, tileY)
+
+0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
+
+0x000E52C0    swapValues(valPtr1 = r4, valPtr2 = r5)
+
+0x000E5F14    learnMove(moveId = r4)
+0x000E6000    getTechFromMove(mapDataOffset = r4, move = r5) -> techId = r2
+
+0x000E61AC    isInvisible(entityPtr = r4) -> result = r2
+
+
+0x000E7484    isScreenConcave() -> isConcave = r2
+
+0x000E7D40    handleBattleIdle(entityPtr = r4, statsPtr = r5, flags = r6)
+0x000E7D9C    0x000E7D9C(entityId = r4, symbolId = r5)
+
+0x000E847C    handleCombatStart(interactedEntity = r4) -> enemyCount = r2
+
+0x000E8970    startBattleIdleAnimation(entityPtr = r4, statsPtr = r5, flags = r6)
+
+0x000F06F0    handleBuffDisks(itemId = r4)
+
+0x000FC2D0    allocateArray(size = r4) -> arrayPtr = r2
+0x000FC310    freeArray(arrayPtr = r4) 
+
+0x000FC374    dailyPStatTrigger()   //increases PStat 29-32 by 1, rerolls card shop cards
+
+0x001062E0    readPStat(target = r4) -> r2
+
+0x0010643C    isTriggerSet(triggerId = r4) -> isSet = r2
+0x00106474    writePStat(target = r4, value = r5)
+0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerFlag)
+
+0x00106E0C    rollCardPack() -> cardId = r2
+
+
+
+// change player type
+0xEE9B0 -> <DigimonID> 00 04 24
+0xEEA4C
+
+
+val = happiness - discipline
+
+if(random < val)
+  sickness

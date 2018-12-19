@@ -1,0 +1,37 @@
+void resetFlattenGlobal() {
+  store(0x1557A2, -1) // tamer flatten sprite?
+  store(0x1557DF, 0) // flatten sprite timer
+  store(0x1557DE, -1) // flatten sprite
+  
+  for(i = 0; i < 8; i++) {
+    store(0x15585F + i * 0x68, 0) // flatten sprite timer
+    store(0x15585E + i * 0x68, -1) // flatten sprite
+  }
+}
+
+0x000a1cd8 addiu r2,r0,0xffff
+0x000a1cdc lui r1,0x8015
+0x000a1ce0 sb r2,0x57a2(r1)
+0x000a1ce4 lui r1,0x8015
+0x000a1ce8 sb r0,0x57df(r1)
+0x000a1cec lui r1,0x8015
+0x000a1cf0 sb r2,0x57de(r1)
+0x000a1cf4 addu r4,r0,r0
+0x000a1cf8 beq r0,r0,0x000a1d2c
+0x000a1cfc addu r5,r0,r0
+0x000a1d00 lui r2,0x8015
+0x000a1d04 addiu r2,r2,0x585f
+0x000a1d08 addu r2,r2,r5
+0x000a1d0c sb r0,0x0000(r2)
+0x000a1d10 lui r2,0x8015
+0x000a1d14 addiu r2,r2,0x585e
+0x000a1d18 addu r2,r2,r5
+0x000a1d1c addiu r3,r0,0xffff
+0x000a1d20 sb r3,0x0000(r2)
+0x000a1d24 addi r4,r4,0x0001
+0x000a1d28 addi r5,r5,0x0068
+0x000a1d2c slti r1,r4,0x0008
+0x000a1d30 bne r1,r0,0x000a1d00
+0x000a1d34 nop
+0x000a1d38 jr r31
+0x000a1d3c nop

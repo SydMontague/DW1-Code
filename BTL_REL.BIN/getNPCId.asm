@@ -1,0 +1,33 @@
+int getNPCId(entityPtr) {
+  for(r3 = 2; r3 < 10; r3++) {
+    if(entityPtr != load(0x12F344 + r3 * 4))
+      continue
+    
+    return r3 - 2
+  }
+  
+  return -1
+}
+
+0x0005f4c4 addiu r3,r0,0x0002
+0x0005f4c8 beq r0,r0,0x0005f504
+0x0005f4cc addiu r5,r0,0x0008
+0x0005f4d0 lui r2,0x8013
+0x0005f4d4 addiu r2,r2,0xf344
+0x0005f4d8 addu r2,r2,r5
+0x0005f4dc lw r2,0x0000(r2)
+0x0005f4e0 nop
+0x0005f4e4 bne r4,r2,0x0005f4fc
+0x0005f4e8 nop
+0x0005f4ec addi r2,r3,-0x0002
+0x0005f4f0 sll r2,r2,0x10
+0x0005f4f4 beq r0,r0,0x0005f514
+0x0005f4f8 sra r2,r2,0x10
+0x0005f4fc addi r3,r3,0x0001
+0x0005f500 addi r5,r5,0x0004
+0x0005f504 slti r1,r3,0x000a
+0x0005f508 bne r1,r0,0x0005f4d0
+0x0005f50c nop
+0x0005f510 addiu r2,r0,0xffff
+0x0005f514 jr r31
+0x0005f518 nop

@@ -1,0 +1,331 @@
+void sleepRegen() {
+  standardSleepTime = load(0x13846E)
+  currentHour = load(0x134EBC)
+  wakeupHour = load(0x138468)
+
+  // get hours slept
+  if(currentHour < wakeupHour) 
+    hoursSlept = wakeupHour - currentHour
+  else 
+    hoursSlept = 24 - currentHour + wakeupHour
+
+  if(load(0x134EBE) != 0 && load(0x138464) != currentHour) // current minute and sleepy hour
+      hoursSlept += 1
+  
+  // calculate sleep factor
+  sleepFactor = hoursSlept * 100 / standardSleepTime
+  
+  // add pillow factor
+  if(getItemCount(34) != 0) { // pillow count
+    sleepFactor = sleepFactor * 12 / 10
+  }
+  
+  // add area factor
+  areaLiked = load(0x150C3E) // 1 = like area, 2 = disliked area
+
+  if(areaLiked == 1) 
+    sleepFactor = sleepFactor * 12 / 10
+  else if(areaLiked == 2) 
+    sleepFactor = sleepFactor * 8 / 10
+
+  // regeneration
+  maxHP = load(0x1557F0)
+  maxMP = load(0x1557F2)
+  baseFactor = random(10) + 70
+
+  // HP regeneration
+  regenHP = (maxHP * baseFactor / 100) * sleepFactor / 100
+  currentHP = load(0x1557F4)
+  store(0x1557F4, currentHP + regenHP)
+
+  // MP regeneration
+  regenMP = (maxMP * baseFactor / 100) * sleepFactor / 100
+  currentMP = load(0x1557F6)
+  store(0x1557F6, currentMP + regenMP)
+
+  // tiredness regeneration
+  tirednessBase = random(20) + 80
+  tiredness = load(0x138482)
+
+  newTiredness = tiredness - ((tiredness * tirednessBase / 100) * sleepFactor / 100)
+  store(0x138482, newTiredness)
+
+  // HP bound check
+  currentHP = load(0x1557F4) // signed short, can overflow
+
+  if(currentHP > maxHP)
+    store(0x1557F4, maxHP)
+    
+  // MP bound check
+  currentMP = load(0x1557F6) // signed short, can overflow
+
+  if(currentMP > maxMP)
+    store(0x1557F6, maxMP)
+  
+  // tiredness bound check
+  tiredness = load(0x138482)
+
+  if(tiredness < 0)
+    store(0x138482, 0)
+    
+  // weight reduction
+  digimonType = load(0x1557A8)
+
+  defaultWeight = load(0x1225D1 + digimonType * 28)
+  currentWeight = load(0x1384A2)
+  store(0x1384A2, currentWeight - defaultWeight / 10)
+
+  // weight bound check
+  if(currentWeight - defaultWeight / 10 <= 0)
+    store(0x1384A2, 1)
+}
+
+0x000a6d00 lui r1,0x8014
+0x000a6d04 addiu r29, r29, 0xffd8
+0x000a6d08 lh r4,-0x7b92(r1)
+0x000a6d0c sw r31,0x0020(r29)
+0x000a6d10 sw r19,0x001c(r29)
+0x000a6d14 lui r1,0x8014
+0x000a6d18 sw r18,0x0018(r29)
+0x000a6d1c lh r3,-0x6c70(r28)
+0x000a6d20 lh r2,-0x7b98(r1)
+0x000a6d24 sw r17,0x0014(r29)
+0x000a6d28 sw r16,0x0010(r29)
+0x000a6d2c addu r5,r3,r0
+0x000a6d30 slt r1,r3,r2
+0x000a6d34 beq r1,r0,0x000a6d4c
+0x000a6d38 addu r6,r2,r0
+0x000a6d3c sub r2,r6,r5
+0x000a6d40 sll r3,r2,0x10
+0x000a6d44 beq r0,r0,0x000a6d60
+0x000a6d48 sra r3,r3,0x10
+0x000a6d4c addiu r2,r0,0x0018
+0x000a6d50 sub r2,r2,r5
+0x000a6d54 add r2,r6,r2
+0x000a6d58 sll r3,r2,0x10
+0x000a6d5c sra r3,r3,0x10
+0x000a6d60 lh r2,-0x6c6e(r28)
+0x000a6d64 nop
+0x000a6d68 blez r2,0x000a6d90
+0x000a6d6c nop
+0x000a6d70 lui r1,0x8014
+0x000a6d74 lh r2,-0x7b9c(r1)
+0x000a6d78 nop
+0x000a6d7c beq r5,r2,0x000a6d90
+0x000a6d80 nop
+0x000a6d84 addi r2,r3,0x0001
+0x000a6d88 sll r3,r2,0x10
+0x000a6d8c sra r3,r3,0x10
+0x000a6d90 sll r2,r3,0x02
+0x000a6d94 add r3,r2,r3
+0x000a6d98 sll r2,r3,0x02
+0x000a6d9c add r2,r3,r2
+0x000a6da0 sll r2,r2,0x02
+0x000a6da4 div r2,r4
+0x000a6da8 mflo r2
+0x000a6dac sll r16,r2,0x10
+0x000a6db0 sra r16,r16,0x10
+0x000a6db4 jal 0x000c51e0
+0x000a6db8 addiu r4,r0,0x0022
+0x000a6dbc beq r2,r0,0x000a6df4
+0x000a6dc0 nop
+0x000a6dc4 sll r2,r16,0x01
+0x000a6dc8 add r2,r2,r16
+0x000a6dcc sll r3,r2,0x02
+0x000a6dd0 lui r2,0x6666
+0x000a6dd4 ori r2,r2,0x6667
+0x000a6dd8 mult r2,r3
+0x000a6ddc mfhi r2
+0x000a6de0 srl r3,r3,0x1f
+0x000a6de4 sra r2,r2,0x02
+0x000a6de8 addu r2,r2,r3
+0x000a6dec sll r16,r2,0x10
+0x000a6df0 sra r16,r16,0x10
+0x000a6df4 lui r1,0x8015
+0x000a6df8 lb r2,0x0c3e(r1)
+0x000a6dfc addiu r1,r0,0x0001
+0x000a6e00 bne r2,r1,0x000a6e3c
+0x000a6e04 addu r3,r2,r0
+0x000a6e08 sll r2,r16,0x01
+0x000a6e0c add r2,r2,r16
+0x000a6e10 sll r3,r2,0x02
+0x000a6e14 lui r2,0x6666
+0x000a6e18 ori r2,r2,0x6667
+0x000a6e1c mult r2,r3
+0x000a6e20 mfhi r2
+0x000a6e24 srl r3,r3,0x1f
+0x000a6e28 sra r2,r2,0x02
+0x000a6e2c addu r2,r2,r3
+0x000a6e30 sll r16,r2,0x10
+0x000a6e34 beq r0,r0,0x000a6e70
+0x000a6e38 sra r16,r16,0x10
+0x000a6e3c addiu r1,r0,0x0002
+0x000a6e40 bne r3,r1,0x000a6e70
+0x000a6e44 nop
+0x000a6e48 lui r2,0x6666
+0x000a6e4c sll r3,r16,0x03
+0x000a6e50 ori r2,r2,0x6667
+0x000a6e54 mult r2,r3
+0x000a6e58 mfhi r2
+0x000a6e5c srl r3,r3,0x1f
+0x000a6e60 sra r2,r2,0x02
+0x000a6e64 addu r2,r2,r3
+0x000a6e68 sll r16,r2,0x10
+0x000a6e6c sra r16,r16,0x10
+0x000a6e70 lui r1,0x8015
+0x000a6e74 lh r18,0x57f0(r1)
+0x000a6e78 lui r1,0x8015
+0x000a6e7c lh r17,0x57f2(r1)
+0x000a6e80 jal 0x000a36d4
+0x000a6e84 addiu r4,r0,0x000a
+0x000a6e88 sll r2,r2,0x10
+0x000a6e8c sra r2,r2,0x10
+0x000a6e90 addi r2,r2,0x0046
+0x000a6e94 mult r18,r2
+0x000a6e98 addu r5,r2,r0
+0x000a6e9c lui r2,0x51eb
+0x000a6ea0 mflo r3
+0x000a6ea4 ori r2,r2,0x851f
+0x000a6ea8 nop
+0x000a6eac mult r2,r3
+0x000a6eb0 srl r4,r3,0x1f
+0x000a6eb4 mfhi r3
+0x000a6eb8 sra r3,r3,0x05
+0x000a6ebc addu r3,r3,r4
+0x000a6ec0 mult r16,r3
+0x000a6ec4 lui r1,0x8015
+0x000a6ec8 mflo r4
+0x000a6ecc addu r3,r2,r0
+0x000a6ed0 nop
+0x000a6ed4 mult r3,r4
+0x000a6ed8 addu r19,r16,r0
+0x000a6edc mfhi r3
+0x000a6ee0 srl r4,r4,0x1f
+0x000a6ee4 sra r3,r3,0x05
+0x000a6ee8 addu r4,r3,r4
+0x000a6eec lh r3,0x57f4(r1)
+0x000a6ef0 sll r4,r4,0x10
+0x000a6ef4 sra r4,r4,0x10
+0x000a6ef8 add r3,r3,r4
+0x000a6efc lui r1,0x8015
+0x000a6f00 sh r3,0x57f4(r1)
+0x000a6f04 mult r17,r5
+0x000a6f08 addu r3,r2,r0
+0x000a6f0c mflo r4
+0x000a6f10 nop
+0x000a6f14 nop
+0x000a6f18 mult r3,r4
+0x000a6f1c lui r1,0x8015
+0x000a6f20 mfhi r3
+0x000a6f24 srl r4,r4,0x1f
+0x000a6f28 sra r3,r3,0x05
+0x000a6f2c addu r3,r3,r4
+0x000a6f30 mult r19,r3
+0x000a6f34 mflo r3
+0x000a6f38 nop
+0x000a6f3c nop
+0x000a6f40 mult r2,r3
+0x000a6f44 mfhi r2
+0x000a6f48 srl r3,r3,0x1f
+0x000a6f4c sra r2,r2,0x05
+0x000a6f50 addu r3,r2,r3
+0x000a6f54 lh r2,0x57f6(r1)
+0x000a6f58 sll r3,r3,0x10
+0x000a6f5c sra r3,r3,0x10
+0x000a6f60 add r2,r2,r3
+0x000a6f64 lui r1,0x8015
+0x000a6f68 sh r2,0x57f6(r1)
+0x000a6f6c jal 0x000a36d4
+0x000a6f70 addiu r4,r0,0x0014
+0x000a6f74 sll r2,r2,0x10
+0x000a6f78 lui r1,0x8014
+0x000a6f7c sra r2,r2,0x10
+0x000a6f80 lh r5,-0x7b7e(r1)
+0x000a6f84 addi r2,r2,0x0050
+0x000a6f88 mult r5,r2
+0x000a6f8c lui r1,0x8014
+0x000a6f90 lui r2,0x51eb
+0x000a6f94 mflo r3
+0x000a6f98 ori r4,r2,0x851f
+0x000a6f9c nop
+0x000a6fa0 mult r4,r3
+0x000a6fa4 mfhi r2
+0x000a6fa8 srl r3,r3,0x1f
+0x000a6fac sra r2,r2,0x05
+0x000a6fb0 addu r2,r2,r3
+0x000a6fb4 mult r19,r2
+0x000a6fb8 mflo r2
+0x000a6fbc nop
+0x000a6fc0 nop
+0x000a6fc4 mult r4,r2
+0x000a6fc8 srl r3,r2,0x1f
+0x000a6fcc mfhi r2
+0x000a6fd0 sra r2,r2,0x05
+0x000a6fd4 addu r2,r2,r3
+0x000a6fd8 sll r2,r2,0x10
+0x000a6fdc sra r2,r2,0x10
+0x000a6fe0 sub r2,r5,r2
+0x000a6fe4 sh r2,-0x7b7e(r1)
+0x000a6fe8 lui r1,0x8015
+0x000a6fec lh r2,0x57f4(r1)
+0x000a6ff0 nop
+0x000a6ff4 slt r1,r2,r18
+0x000a6ff8 bne r1,r0,0x000a7008
+0x000a6ffc nop
+0x000a7000 lui r1,0x8015
+0x000a7004 sh r18,0x57f4(r1)
+0x000a7008 lui r1,0x8015
+0x000a700c lh r2,0x57f6(r1)
+0x000a7010 nop
+0x000a7014 slt r1,r2,r17
+0x000a7018 bne r1,r0,0x000a7028
+0x000a701c nop
+0x000a7020 lui r1,0x8015
+0x000a7024 sh r17,0x57f6(r1)
+0x000a7028 lui r1,0x8014
+0x000a702c lh r2,-0x7b7e(r1)
+0x000a7030 nop
+0x000a7034 bgez r2,0x000a7044
+0x000a7038 nop
+0x000a703c lui r1,0x8014
+0x000a7040 sh r0,-0x7b7e(r1)
+0x000a7044 lui r1,0x8013
+0x000a7048 lw r2,-0x0cb8(r1)
+0x000a704c nop
+0x000a7050 lw r3,0x0000(r2)
+0x000a7054 lui r1,0x8014
+0x000a7058 sll r2,r3,0x03
+0x000a705c sub r2,r2,r3
+0x000a7060 sll r3,r2,0x02
+0x000a7064 lui r2,0x8012
+0x000a7068 addiu r2,r2,0x25d1
+0x000a706c addu r2,r2,r3
+0x000a7070 lbu r3,0x0000(r2)
+0x000a7074 lui r2,0x6666
+0x000a7078 ori r2,r2,0x6667
+0x000a707c mult r2,r3
+0x000a7080 mfhi r2
+0x000a7084 srl r3,r3,0x1f
+0x000a7088 sra r2,r2,0x02
+0x000a708c addu r3,r2,r3
+0x000a7090 lh r2,-0x7b5e(r1)
+0x000a7094 sll r3,r3,0x10
+0x000a7098 sra r3,r3,0x10
+0x000a709c sub r2,r2,r3
+0x000a70a0 lui r1,0x8014
+0x000a70a4 sh r2,-0x7b5e(r1)
+0x000a70a8 lui r1,0x8014
+0x000a70ac lh r2,-0x7b5e(r1)
+0x000a70b0 nop
+0x000a70b4 bgtz r2,0x000a70c8
+0x000a70b8 nop
+0x000a70bc addiu r2,r0,0x0001
+0x000a70c0 lui r1,0x8014
+0x000a70c4 sh r2,-0x7b5e(r1)
+0x000a70c8 lw r31,0x0020(r29)
+0x000a70cc lw r19,0x001c(r29)
+0x000a70d0 lw r18,0x0018(r29)
+0x000a70d4 lw r17,0x0014(r29)
+0x000a70d8 lw r16,0x0010(r29)
+0x000a70dc jr r31
+0x000a70e0 addiu r29,r29,0x0028

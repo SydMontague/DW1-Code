@@ -1,0 +1,12 @@
+void decreasePoopLevel() {
+  poopLevel = load(0x138478) - 1
+  store(0x138478, poopLevel) 
+}
+
+0x000c5994 lui r1,0x8014
+0x000c5998 lh r2,-0x7b88(r1)
+0x000c599c nop
+0x000c59a0 addi r2,r2,-0x0001
+0x000c59a4 lui r1,0x8014
+0x000c59a8 jr r31
+0x000c59ac sh r2,-0x7b88(r1)
