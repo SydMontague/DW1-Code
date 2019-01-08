@@ -1,0 +1,71 @@
+int renderInventoryTextLine(lineId) {
+  for(i = 0; i < 2; i++) {
+    itemId = load(0x13D474 + lineId + i)
+    
+    if(itemId == -1)
+      continue
+    
+    store(0x13D4B0 + lineId + i, lineId + i)
+    
+    xPos = ((lineId + i) % 2) * 96
+    yPos = ((lineId + i) / 2) * 12
+    renderString(0x1269DC + itemId * 0x20, xPos, yPos)
+  }
+  
+  return drawSync(0)
+}
+
+0x000dad04 addiu r29,r29,0xffe0
+0x000dad08 sw r31,0x001c(r29)
+0x000dad0c sw r18,0x0018(r29)
+0x000dad10 sw r17,0x0014(r29)
+0x000dad14 sw r16,0x0010(r29)
+0x000dad18 addu r17,r0,r0
+0x000dad1c add r16,r4,r0
+0x000dad20 beq r0,r0,0x000dadb0
+0x000dad24 addu r18,r4,r0
+0x000dad28 lui r3,0x8014
+0x000dad2c addiu r3,r3,0xd474
+0x000dad30 addu r2,r3,r18
+0x000dad34 addu r2,r17,r2
+0x000dad38 lbu r2,0x0000(r2)
+0x000dad3c addiu r1,r0,0x00ff
+0x000dad40 beq r2,r1,0x000dada8
+0x000dad44 nop
+0x000dad48 lui r2,0x8014
+0x000dad4c addiu r2,r2,0xd4b0
+0x000dad50 addu r2,r2,r18
+0x000dad54 addu r2,r17,r2
+0x000dad58 sb r16,0x0000(r2)
+0x000dad5c add r2,r18,r17
+0x000dad60 addu r2,r3,r2
+0x000dad64 lbu r2,0x0000(r2)
+0x000dad68 sra r25,r16,0x01
+0x000dad6c sll r3,r2,0x05
+0x000dad70 lui r2,0x8012
+0x000dad74 addiu r2,r2,0x69dc
+0x000dad78 addu r4,r2,r3
+0x000dad7c andi r3,r16,0x0001
+0x000dad80 sll r2,r3,0x01
+0x000dad84 add r2,r2,r3
+0x000dad88 bgez r16,0x000dad98
+0x000dad8c sll r5,r2,0x05
+0x000dad90 addiu r2,r16,0x0001
+0x000dad94 sra r25,r2,0x01
+0x000dad98 sll r2,r25,0x01
+0x000dad9c add r2,r2,r25
+0x000dada0 jal 0x0010cf24
+0x000dada4 sll r6,r2,0x02
+0x000dada8 addi r17,r17,0x0001
+0x000dadac addi r16,r16,0x0001
+0x000dadb0 slti r1,r17,0x0002
+0x000dadb4 bne r1,r0,0x000dad28
+0x000dadb8 nop
+0x000dadbc jal 0x000947b0
+0x000dadc0 addu r4,r0,r0
+0x000dadc4 lw r31,0x001c(r29)
+0x000dadc8 lw r18,0x0018(r29)
+0x000dadcc lw r17,0x0014(r29)
+0x000dadd0 lw r16,0x0010(r29)
+0x000dadd4 jr r31
+0x000dadd8 addiu r29,r29,0x0020

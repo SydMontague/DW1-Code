@@ -1,0 +1,116 @@
+int gpuDrawSync(syncMode) {
+  dmaChanCtrl = load(0x116C1C) // 0x1F8010A8
+  gpuStat = load(0x116C10) // 0x1F801814
+
+  if(syncMode == 0) {
+    setGPUTimeout()
+    
+    // empty queue
+    while(load(0x116CD4) != load(0x116CD8)) {
+      processImageQueue()
+      if(checkGPUTimeout() != 0)
+        return -1
+    }
+    
+    do { // wait till DMA and GPU is ready to receive commands
+      if(checkGPUTimeout() != 0)
+        return -1
+    } while(load(dmaChanCtrl) & 0x01000000 != 0 || load(gpuStat) & 0x04000000 == 0)
+  
+    return 0
+  }
+  
+  remainingQueue = (load(0x116CD4) - load(0x116CD8)) & 0x3F
+  
+  if(remainingQueue != 0)
+    processImageQueue()
+  
+  // DMA and GPU is ready to receive commands
+  if(load(dmaChanCtrl) & 0x01000000 == 0 && load(gpuStat) & 0x04000000 != 0)
+    return remainingQueue
+  
+  if(remainingQueue != 0)
+    return remainingQueue
+    
+  return 1
+}
+
+0x0009418c addiu r29,r29,0xffe8
+0x00094190 sw r31,0x0014(r29)
+0x00094194 bne r4,r0,0x00094240
+0x00094198 sw r16,0x0010(r29)
+0x0009419c jal 0x000942c8
+0x000941a0 nop
+0x000941a4 j 0x000941c4
+0x000941a8 nop
+0x000941ac jal 0x00093ddc
+0x000941b0 nop
+0x000941b4 jal 0x000942fc
+0x000941b8 nop
+0x000941bc bne r2,r0,0x000942b8
+0x000941c0 addiu r2,r0,0xffff
+0x000941c4 lui r3,0x8011
+0x000941c8 lw r3,0x6cd4(r3)
+0x000941cc lui r2,0x8011
+0x000941d0 lw r2,0x6cd8(r2)
+0x000941d4 nop
+0x000941d8 beq r3,r2,0x000941f8
+0x000941dc nop
+0x000941e0 j 0x000941ac
+0x000941e4 nop
+0x000941e8 jal 0x000942fc
+0x000941ec nop
+0x000941f0 bne r2,r0,0x000942b8
+0x000941f4 addiu r2,r0,0xffff
+0x000941f8 lui r2,0x8011
+0x000941fc lw r2,0x6c1c(r2)
+0x00094200 nop
+0x00094204 lw r2,0x0000(r2)
+0x00094208 lui r3,0x0100
+0x0009420c and r2,r2,r3
+0x00094210 bne r2,r0,0x000941e8
+0x00094214 nop
+0x00094218 lui r2,0x8011
+0x0009421c lw r2,0x6c10(r2)
+0x00094220 nop
+0x00094224 lw r2,0x0000(r2)
+0x00094228 lui r3,0x0400
+0x0009422c and r2,r2,r3
+0x00094230 beq r2,r0,0x000941e8
+0x00094234 addu r2,r0,r0
+0x00094238 j 0x000942b8
+0x0009423c nop
+0x00094240 lui r2,0x8011
+0x00094244 lw r2,0x6cd4(r2)
+0x00094248 lui r3,0x8011
+0x0009424c lw r3,0x6cd8(r3)
+0x00094250 nop
+0x00094254 subu r2,r2,r3
+0x00094258 andi r16,r2,0x003f
+0x0009425c beq r16,r0,0x0009426c
+0x00094260 nop
+0x00094264 jal  
+0x00094268 nop
+0x0009426c lui r2,0x8011
+0x00094270 lw r2,0x6c1c(r2)
+0x00094274 nop
+0x00094278 lw r2,0x0000(r2)
+0x0009427c lui r3,0x0100
+0x00094280 and r2,r2,r3
+0x00094284 bne r2,r0,0x000942ac
+0x00094288 nop
+0x0009428c lui r2,0x8011
+0x00094290 lw r2,0x6c10(r2)
+0x00094294 nop
+0x00094298 lw r2,0x0000(r2)
+0x0009429c lui r3,0x0400
+0x000942a0 and r2,r2,r3
+0x000942a4 bne r2,r0,0x000942b8
+0x000942a8 addu r2,r16,r0
+0x000942ac bne r16,r0,0x000942b8
+0x000942b0 addu r2,r16,r0
+0x000942b4 addiu r2,r0,0x0001
+0x000942b8 lw r31,0x0014(r29)
+0x000942bc lw r16,0x0010(r29)
+0x000942c0 jr r31
+0x000942c4 addiu r29,r29,0x0018

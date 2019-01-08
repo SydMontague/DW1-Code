@@ -56,7 +56,11 @@
 
 0x00060618    partnerYourCallSelectMove(entityPtr = r4, combatPtr = r5, combatId = r6)
 
+0x0006142C    setCommandBar()
+
 0x000623A0    0x000623A0()
+
+0x00064550    0x00064550()
 
 0x0006F168    removePoisonSprite(instanceId = r4, entityPtr = r5)
 
@@ -68,12 +72,46 @@
 0x00053878    curlingInit(isTutorial = r4)
 
 == SLUS ==
+0x000909E8    ChangeClearPad(val = r4)
+
+0x00090A18    ChangeClearRCnt(irq = r4, flag = r5)
+
+0x00091184    std_out_puts(stringPtr = r4)
 0x0009119C    abs(val = r4) -> result = r2 // BIOS call
+
+0x00091C10    vsyncWait(targetFrame = r4, timeout = r5)
+0x00091CA8    vsync(frameCount = r4) -> blankCount = r4 //either hblank or vblank
 
 0x0009124C    memcpy(dest = r4, src = r5, length = r6)
 0x0009125C    memset(dest = r4, fillbyte = r5, length = r6)
 
 0x0009127C    rand() -> value = r2 // BIOS call
+0x0009128C    printf(txtPtr = r4, params = r5,r6,r7,stack)
+
+0x000923AC    proxySetDMAIRQHandler(stringPtr = r4, arrayPtr = r5) -> oldHandler = r2
+
+0x00092450    setIRQMask(newIRQMask = r4) -> oldIRQMask = r2
+
+0x00092708    setDMAIRQHandler(dmaIrqId = r4, newHandler = r5) -> oldHandler = r2
+
+0x00092CBC    printRectDebugInfo(stringPtr = r4, arrayPtr = r5)
+
+0x0009332C    fillRect(headerPtr = r4, color = r5) -> unused = r2
+0x0009355C    uploadTexture(headerPtr = r4, dataStartPtr = r5) -> hasFailed = r2
+
+0x00093A90    gpuUploadCommandList(cmdPtr = r4)
+0x00093AD8    getGPUInfo(infoEnum = r4) -> value = r2
+
+0x00093B2C    gpuLoadImage(gpuFunctionPtr = r4, headerPtr = r5, headerSize = r6, dataPtr = r7) -> queueSize = r2
+0x00093DDC    processImageQueue() -> queueNotEmpty = r2
+
+0x0009418C    gpuDrawSync(syncMode = r4) -> result = r2
+0x000942C8    setGPUTimeout()
+0x000942FC    checkGPUTimeout()
+
+0x000947B0    drawSync(syncMode = r4) -> result = r2
+0x00094818    clearImage(headerPtr, red, green, blue)
+0x000948A8    loadImage(headerPtr = r4, dataPtr = r5)
 
 0x0009B090    copy12toOffset20(dest = r4, src = r5) -> dest = r2
 0x0009B0C0    scaleMatrix(destMatrixPtr = r4, scaleVector = r5) -> matrixPtr = r2
@@ -89,6 +127,8 @@
 0x000A3008    unsetObject(objectId, instanceId) -> success = r2
 
 0x000A36D4    random(upperLimit = r4) -> r2
+
+0x000A3B20    0x000A3B20()
 
 0x000A4A08    setFoodTimer(digimonId = r4)
 
@@ -133,6 +173,9 @@
 
 0x000D3AEC    getEntityTileFromModel(entityPtr = r4) -> store(r5, tileX), store(r6, tileY)
 
+0x000DAC48    renderInventoryText()
+0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
+
 0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
 
 0x000E52C0    swapValues(valPtr1 = r4, valPtr2 = r5)
@@ -154,6 +197,11 @@
 
 0x000F06F0    handleBuffDisks(itemId = r4)
 
+0x000F18A4    isAsciiEncoded(charPtr = r4) -> isAscii = r2
+0x000F18C8    convertAsciiToGameChar(asciiVal = r4) -> dw1Char = r2
+
+0x000F1AB0    swapBytes(val = r4) -> swappedVal = r2
+
 0x000FC2D0    allocateArray(size = r4) -> arrayPtr = r2
 0x000FC310    freeArray(arrayPtr = r4) 
 
@@ -167,6 +215,11 @@
 
 0x00106E0C    rollCardPack() -> cardId = r2
 
+0x0010CB90    clearTextArea()
+0x0010CBC4    clearTextSubArea(array = r4)
+
+0x0010CC28    renderCharacter(charVal = r4, xPos = r5, yPos = r6) -> characterWidth = r2
+0x0010CF24    renderString(stringPtr = r4, xPos = r5, yPos = r6)
 
 
 // change player type

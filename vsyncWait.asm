@@ -1,0 +1,51 @@
+vsyncWait(targetFrame, timeout) { // wait till frame
+  timeoutCounter = timeout << 0x0F
+  
+  while(load(0x116B30) < targetFrame) { // current frame
+    if(--timeoutCounter == -1) {
+      std_out_puts(0x113BEC) // "VSync timeout\n"
+      ChangeClearPad(0)
+      ChangeClearRCnt(3, 0) // vblank, do nothing
+      break
+    }
+  }
+}
+
+0x00091c10 addiu r29,r29,0xffe0
+0x00091c14 sll r5,r5,0x0f
+0x00091c18 sw r5,0x0010(r29)
+0x00091c1c lui r2,0x8011
+0x00091c20 lw r2,0x6b30(r2)
+0x00091c24 nop
+0x00091c28 slt r2,r2,r4
+0x00091c2c beq r2,r0,0x00091c98
+0x00091c30 sw r31,0x0018(r29)
+0x00091c34 addiu r3,r0,0xffff
+0x00091c38 lw r2,0x0010(r29)
+0x00091c3c nop
+0x00091c40 addiu r2,r2,0xffff
+0x00091c44 sw r2,0x0010(r29)
+0x00091c48 lw r2,0x0010(r29)
+0x00091c4c nop
+0x00091c50 bne r2,r3,0x00091c80
+0x00091c54 nop
+0x00091c58 lui r4,0x8011
+0x00091c5c jal 0x00091184
+0x00091c60 addiu r4,r4,0x3bec
+0x00091c64 jal 0x000909e8
+0x00091c68 addu r4,r0,r0
+0x00091c6c addiu r4,r0,0x0003
+0x00091c70 jal 0x00090a18
+0x00091c74 addu r5,r0,r0
+0x00091c78 j 0x00091c98
+0x00091c7c nop
+0x00091c80 lui r2,0x8011
+0x00091c84 lw r2,0x6b30(r2)
+0x00091c88 nop
+0x00091c8c slt r2,r2,r4
+0x00091c90 bne r2,r0,0x00091c38
+0x00091c94 nop
+0x00091c98 lw r31,0x0018(r29)
+0x00091c9c addiu r29,r29,0x0020
+0x00091ca0 jr r31
+0x00091ca4 nop

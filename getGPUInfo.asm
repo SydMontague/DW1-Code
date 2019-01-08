@@ -1,0 +1,22 @@
+int getGPUInfo(infoEnum) {
+  gp1CmdPtr = load(0x116C10)
+  store(gp1CmdPtr, 0x10000000 | infoEnum)
+  
+  gpuRead = load(0x116C0C)
+  infoValue = load(gpuRead)
+  
+  return infoValue & 0x00FFFFFF
+}
+
+0x00093ad8 lui r2,0x1000
+0x00093adc lui r3,0x8011
+0x00093ae0 lw r3,0x6c10(r3)
+0x00093ae4 or r4,r4,r2
+0x00093ae8 sw r4,0x0000(r3)
+0x00093aec lui r2,0x8011
+0x00093af0 lw r2,0x6c0c(r2)
+0x00093af4 lui r3,0x00ff
+0x00093af8 lw r2,0x0000(r2)
+0x00093afc ori r3,r3,0xffff
+0x00093b00 jr r31
+0x00093b04 and r2,r2,r3

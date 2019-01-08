@@ -1,0 +1,276 @@
+int renderCharacter(charVal, xPos, yPos) {
+  
+  if(xPos > 0xF4)
+    return 0
+  
+  if(yPos > 0xF4)
+    return 0
+  
+  charByte1 = charVal & 0x00FF << 8
+  charByte2 = charVal & 0xFF00 >> 8
+  swappedChar = (charByte2 + charByte1) & 0xFFFF
+  
+  store(0x13087C, swappedChar)
+  
+  for(charOffset = 0; load(0x1307E0 + charOffset * 2) != swappedChar; charOffset++);
+  
+  pixelPage = (load(0x13502C) + 1) % 50
+  store(0x13502C, pixelPage)
+  
+  // generate pixel data
+  imageDataPtr = 0x1BE958 + pixelPage * 72
+  
+  for(i = 0; i < 11; i++) {
+    flags = load(0x130880 + charOffset * 0x18 + i * 2)
+    
+    value = 0
+    if(flags & 0x8000 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x4000 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+    
+    value = 0
+    if(flags & 0x2000 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x1000 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+    
+    value = 0
+    if(flags & 0x0800 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x0400 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+    
+    value = 0
+    if(flags & 0x0200 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x0100 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+    
+    value = 0
+    if(flags & 0x0080 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x0040 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+    
+    value = 0
+    if(flags & 0x0020 == 0)
+      value = (value | load(0x13465C)) & 0xFF // 1
+    if(flags & 0x0010 == 0)
+      value = (value | load(0x13465D)) & 0xFF // 0x10
+    
+    store(imageDataPtr++, value)
+  }
+  
+  // posX, posY, width, height
+  headerData[0] = xPos / 4 + 0x02C0
+  headerData[1] = yPos + 0x0100
+  headerData[2] = 3
+  headerData[3] = 11
+  
+  loadImage(headerData, 0x1BE958 + pixelPage * 72)
+  
+  return load(0x130896 + charOffset * 0x18) // width
+}
+
+0x0010cc28 addiu r29,r29,0xffe0
+0x0010cc2c sw r31,0x0014(r29)
+0x0010cc30 sltiu r1,r5,0x00f4
+0x0010cc34 bne r1,r0,0x0010cc44
+0x0010cc38 sw r16,0x0010(r29)
+0x0010cc3c beq r0,r0,0x0010cf14
+0x0010cc40 addu r2,r0,r0
+0x0010cc44 sltiu r1,r6,0x00f4
+0x0010cc48 bne r1,r0,0x0010cc58
+0x0010cc4c nop
+0x0010cc50 beq r0,r0,0x0010cf14
+0x0010cc54 addu r2,r0,r0
+0x0010cc58 andi r2,r4,0x00ff
+0x0010cc5c sll r3,r2,0x08
+0x0010cc60 andi r2,r4,0xff00
+0x0010cc64 sra r2,r2,0x08
+0x0010cc68 add r2,r3,r2
+0x0010cc6c andi r4,r2,0xffff
+0x0010cc70 lui r1,0x8013
+0x0010cc74 sh r4,0x087c(r1)
+0x0010cc78 addu r3,r0,r0
+0x0010cc7c addu r7,r0,r0
+0x0010cc80 lui r2,0x8013
+0x0010cc84 addiu r2,r2,0x07e0
+0x0010cc88 addu r2,r2,r7
+0x0010cc8c lhu r2,0x0000(r2)
+0x0010cc90 nop
+0x0010cc94 beq r4,r2,0x0010cca8
+0x0010cc98 nop
+0x0010cc9c addi r3,r3,0x0001
+0x0010cca0 beq r0,r0,0x0010cc80
+0x0010cca4 addi r7,r7,0x0002
+0x0010cca8 sll r2,r3,0x01
+0x0010ccac add r2,r2,r3
+0x0010ccb0 sll r3,r2,0x03
+0x0010ccb4 lui r2,0x8013
+0x0010ccb8 addiu r2,r2,0x0880
+0x0010ccbc addu r16,r2,r3
+0x0010ccc0 lw r2,-0x6b00(r28)
+0x0010ccc4 addu r4,r0,r0
+0x0010ccc8 addi r3,r2,0x0001
+0x0010cccc addiu r2,r0,0x0032
+0x0010ccd0 div r3,r2
+0x0010ccd4 mfhi r2
+0x0010ccd8 sw r2,-0x6b00(r28)
+0x0010ccdc lw r3,-0x6b00(r28)
+0x0010cce0 nop
+0x0010cce4 sll r2,r3,0x03
+0x0010cce8 add r2,r2,r3
+0x0010ccec sll r3,r2,0x03
+0x0010ccf0 lui r2,0x801c
+0x0010ccf4 addiu r2,r2,0xe958
+0x0010ccf8 beq r0,r0,0x0010ceac
+0x0010ccfc addu r2,r2,r3
+0x0010cd00 lhu r8,0x0000(r16)
+0x0010cd04 addiu r3,r16,0x0002
+0x0010cd08 addu r16,r3,r0
+0x0010cd0c addu r3,r8,r0
+0x0010cd10 andi r8,r8,0x8000
+0x0010cd14 bne r8,r0,0x0010cd2c
+0x0010cd18 addu r7,r0,r0
+0x0010cd1c lbu r8,-0x74d0(r28)
+0x0010cd20 nop
+0x0010cd24 or r7,r7,r8
+0x0010cd28 andi r7,r7,0x00ff
+0x0010cd2c andi r8,r3,0x4000
+0x0010cd30 bne r8,r0,0x0010cd48
+0x0010cd34 nop
+0x0010cd38 lbu r8,-0x74cf(r28)
+0x0010cd3c nop
+0x0010cd40 or r7,r7,r8
+0x0010cd44 andi r7,r7,0x00ff
+0x0010cd48 addu r8,r2,r0
+0x0010cd4c sb r7,0x0000(r8)
+0x0010cd50 addiu r2,r8,0x0001
+0x0010cd54 andi r8,r3,0x2000
+0x0010cd58 bne r8,r0,0x0010cd70
+0x0010cd5c addu r7,r0,r0
+0x0010cd60 lbu r8,-0x74d0(r28)
+0x0010cd64 nop
+0x0010cd68 or r7,r7,r8
+0x0010cd6c andi r7,r7,0x00ff
+0x0010cd70 andi r8,r3,0x1000
+0x0010cd74 bne r8,r0,0x0010cd8c
+0x0010cd78 nop
+0x0010cd7c lbu r8,-0x74cf(r28)
+0x0010cd80 nop
+0x0010cd84 or r7,r7,r8
+0x0010cd88 andi r7,r7,0x00ff
+0x0010cd8c addu r8,r2,r0
+0x0010cd90 sb r7,0x0000(r8)
+0x0010cd94 addiu r2,r8,0x0001
+0x0010cd98 andi r8,r3,0x0800
+0x0010cd9c bne r8,r0,0x0010cdb4
+0x0010cda0 addu r7,r0,r0
+0x0010cda4 lbu r8,-0x74d0(r28)
+0x0010cda8 nop
+0x0010cdac or r7,r7,r8
+0x0010cdb0 andi r7,r7,0x00ff
+0x0010cdb4 andi r8,r3,0x0400
+0x0010cdb8 bne r8,r0,0x0010cdd0
+0x0010cdbc nop
+0x0010cdc0 lbu r8,-0x74cf(r28)
+0x0010cdc4 nop
+0x0010cdc8 or r7,r7,r8
+0x0010cdcc andi r7,r7,0x00ff
+0x0010cdd0 addu r8,r2,r0
+0x0010cdd4 sb r7,0x0000(r8)
+0x0010cdd8 addiu r2,r8,0x0001
+0x0010cddc andi r8,r3,0x0200
+0x0010cde0 bne r8,r0,0x0010cdf8
+0x0010cde4 addu r7,r0,r0
+0x0010cde8 lbu r8,-0x74d0(r28)
+0x0010cdec nop
+0x0010cdf0 or r7,r7,r8
+0x0010cdf4 andi r7,r7,0x00ff
+0x0010cdf8 andi r8,r3,0x0100
+0x0010cdfc bne r8,r0,0x0010ce14
+0x0010ce00 nop
+0x0010ce04 lbu r8,-0x74cf(r28)
+0x0010ce08 nop
+0x0010ce0c or r7,r7,r8
+0x0010ce10 andi r7,r7,0x00ff
+0x0010ce14 addu r8,r2,r0
+0x0010ce18 sb r7,0x0000(r8)
+0x0010ce1c addiu r2,r8,0x0001
+0x0010ce20 andi r8,r3,0x0080
+0x0010ce24 bne r8,r0,0x0010ce3c
+0x0010ce28 addu r7,r0,r0
+0x0010ce2c lbu r8,-0x74d0(r28)
+0x0010ce30 nop
+0x0010ce34 or r7,r7,r8
+0x0010ce38 andi r7,r7,0x00ff
+0x0010ce3c andi r8,r3,0x0040
+0x0010ce40 bne r8,r0,0x0010ce58
+0x0010ce44 nop
+0x0010ce48 lbu r8,-0x74cf(r28)
+0x0010ce4c nop
+0x0010ce50 or r7,r7,r8
+0x0010ce54 andi r7,r7,0x00ff
+0x0010ce58 addu r8,r2,r0
+0x0010ce5c sb r7,0x0000(r8)
+0x0010ce60 addiu r2,r8,0x0001
+0x0010ce64 andi r8,r3,0x0020
+0x0010ce68 bne r8,r0,0x0010ce80
+0x0010ce6c addu r7,r0,r0
+0x0010ce70 lbu r8,-0x74d0(r28)
+0x0010ce74 nop
+0x0010ce78 or r7,r7,r8
+0x0010ce7c andi r7,r7,0x00ff
+0x0010ce80 andi r3,r3,0x0010
+0x0010ce84 bne r3,r0,0x0010ce9c
+0x0010ce88 nop
+0x0010ce8c lbu r3,-0x74cf(r28)
+0x0010ce90 nop
+0x0010ce94 or r3,r7,r3
+0x0010ce98 andi r7,r3,0x00ff
+0x0010ce9c addu r3,r2,r0
+0x0010cea0 addiu r2,r3,0x0001
+0x0010cea4 sb r7,0x0000(r3)
+0x0010cea8 addi r4,r4,0x0001
+0x0010ceac slti r1,r4,0x000b
+0x0010ceb0 bne r1,r0,0x0010cd00
+0x0010ceb4 nop
+0x0010ceb8 bgez r5,0x0010cec8
+0x0010cebc sra r25,r5,0x02
+0x0010cec0 addiu r2,r5,0x0003
+0x0010cec4 sra r25,r2,0x02
+0x0010cec8 addi r2,r25,0x02c0
+0x0010cecc sh r2,0x0018(r29)
+0x0010ced0 addi r2,r6,0x0100
+0x0010ced4 sh r2,0x001a(r29)
+0x0010ced8 addiu r2,r0,0x0003
+0x0010cedc sh r2,0x001c(r29)
+0x0010cee0 addiu r2,r0,0x000b
+0x0010cee4 lw r3,-0x6b00(r28)
+0x0010cee8 sh r2,0x001e(r29)
+0x0010ceec sll r2,r3,0x03
+0x0010cef0 add r2,r2,r3
+0x0010cef4 sll r3,r2,0x03
+0x0010cef8 lui r2,0x801c
+0x0010cefc addiu r2,r2,0xe958
+0x0010cf00 addu r5,r2,r3
+0x0010cf04 jal 0x000948a8
+0x0010cf08 addiu r4,r29,0x0018
+0x0010cf0c lhu r2,0x0000(r16)
+0x0010cf10 nop
+0x0010cf14 lw r31,0x0014(r29)
+0x0010cf18 lw r16,0x0010(r29)
+0x0010cf1c jr r31
+0x0010cf20 addiu r29,r29,0x0020
