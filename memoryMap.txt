@@ -10,6 +10,8 @@
 0x0005B1AC    deferred call -> getEntityTileFromModel(0x12F348, 0x134D58, 0x134D57)
 0x0005B1C0    0x0005B1C0()
 
+0x0005BBE4    getChanceToHit(attackerPtr = r4, victimPtr = r5, victimCombatPtr = r6, moveId = r7) -> chanceToHit = r2
+
 0x0005D374    getMPCost(entityPtr = r4, combatPtr = r5, moveSlot = r6) -> mpCost = r2 // 0 if invalid
 0x0005D608    distanceSquared(entityPtr1 = r4, entityPtr2 = r5) -> distance = r2
 0x0005D658    setMoveAnim(entityPtr = r4, combatPtr = r5, unused = r6, attackId = r7)  
@@ -60,6 +62,8 @@
 
 0x000623A0    0x000623A0()
 
+0x000630F8    0x000630F8()
+
 0x00064550    0x00064550()
 
 0x0006F168    removePoisonSprite(instanceId = r4, entityPtr = r5)
@@ -71,6 +75,9 @@
 == KAR_REL.BIN ==
 0x00053878    curlingInit(isTutorial = r4)
 
+== TRN_REL.BIN ==
+0x0008A744    handleBrainMoveLearnChance(digimonType = r4) -> success = r2
+
 == SLUS ==
 0x000909E8    ChangeClearPad(val = r4)
 
@@ -81,6 +88,8 @@
 
 0x00091C10    vsyncWait(targetFrame = r4, timeout = r5)
 0x00091CA8    vsync(frameCount = r4) -> blankCount = r4 //either hblank or vblank
+
+0x0009121C    strlen(src = r4) -> length = r2
 
 0x0009124C    memcpy(dest = r4, src = r5, length = r6)
 0x0009125C    memset(dest = r4, fillbyte = r5, length = r6)
@@ -126,7 +135,9 @@
 0x000A2F64    setObject(objectId, instanceId, funcPtr1, funcPtr2) -> success = r2
 0x000A3008    unsetObject(objectId, instanceId) -> success = r2
 
-0x000A36D4    random(upperLimit = r4) -> r2
+0x000A36D4    random(upperLimit = r4) -> r2 //TODO
+
+0x000A37FC    atan(diffY = r4, diffX = r5) -> angle = r2
 
 0x000A3B20    0x000A3B20()
 
@@ -171,15 +182,23 @@
 0x000C59B0    setTrainingBoost(flag = r4, mod = r5, duration = r6)
 0x000C59E0    handleItemSickness(chance = r4)
 
+0x000C6134    getNextSPUVoice(unused = r4) -> voiceId = r2
+
+0x000C8DA8    getSPUVoiceState(voiceMask = r4) -> voiceState = r2
+
 0x000D3AEC    getEntityTileFromModel(entityPtr = r4) -> store(r5, tileX), store(r6, tileY)
+
+0x000D459C    entityLookAtLocation(entityPtr = r4, posPointer2 = r5)
 
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
 
 0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
 
+0x000E5290    swapByte(valPtr1 = r4, valPtr2 = r5)
 0x000E52C0    swapValues(valPtr1 = r4, valPtr2 = r5)
 
+0x000E5EB4    hasMove(moveId = r4) -> hasMove = r2
 0x000E5F14    learnMove(moveId = r4)
 0x000E6000    getTechFromMove(mapDataOffset = r4, move = r5) -> techId = r2
 
@@ -194,6 +213,8 @@
 0x000E847C    handleCombatStart(interactedEntity = r4) -> enemyCount = r2
 
 0x000E8970    startBattleIdleAnimation(entityPtr = r4, statsPtr = r5, flags = r6)
+
+0x000ECEE8    battleStatsGainsAndDrops(itemDropArray = r4)
 
 0x000F06F0    handleBuffDisks(itemId = r4)
 

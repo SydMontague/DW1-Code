@@ -244,7 +244,7 @@ void partnerAiTick() {
     }
     
     selectedMove = getMoveCommandAttack(0, moveArray)
-    store(combatPtr + 0x56, 0)
+    store(entityPtr + 0x56, 0)
   }
   else if(command == 4) { // moderate command
     moveArray = short[4]
