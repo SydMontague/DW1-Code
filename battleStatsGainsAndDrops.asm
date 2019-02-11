@@ -39,22 +39,27 @@ void battleStatsGainsAndDrops(itemDropArray) {
   for(statId = 0; statId < 6; statId++) {
     combatPtr = load(0x134D4C)
     
-    if(load(0x13D468 + statId * 2) == 0)
+    if(load(0x13D468 + statId * 2) != 0)
       continue
-      
+    
+    // combatPtr + 0x0640 -> attacks done
+    // combatPtr + 0x0642 -> attacks blocked
+    // combatPtr + 0x0646 -> heavy hits taken (>= 20% of max HP)
+    // combatPtr + 0x0648 -> start HP
+    
     switch(statId) {
       case 0: // 0x000ED0E4
         startHP = load(combatPtr + 0x0648)
         currentHP = load(0x1557F4)
         
-        lostHP = (startHP - currentHP) * 100
+        lostHP = (startHP - currentHP)
         maxHP = load(0x1557F0)
         
-        chance = lostHP / maxHP
+        chance = 100 * lostHP / maxHP
         break
       case 1: // 0x000ED128
       case 2: // 0x000ED128
-        chance = load(combatPtr + 0x0640) * 10 // attacks done with low HP (<20%)
+        chance = load(combatPtr + 0x0640) * 10
         break
       case 3: // 0x000ED148
         chance = load(combatPtr + 0x0646) * 10
@@ -65,13 +70,13 @@ void battleStatsGainsAndDrops(itemDropArray) {
         lostHP = startHP - currentHP
         maxHP = load(0x1557F0)
         
-        chance = (lostHP * 50 / maxHP) + (load(combatPtr + 0x0642) * 10)
+        chance = 50 * (lostHP / maxHP) + (load(combatPtr + 0x0642) * 10)
         break
       case 5: // 0x000ED1B8
         chance = load(combatPtr + 0x0640) * 5 + load(combatPtr + 0x0646) * 5
     }
     
-    if(random(100) < chance)
+    if(random(100) >= chance)
       continue
     
     store(0x13D468 + statId * 2, 1)
