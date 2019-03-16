@@ -1,0 +1,93 @@
+int isFiveTileWidePathOpen(tileX1, tileY1, tileX2, tileY2) {
+  if(abs(tileX2 - tileX1) < abs(tileY2 - tileY1)) {
+    for(i = -2; i < 3; i++)
+      if(isLinearPathBlocked(tileX1, tileY1 + i, tileX2, tileY2 + i) != 0)
+        break
+  }
+  else {
+    for(i = -2; i < 3; i++)
+      if(isLinearPathBlocked(tileX1 + i, tileY1, tileX2 + i, tileY2) != 0)
+        break
+  }
+  
+  if(i == 3)
+    return 0
+  
+  return 1
+}
+
+0x000d3b44 addiu r29,r29,0xffd0
+0x000d3b48 sw r31,0x002c(r29)
+0x000d3b4c sw r22,0x0028(r29)
+0x000d3b50 sw r21,0x0024(r29)
+0x000d3b54 sw r20,0x0020(r29)
+0x000d3b58 sw r19,0x001c(r29)
+0x000d3b5c sw r18,0x0018(r29)
+0x000d3b60 sw r17,0x0014(r29)
+0x000d3b64 addu r20,r4,r0
+0x000d3b68 addu r19,r6,r0
+0x000d3b6c sw r16,0x0010(r29)
+0x000d3b70 addu r22,r5,r0
+0x000d3b74 addu r21,r7,r0
+0x000d3b78 jal 0x0009119c
+0x000d3b7c sub r4,r19,r20
+0x000d3b80 addu r16,r2,r0
+0x000d3b84 jal 0x0009119c
+0x000d3b88 sub r4,r21,r22
+0x000d3b8c slt r1,r16,r2
+0x000d3b90 bne r1,r0,0x000d3bec
+0x000d3b94 addiu r16,r0,0xfffe
+0x000d3b98 addiu r16,r0,0xfffe
+0x000d3b9c addi r18,r21,-0x0002
+0x000d3ba0 beq r0,r0,0x000d3bd8
+0x000d3ba4 addi r17,r22,-0x0002
+0x000d3ba8 sll r5,r17,0x18
+0x000d3bac sll r7,r18,0x18
+0x000d3bb0 sra r5,r5,0x18
+0x000d3bb4 sra r7,r7,0x18
+0x000d3bb8 addu r4,r20,r0
+0x000d3bbc jal 0x000d3c70
+0x000d3bc0 addu r6,r19,r0
+0x000d3bc4 bne r2,r0,0x000d3c34
+0x000d3bc8 nop
+0x000d3bcc addi r16,r16,0x0001
+0x000d3bd0 addi r17,r17,0x0001
+0x000d3bd4 addi r18,r18,0x0001
+0x000d3bd8 slti r1,r16,0x0003
+0x000d3bdc bne r1,r0,0x000d3ba8
+0x000d3be0 nop
+0x000d3be4 beq r0,r0,0x000d3c38
+0x000d3be8 addiu r1,r0,0x0003
+0x000d3bec addi r18,r19,-0x0002
+0x000d3bf0 beq r0,r0,0x000d3c28
+0x000d3bf4 addi r17,r20,-0x0002
+0x000d3bf8 sll r4,r17,0x18
+0x000d3bfc sll r6,r18,0x18
+0x000d3c00 sra r4,r4,0x18
+0x000d3c04 sra r6,r6,0x18
+0x000d3c08 addu r5,r22,r0
+0x000d3c0c jal 0x000d3c70
+0x000d3c10 addu r7,r21,r0
+0x000d3c14 bne r2,r0,0x000d3c34
+0x000d3c18 nop
+0x000d3c1c addi r16,r16,0x0001
+0x000d3c20 addi r17,r17,0x0001
+0x000d3c24 addi r18,r18,0x0001
+0x000d3c28 slti r1,r16,0x0003
+0x000d3c2c bne r1,r0,0x000d3bf8
+0x000d3c30 nop
+0x000d3c34 addiu r1,r0,0x0003
+0x000d3c38 beq r16,r1,0x000d3c48
+0x000d3c3c addu r2,r0,r0
+0x000d3c40 beq r0,r0,0x000d3c48
+0x000d3c44 addiu r2,r0,0x0001
+0x000d3c48 lw r31,0x002c(r29)
+0x000d3c4c lw r22,0x0028(r29)
+0x000d3c50 lw r21,0x0024(r29)
+0x000d3c54 lw r20,0x0020(r29)
+0x000d3c58 lw r19,0x001c(r29)
+0x000d3c5c lw r18,0x0018(r29)
+0x000d3c60 lw r17,0x0014(r29)
+0x000d3c64 lw r16,0x0010(r29)
+0x000d3c68 jr r31
+0x000d3c6c addiu r29,r29,0x0030

@@ -1,0 +1,73 @@
+int isOffScreen(screenPos, width, height) {
+  xPos = screenPos[0] - (160 - load(0x134EC0))
+  yPos = screenPos[1] - (120 - load(0x134EC4))
+  
+  if(xPos < -width / 2)
+    return 1
+  
+  if(xPos > width / 2)
+    return 1
+  
+  if(yPos < -height / 2)
+    return 1
+  
+  if(yPos > height / 2)
+    return 1
+  
+  return 0
+}
+
+0x000d5608 lw r2,-0x6c6c(r28)
+0x000d560c addiu r3,r0,0x00a0
+0x000d5610 lh r7,0x0000(r4)
+0x000d5614 sub r2,r3,r2
+0x000d5618 sub r3,r7,r2
+0x000d561c sub r2,r0,r5
+0x000d5620 addu r7,r3,r0
+0x000d5624 addu r8,r5,r0
+0x000d5628 bgez r2,0x000d5638
+0x000d562c sra r25,r2,0x01
+0x000d5630 addiu r2,r2,0x0001
+0x000d5634 sra r25,r2,0x01
+0x000d5638 slt r1,r3,r25
+0x000d563c beq r1,r0,0x000d564c
+0x000d5640 nop
+0x000d5644 beq r0,r0,0x000d56d8
+0x000d5648 addiu r2,r0,0x0001
+0x000d564c bgez r8,0x000d565c
+0x000d5650 sra r25,r8,0x01
+0x000d5654 addiu r2,r8,0x0001
+0x000d5658 sra r25,r2,0x01
+0x000d565c slt r1,r25,r7
+0x000d5660 beq r1,r0,0x000d5670
+0x000d5664 nop
+0x000d5668 beq r0,r0,0x000d56d8
+0x000d566c addiu r2,r0,0x0001
+0x000d5670 lw r2,-0x6c68(r28)
+0x000d5674 addiu r3,r0,0x0078
+0x000d5678 lh r4,0x0002(r4)
+0x000d567c sub r2,r3,r2
+0x000d5680 sub r3,r4,r2
+0x000d5684 sub r2,r0,r6
+0x000d5688 addu r4,r3,r0
+0x000d568c addu r5,r6,r0
+0x000d5690 bgez r2,0x000d56a0
+0x000d5694 sra r25,r2,0x01
+0x000d5698 addiu r2,r2,0x0001
+0x000d569c sra r25,r2,0x01
+0x000d56a0 slt r1,r3,r25
+0x000d56a4 beq r1,r0,0x000d56b4
+0x000d56a8 nop
+0x000d56ac beq r0,r0,0x000d56d8
+0x000d56b0 addiu r2,r0,0x0001
+0x000d56b4 bgez r5,0x000d56c4
+0x000d56b8 sra r25,r5,0x01
+0x000d56bc addiu r2,r5,0x0001
+0x000d56c0 sra r25,r2,0x01
+0x000d56c4 slt r1,r25,r4
+0x000d56c8 beq r1,r0,0x000d56d8
+0x000d56cc addu r2,r0,r0
+0x000d56d0 beq r0,r0,0x000d56d8
+0x000d56d4 addiu r2,r0,0x0001
+0x000d56d8 jr r31
+0x000d56dc nop

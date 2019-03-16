@@ -5,7 +5,7 @@ int increaseSpeedBuffer(int combatData, int statsData) {
     return 100;
     
   if(load(0x134D66) % 2 == 0) {
-    speed = load(r5 + 4)
+    speed = load(statsData + 4)
     
     currentBuffer += speed / 100 + 1
     store(combatData + 0x32, currentBuffer)

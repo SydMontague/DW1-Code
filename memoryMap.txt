@@ -64,6 +64,8 @@
 
 0x000630F8    0x000630F8()
 
+0x00063EF0    deferred -> r2 = load(0x1350C0)
+
 0x00064550    0x00064550()
 
 0x0006F168    removePoisonSprite(instanceId = r4, entityPtr = r5)
@@ -122,8 +124,16 @@
 0x00094818    clearImage(headerPtr, red, green, blue)
 0x000948A8    loadImage(headerPtr = r4, dataPtr = r5)
 
+0x00097DD8    setTransformationMatrix(matrixPtr = r4)
+
+0x0009AB10    rotateVectorByMatrix(matrixPtr = r4, vectorPtr = r5, resultPtr = r6) -> resultPtr = r2
+
 0x0009B090    copy12toOffset20(dest = r4, src = r5) -> dest = r2
 0x0009B0C0    scaleMatrix(destMatrixPtr = r4, scaleVector = r5) -> matrixPtr = r2
+
+0x0009B200    setGTERotationMatrix(matrixPtr = r4)
+
+0x0009B290    setGTETranslationVector(matrixPtr = r4)
 
 0x0009B804    rotVecToRotMatrix(rotVec = r4, destMatrixPtr = r5) -> matrixPtr = r2
 
@@ -132,8 +142,8 @@
 0x000A254C    getDigimonModelComponent(digimonType = r4, entityType = r5) -> modelComponent = r2
 0x000A2660    getEntityType(entityPtr = r4) -> entityType = r2 // 0 - NPC, 2 - Player, 3 - Partner, -1 - none
 
-0x000A2F64    setObject(objectId, instanceId, funcPtr1, funcPtr2) -> success = r2
-0x000A3008    unsetObject(objectId, instanceId) -> success = r2
+0x000A2F64    setObject(objectId = r4, instanceId = r5, funcPtr1 = r6, funcPtr2 = r7) -> success = r2
+0x000A3008    unsetObject(objectId = r4, instanceId = r5) -> success = r2
 
 0x000A36D4    random(upperLimit = r4) -> r2 //TODO
 
@@ -150,6 +160,9 @@
 0x000AC050    loadMenuState() -> r2   //loads 0x134C91 into r2
 
 0x000ACBF4    addTamerLevel(chance = r4, amount = r5)
+
+0x000C0BBC    checkMapCollisionX(entityPtr = r4, useYMin = r5) -> isColliding = r2
+0x000C0D74    checkMapCollisionY(entityPtr = r4, useXMin = r5) -> isColliding = r2
 
 0x000C0F28    getModelTile(modelPtr = r4) -> store(r5, tileX), store(r6, tileY)
 
@@ -183,12 +196,40 @@
 0x000C59E0    handleItemSickness(chance = r4)
 
 0x000C6134    getNextSPUVoice(unused = r4) -> voiceId = r2
+0x000C61D4    0x000C61D4(val1, val2, val3) -> bitMask = r2
+
+0x000C6374    playSound(val1, val2)
 
 0x000C8DA8    getSPUVoiceState(voiceMask = r4) -> voiceState = r2
 
+0x000CEA04    0x000CEA04(voiceId, val2, val3, val4, val5, val6, val7, val8) -> voiceId = r2
+
+0x000CF430    0x000CF430() // TODO something SPU related
+
+0x000D2A48    0x000D2A48(val2, val3) -> retValue = r2 // TODO, something SPU related
+
+0x000D31AC    entityIsInEntity(entityPtr = r4, entityPtr2 = r5) -> isColliding = r2
+
+0x000D3648    entityCheckCombatArea(entityPtr = r4, oldLocationPtr = r5, width = r6, height = r7) -> hasMovedOutside = r2
+
+
+
+0x000D3858    isRectInRect(rectArray = r4, xMin = r5, yMin = r6, xMax = r7, yMax = load(sp + 0x10)) -> isInRect = r2
+0x000D38D4    hasMovedOutsideCombatArea(screenPosOld = r4, screenPosOld = r5, width = r6, height = r7) -> hasMovedOutside = r2
+
 0x000D3AEC    getEntityTileFromModel(entityPtr = r4) -> store(r5, tileX), store(r6, tileY)
+0x000D3B44    isFiveTileWidePathOpen(tileX1, tileY1, tileX2, tileY2) -> isPathOpen = r2
+0x000D3C70    isLinearPathBlocked(tileX1, tileY1, tileX2, tileY2) -> isBlocked = r2
 
 0x000D459C    entityLookAtLocation(entityPtr = r4, posPointer2 = r5)
+0x000D45EC    entityCheckCollision(noCollideEntityPtr = r4, checkedEntityPtr = r5, width = r6, height = r7) -> responseCode = r2
+
+0x000D4F10    entityMoveForward(entityPtr = r4)
+0x000D5018    checkMapCollision(entityPtr = r4, diffX = r5, diffY = r6) -> isColliding = r2
+0x000D50DC    entityCheckEntityCollision(entityPtr = r4, entityPtr2 = r5, diffX = r6, diffY = r7)
+
+0x000D5430    entityIsOffScreen(entityPtr = r4, width = r5, height = r6) -> isOffScreen = r2
+0x000D5608    isOffScreen(screenPos = r4, width = r5, height = r6) -> isOffScreen = r2
 
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
@@ -201,6 +242,7 @@
 0x000E5EB4    hasMove(moveId = r4) -> hasMove = r2
 0x000E5F14    learnMove(moveId = r4)
 0x000E6000    getTechFromMove(mapDataOffset = r4, move = r5) -> techId = r2
+0x000E6078    entityLookAtTile(playerPtr = r4, tileX = r5, tileY = r6)
 
 0x000E61AC    isInvisible(entityPtr = r4) -> result = r2
 
