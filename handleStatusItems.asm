@@ -26,14 +26,14 @@ void handleStatusItems(int itemId) {
       store(combatData + 0x34, newState)
       break
     case 5: // Bandage
-      r2 = 0x000C566C(3, 2) // injury/sickness healing, injuryHealChance, soclmessHealChance
+      r2 = 0x000C566C(3, 2) // injury/sickness healing, injuryHealChance, sickmessHealChance
       if(r2 == 1) {// heal worked?
         // entityDataPtr, particleType
         0x000C1560(load(0x12F348), 0) // play particle effects
       }
       break
     case 6: // Medicine
-      r2 = 0x000C566C(3, 10)  // injury/sickness healing, injuryHealChance, soclmessHealChance
+      r2 = 0x000C566C(3, 10)  // injury/sickness healing, injuryHealChance, sickmessHealChance
       if(r2 == 1) { // heal worked?
         // entityDataPtr, particleType
         0x000C1560(load(0x12F348), 0) // play particle effects

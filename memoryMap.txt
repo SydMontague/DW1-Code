@@ -79,6 +79,7 @@
 
 == TRN_REL.BIN ==
 0x0008A744    handleBrainMoveLearnChance(digimonType = r4) -> success = r2
+0x0008E824    doSlotsRigging(reelId = r4, dataOffset = r5)
 
 == SLUS ==
 0x000909E8    ChangeClearPad(val = r4)
@@ -208,6 +209,8 @@
 
 0x000D2A48    0x000D2A48(val2, val3) -> retValue = r2 // TODO, something SPU related
 
+0x000D3078    isTileWithinScreenArea(tileX = r4, tileY = r5) -> isWithinScreenArea = r2
+0x000D3174    0x000D3174()
 0x000D31AC    entityIsInEntity(entityPtr = r4, entityPtr2 = r5) -> isColliding = r2
 
 0x000D3648    entityCheckCombatArea(entityPtr = r4, oldLocationPtr = r5, width = r6, height = r7) -> hasMovedOutside = r2
@@ -217,10 +220,13 @@
 0x000D3858    isRectInRect(rectArray = r4, xMin = r5, yMin = r6, xMax = r7, yMax = load(sp + 0x10)) -> isInRect = r2
 0x000D38D4    hasMovedOutsideCombatArea(screenPosOld = r4, screenPosOld = r5, width = r6, height = r7) -> hasMovedOutside = r2
 
+0x000D39F8    clearPreviousLocations()
+
 0x000D3AEC    getEntityTileFromModel(entityPtr = r4) -> store(r5, tileX), store(r6, tileY)
 0x000D3B44    isFiveTileWidePathOpen(tileX1, tileY1, tileX2, tileY2) -> isPathOpen = r2
 0x000D3C70    isLinearPathBlocked(tileX1, tileY1, tileX2, tileY2) -> isBlocked = r2
 
+0x000D4564    storePreviousLocation(offset = r4, tileX = r5, tileY = r6)
 0x000D459C    entityLookAtLocation(entityPtr = r4, posPointer2 = r5)
 0x000D45EC    entityCheckCollision(noCollideEntityPtr = r4, checkedEntityPtr = r5, width = r6, height = r7) -> responseCode = r2
 
@@ -258,6 +264,8 @@
 
 0x000ECEE8    battleStatsGainsAndDrops(itemDropArray = r4)
 
+0x000EFA18    recalculatePPandArena()
+
 0x000F06F0    handleBuffDisks(itemId = r4)
 
 0x000F18A4    isAsciiEncoded(charPtr = r4) -> isAscii = r2
@@ -274,6 +282,9 @@
 
 0x0010643C    isTriggerSet(triggerId = r4) -> isSet = r2
 0x00106474    writePStat(target = r4, value = r5)
+
+0x001065FC    unsetTrigger(triggerId = r4)
+
 0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerFlag)
 
 0x00106E0C    rollCardPack() -> cardId = r2

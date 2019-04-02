@@ -1,0 +1,22 @@
+void storePreviousLocation(offset, tileX, tileY) {
+  store(0x13D5F0 + offset, tileX)
+  store(0x13D5D0 + offset, tileY)
+  
+  r2 = load(0x134D59) + 1
+  store(0x134D59, r2)
+}
+
+0x000d4564 lui r2,0x8014
+0x000d4568 addiu r2,r2,0xd5f0
+0x000d456c addu r2,r2,r4
+0x000d4570 sb r5,0x0000(r2)
+0x000d4574 lui r2,0x8014
+0x000d4578 addu r3,r4,r0
+0x000d457c addiu r2,r2,0xd5d0
+0x000d4580 addu r2,r2,r3
+0x000d4584 sb r6,0x0000(r2)
+0x000d4588 lb r2,-0x6dd3(r28)
+0x000d458c nop
+0x000d4590 addi r2,r2,0x0001
+0x000d4594 jr r31
+0x000d4598 sb r2,-0x6dd3(r28)
