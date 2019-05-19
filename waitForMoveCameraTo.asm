@@ -1,0 +1,20 @@
+int waitForMoveCameraTo(posX, posZ, instanceId) { // actually speed?
+  store(0x150C7C, posX)
+  store(0x150C80, load(load(0x155770) + 0x7C)
+  store(0x150C84, posZ)
+  
+  return spawnCameraMovement(instanceId)
+}
+
+0x000d88cc lui r1,0x8015
+0x000d88d0 sw r4,0x0c7c(r1)
+0x000d88d4 lui r1,0x8015
+0x000d88d8 lw r2,0x5770(r1)
+0x000d88dc nop
+0x000d88e0 lw r2,0x007c(r2)
+0x000d88e4 lui r1,0x8015
+0x000d88e8 sw r2,0x0c80(r1)
+0x000d88ec lui r1,0x8015
+0x000d88f0 sw r5,0x0c84(r1)
+0x000d88f4 j 0x000d8860
+0x000d88f8 addu r4,r6,r0

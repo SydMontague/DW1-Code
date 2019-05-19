@@ -290,6 +290,10 @@
 
 0x000D7618    0x000D7618() -> r2 = r2 // 1 if 0x134D9C is >= 25
 
+0x000D8780    storeEntityLocation(scriptId = r4, targetPtr = r5)
+0x000D8860    spawnCameraMovement(instanceId)
+0x000D88CC    waitForMoveCameraTo(posX = r4, posZ = r5, speed = r6) -> isFinished = r2
+
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
 
