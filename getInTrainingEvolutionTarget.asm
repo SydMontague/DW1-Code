@@ -1,0 +1,101 @@
+int getInTrainingEvolutionTarget(digimonType) {
+  bestDigimon = -1
+  bestScore = 0
+  
+  for(i = 0; i < 6; i++) {
+    targetType = load(0x12B671 + (digimonType - 1) * 11 + i)
+    
+    if(targetType == -1)
+      continue
+    
+    flags = load(0x12AC06 + targetType * 28)
+    isMaxCM = flags & 0x10
+    isMaxBattles = flags & 0x01
+    
+    priorityScore = calculateRequirementScore(digimonType, targetType, isMaxCM, isMaxBattles, bestDigimon)
+    
+    if(bestScore >= priorityScore)
+      continue
+    
+    if(priorityScore < 3)
+      continue
+    
+    bestDigimon = targetType
+    bestScore = priorityScore
+  }
+  
+  return bestDigimon
+}
+
+0x000e2598 addiu r29,r29,0xffd0
+0x000e259c sw r31,0x002c(r29)
+0x000e25a0 sw r20,0x0028(r29)
+0x000e25a4 sw r19,0x0024(r29)
+0x000e25a8 sw r18,0x0020(r29)
+0x000e25ac sw r17,0x001c(r29)
+0x000e25b0 addu r20,r4,r0
+0x000e25b4 addi r3,r20,-0x0001
+0x000e25b8 sll r2,r3,0x02
+0x000e25bc add r2,r2,r3
+0x000e25c0 sll r2,r2,0x01
+0x000e25c4 add r3,r2,r3
+0x000e25c8 lui r2,0x8013
+0x000e25cc addiu r2,r2,0xb66c
+0x000e25d0 sw r16,0x0018(r29)
+0x000e25d4 addu r2,r2,r3
+0x000e25d8 addiu r19,r0,0xffff
+0x000e25dc addu r17,r0,r0
+0x000e25e0 addiu r16,r2,0x0005
+0x000e25e4 beq r0,r0,0x000e2684
+0x000e25e8 addu r18,r0,r0
+0x000e25ec lb r2,0x0000(r16)
+0x000e25f0 addiu r1,r0,0xffff
+0x000e25f4 bne r2,r1,0x000e2604
+0x000e25f8 addu r5,r2,r0
+0x000e25fc beq r0,r0,0x000e2680
+0x000e2600 addiu r16,r16,0x0001
+0x000e2604 sll r2,r5,0x03
+0x000e2608 sub r2,r2,r5
+0x000e260c sll r3,r2,0x02
+0x000e2610 lui r2,0x8013
+0x000e2614 addiu r2,r2,0xac06
+0x000e2618 addu r2,r2,r3
+0x000e261c lb r3,0x0000(r2)
+0x000e2620 addu r4,r20,r0
+0x000e2624 sll r2,r19,0x18
+0x000e2628 sra r2,r2,0x18
+0x000e262c sw r2,0x0010(r29)
+0x000e2630 andi r2,r3,0x0010
+0x000e2634 sra r2,r2,0x04
+0x000e2638 sll r6,r2,0x18
+0x000e263c andi r2,r3,0x0001
+0x000e2640 sll r7,r2,0x18
+0x000e2644 sra r6,r6,0x18
+0x000e2648 jal 0x000e26b8
+0x000e264c sra r7,r7,0x18
+0x000e2650 sll r2,r2,0x18
+0x000e2654 sra r2,r2,0x18
+0x000e2658 slt r1,r17,r2
+0x000e265c beq r1,r0,0x000e267c
+0x000e2660 nop
+0x000e2664 slti r1,r2,0x0003
+0x000e2668 bne r1,r0,0x000e267c
+0x000e266c nop
+0x000e2670 sll r17,r2,0x18
+0x000e2674 lb r19,0x0000(r16)
+0x000e2678 sra r17,r17,0x18
+0x000e267c addiu r16,r16,0x0001
+0x000e2680 addi r18,r18,0x0001
+0x000e2684 slti r1,r18,0x0006
+0x000e2688 bne r1,r0,0x000e25ec
+0x000e268c nop
+0x000e2690 sll r2,r19,0x10
+0x000e2694 lw r31,0x002c(r29)
+0x000e2698 lw r20,0x0028(r29)
+0x000e269c lw r19,0x0024(r29)
+0x000e26a0 lw r18,0x0020(r29)
+0x000e26a4 lw r17,0x001c(r29)
+0x000e26a8 lw r16,0x0018(r29)
+0x000e26ac sra r2,r2,0x10
+0x000e26b0 jr r31
+0x000e26b4 addiu r29,r29,0x0030

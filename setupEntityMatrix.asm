@@ -1,0 +1,46 @@
+void setupEntityMatrix(entityId) {
+  if(entityId < 0 || entityId >= 10)
+    return
+  
+  entityPtr = load(0x12F344 + entityId * 4)
+  locationPtr = load(entityPtr + 0x04)
+  
+  rotVecToRotMatrix(locationPtr + 0x70, locationPtr + 0x14)
+  scaleMatrix(locationPtr + 0x14, locationPtr + 0x60)
+  copy12toOffset20(locationPtr + 0x14, locationPtr + 0x78)
+  
+  store(locationPtr + 0x10, 0)
+}
+
+0x000a14c0 addiu r29,r29,0xffe0
+0x000a14c4 sw r31,0x0018(r29)
+0x000a14c8 sw r17,0x0014(r29)
+0x000a14cc bltz r4,0x000a152c
+0x000a14d0 sw r16,0x0010(r29)
+0x000a14d4 slti r1,r4,0x000a
+0x000a14d8 beq r1,r0,0x000a152c
+0x000a14dc nop
+0x000a14e0 lui r2,0x8013
+0x000a14e4 sll r3,r4,0x02
+0x000a14e8 addiu r2,r2,0xf344
+0x000a14ec addu r2,r2,r3
+0x000a14f0 lw r2,0x0000(r2)
+0x000a14f4 nop
+0x000a14f8 lw r16,0x0004(r2)
+0x000a14fc nop
+0x000a1500 addiu r5,r16,0x0014
+0x000a1504 addu r17,r5,r0
+0x000a1508 jal 0x0009b804
+0x000a150c addiu r4,r16,0x0070
+0x000a1510 addu r4,r17,r0
+0x000a1514 jal 0x0009b0c0
+0x000a1518 addiu r5,r16,0x0060
+0x000a151c addu r4,r17,r0
+0x000a1520 jal 0x0009b090
+0x000a1524 addiu r5,r16,0x0078
+0x000a1528 sw r0,0x0010(r16)
+0x000a152c lw r31,0x0018(r29)
+0x000a1530 lw r17,0x0014(r29)
+0x000a1534 lw r16,0x0010(r29)
+0x000a1538 jr r31
+0x000a153c addiu r29,r29,0x0020

@@ -1,0 +1,143 @@
+int waitForEntityLookAtEntity(scriptId1, scriptId2) {
+  store(sp + 0x30, scriptId1)
+  store(sp + 0x34, scriptId2)
+  
+  if(scriptId == 0xFD)
+    entityId = 0
+  else if(scriptId1 == 0xFC)
+    entityId = 1
+  else {
+    for(i = 0; i < 8; i++) {
+      if(scriptId1 == load(0x15588D + i * 0x68)) {
+        entityId = i + 2
+        break
+      }
+    }
+  }
+  
+  targetPtr = 0x1386A0 + entityId * 16
+  someValue = load(load(0x134C78 + entityId))
+    
+  if(someValue == 0) {
+    lEntityPtr = loadEntityDataFromScriptId(sp + 0x34)
+    locationPtr = load(lEntityPtr + 0x04)
+    
+    store(targetPtr + 0x00, load(locationPtr + 0x78))
+    store(targetPtr + 0x04, load(locationPtr + 0x7C))
+    store(targetPtr + 0x08, load(locationPtr + 0x80))
+    store(targetPtr + 0x0C, load(locationPtr + 0x84))
+    
+    store(0x134C78 + entityId, 1)
+  }
+  else if(someValue != 1)
+    return 0
+  
+  entityPtr = loadEntityDataFromScriptId(sp + 0x30)
+  
+  targetAngle, cClockwiseDiff, clockwiseDiff = getRotationDifference(load(entityPtr + 0x04), targetPtr)
+  finishedRotation = rotateEntity(load(entityPtr + 0x04) + 0x70, targetAngle, cClockwiseDiff, clockwiseDiff, 0x200)
+  
+  if(finishedRotation == 1)
+    store(0x134C78, 0)
+  
+  return finishedRotation
+}
+
+0x000ac3c8 addiu r29,r29,0xffd0
+0x000ac3cc sw r31,0x0020(r29)
+0x000ac3d0 sw r4,0x0030(r29)
+0x000ac3d4 sw r17,0x001c(r29)
+0x000ac3d8 lbu r2,0x0030(r29)
+0x000ac3dc sw r16,0x0018(r29)
+0x000ac3e0 addiu r1,r0,0x00fd
+0x000ac3e4 bne r2,r1,0x000ac3f4
+0x000ac3e8 sw r5,0x0034(r29)
+0x000ac3ec beq r0,r0,0x000ac454
+0x000ac3f0 addu r4,r0,r0
+0x000ac3f4 addiu r1,r0,0x00fc
+0x000ac3f8 bne r2,r1,0x000ac408
+0x000ac3fc addu r5,r0,r0
+0x000ac400 beq r0,r0,0x000ac454
+0x000ac404 addiu r4,r0,0x0001
+0x000ac408 beq r0,r0,0x000ac448
+0x000ac40c addu r6,r0,r0
+0x000ac410 lui r2,0x8015
+0x000ac414 addiu r2,r2,0x588d
+0x000ac418 addu r2,r2,r6
+0x000ac41c lbu r3,0x0030(r29)
+0x000ac420 lbu r2,0x0000(r2)
+0x000ac424 nop
+0x000ac428 bne r3,r2,0x000ac440
+0x000ac42c nop
+0x000ac430 addi r2,r5,0x0002
+0x000ac434 sll r4,r2,0x18
+0x000ac438 beq r0,r0,0x000ac454
+0x000ac43c sra r4,r4,0x18
+0x000ac440 addi r5,r5,0x0001
+0x000ac444 addi r6,r6,0x0068
+0x000ac448 slti r1,r5,0x0008
+0x000ac44c bne r1,r0,0x000ac410
+0x000ac450 nop
+0x000ac454 addiu r2,r28,0x914c
+0x000ac458 addu r2,r2,r4
+0x000ac45c lb r2,0x0000(r2)
+0x000ac460 addu r16,r0,r0
+0x000ac464 addiu r1,r0,0x0001
+0x000ac468 beq r2,r1,0x000ac4c8
+0x000ac46c addu r17,r4,r0
+0x000ac470 bne r2,r0,0x000ac538
+0x000ac474 nop
+0x000ac478 jal 0x000ac2f8
+0x000ac47c addiu r4,r29,0x0034
+0x000ac480 lw r7,0x0004(r2)
+0x000ac484 sll r3,r17,0x04
+0x000ac488 lui r2,0x8014
+0x000ac48c addiu r2,r2,0x86a0
+0x000ac490 addu r6,r2,r3
+0x000ac494 lw r5,0x0078(r7)
+0x000ac498 lw r4,0x007c(r7)
+0x000ac49c lw r3,0x0080(r7)
+0x000ac4a0 lw r2,0x0084(r7)
+0x000ac4a4 sw r5,0x0000(r6)
+0x000ac4a8 sw r4,0x0004(r6)
+0x000ac4ac sw r3,0x0008(r6)
+0x000ac4b0 sw r2,0x000c(r6)
+0x000ac4b4 addiu r2,r28,0x914c
+0x000ac4b8 addiu r3,r0,0x0001
+0x000ac4bc addu r2,r2,r17
+0x000ac4c0 beq r0,r0,0x000ac538
+0x000ac4c4 sb r3,0x0000(r2)
+0x000ac4c8 jal 0x000ac2f8
+0x000ac4cc addiu r4,r29,0x0030
+0x000ac4d0 addu r16,r2,r0
+0x000ac4d4 addiu r2,r29,0x002c
+0x000ac4d8 sw r2,0x0010(r29)
+0x000ac4dc lui r2,0x8014
+0x000ac4e0 sll r3,r17,0x04
+0x000ac4e4 addiu r2,r2,0x86a0
+0x000ac4e8 lw r4,0x0004(r16)
+0x000ac4ec addu r5,r2,r3
+0x000ac4f0 addiu r6,r29,0x002a
+0x000ac4f4 jal 0x000b6edc
+0x000ac4f8 addiu r7,r29,0x002e
+0x000ac4fc addiu r2,r0,0x0200
+0x000ac500 sw r2,0x0010(r29)
+0x000ac504 lw r2,0x0004(r16)
+0x000ac508 addiu r5,r29,0x002a
+0x000ac50c addiu r4,r2,0x0070
+0x000ac510 addiu r6,r29,0x002e
+0x000ac514 jal 0x000b6fb0
+0x000ac518 addiu r7,r29,0x002c
+0x000ac51c addu r16,r2,r0
+0x000ac520 addiu r1,r0,0x0001
+0x000ac524 bne r16,r1,0x000ac538
+0x000ac528 nop
+0x000ac52c addiu r2,r28,0x914c
+0x000ac530 addu r2,r2,r17
+0x000ac534 sb r0,0x0000(r2)
+0x000ac538 addu r2,r16,r0
+0x000ac53c lw r31,0x0020(r29)
+0x000ac540 lw r17,0x001c(r29)
+0x000ac544 lw r16,0x0018(r29)
+0x000ac548 jr r31
+0x000ac54c addiu r29,r29,0x0030

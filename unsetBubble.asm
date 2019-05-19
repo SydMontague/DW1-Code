@@ -1,0 +1,36 @@
+void unsetBubble(instanceId) {
+  if(instanceId < 0 && instanceId >= 3)
+    return
+  
+  if(load(0x155560 + instanceId * 24) < 0)
+    return
+  
+  store(0x155560 + instanceId * 24, -1)
+  unsetObject(0x0802, instanceId)
+}
+
+0x000ece20 addiu r29,r29,0xffe8
+0x000ece24 addu r5,r4,r0
+0x000ece28 bltz r5,0x000ece74
+0x000ece2c sw r31,0x0010(r29)
+0x000ece30 slti r1,r5,0x0003
+0x000ece34 beq r1,r0,0x000ece74
+0x000ece38 nop
+0x000ece3c sll r2,r5,0x01
+0x000ece40 add r2,r2,r5
+0x000ece44 lui r4,0x8015
+0x000ece48 sll r2,r2,0x03
+0x000ece4c addiu r4,r4,0x5560
+0x000ece50 addu r3,r4,r2
+0x000ece54 lh r2,0x0000(r3)
+0x000ece58 nop
+0x000ece5c bltz r2,0x000ece74
+0x000ece60 nop
+0x000ece64 addiu r2,r0,0xffff
+0x000ece68 sh r2,0x0000(r3)
+0x000ece6c jal 0x000a3008
+0x000ece70 addiu r4,r0,0x0802
+0x000ece74 lw r31,0x0010(r29)
+0x000ece78 nop
+0x000ece7c jr r31
+0x000ece80 addiu r29,r29,0x0018

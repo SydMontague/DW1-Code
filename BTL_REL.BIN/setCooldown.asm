@@ -1,5 +1,5 @@
 void setCooldown(entityPtr, combatPtr) {
-  store(combatPtr + 0x28, 50)
+  store(combatPtr + 0x28, 80)
   
   flags = load(combatPtr + 0x34) | 0x0800
   store(r5 + 0x34, flags)

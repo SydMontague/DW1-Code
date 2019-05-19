@@ -1,7 +1,7 @@
 void unsetTrigger(triggerId) {
-  triggerAddress, triggerFlag = getTriggerOffsets(triggerId)
+  triggerAddress, triggerMask = getTriggerOffsets(triggerId)
   
-  newTriggerValue = load(triggerAddress) & ~triggerFlag
+  newTriggerValue = load(triggerAddress) & ~triggerMask
   store(triggerAddress, newTriggerValue)
 }
 

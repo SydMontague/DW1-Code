@@ -22,8 +22,8 @@ void handleEvoItems(int itemId) {
   store(0x134E52, 1) // is item evo, disable statsgains
   0x000C55FC()
   0x000DB238()
-  0x000AA188(6)
-  0x000DF4D0(13)
+  setMenuState(6)
+  setDigimonState(13)
 }
 
 0x000c3860 addiu r29,r29,0xffe8

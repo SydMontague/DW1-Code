@@ -1,0 +1,261 @@
+// Bug: can softlock if axis speed is 0
+int waitForEntityMoveTo(scriptId1, scriptId2, targetPosX, targetPosZ, duration, val6) {
+  entityPtr, entityId = loadEntityDataFromScriptId(scriptId1)
+  locationPtr = load(entityPtr + 0x04)
+  
+  if(load(0x134C80) == 0) {
+    if(scriptId2 == -1) {
+      store(0x134C98, (targetPosX - load(locationPtr + 0x78)) / duration)
+      store(0x134C9A, (targetPosZ - load(locationPtr + 0x80)) / duration)
+    }
+    else {
+      otherEntityPtr = loadEntityDataFromScriptId(scriptId2)
+      otherLocationPtr = load(otherEntityPtr + 0x04)
+      
+      store(0x134C98, (load(otherLocationPtr + 0x78) - load(locationPtr + 0x78)) / duration)
+      store(0x134C9A, (load(otherLocationPtr + 0x80) - load(locationPtr + 0x80)) / duration)
+    }
+    
+    store(0x134C80, 1)
+    
+    store(0x1387A8, load(locationPtr + 0x78))
+    store(0x1387AC, load(locationPtr + 0x7C))
+    store(0x1387B0, load(locationPtr + 0x80))
+    store(0x1387B4, load(locationPtr + 0x84))
+  }
+  else {
+    posX = load(locationPtr + 0x78) + load(0x134C98)
+    posY = load(locationPtr + 0x7C)
+    posZ = load(locationPtr + 0x80) + load(0x134C9A)
+    
+    setEntityPosition(entityId, posX, posY, posZ)
+    setupEntityMatrix(entityId)
+    
+    isOnX = 0
+    isOnY = 0
+    
+    if(load(0x134C98) < 0) {
+      if(targetPosX < load(locationPtr + 0x78)) {
+        store(locationPtr + 0x78, targetPosX)
+        isOnX = 1
+      }
+    }
+    else {
+      if(load(locationPtr + 0x78) < targetPosX) {
+        store(locationPtr + 0x78, targetPosX)
+        isOnX = 1
+      }
+    }
+    
+    if(load(0x134C9A) < 0) {
+      if(targetPosZ < load(locationPtr + 0x80)) {
+        store(locationPtr + 0x80, targetPosZ)
+        isOnY = 1
+      }
+    }
+    else {
+      if(load(locationPtr + 0x80) < targetPosZ) {
+        store(locationPtr + 0x80, targetPosZ)
+        isOnY = 1
+      }
+    }
+    
+    if(isOnX == 1 && isOnY == 1) {
+      store(0x134C80, 0)
+      return 1
+    }
+  }
+  
+  if(val6 == 1) {
+    0x000D892C(0x1387A8, locationPtr + 0x78)
+    
+    store(0x1387A8, load(locationPtr + 0x78))
+    store(0x1387AC, load(locationPtr + 0x7C))
+    store(0x1387B0, load(locationPtr + 0x80))
+    store(0x1387B4, load(locationPtr + 0x8C))
+  }
+  
+  return 0
+}
+
+0x000ac58c addiu r29,r29,0xffd8
+0x000ac590 sw r31,0x0024(r29)
+0x000ac594 sw r20,0x0020(r29)
+0x000ac598 sw r19,0x001c(r29)
+0x000ac59c sw r18,0x0018(r29)
+0x000ac5a0 sw r17,0x0014(r29)
+0x000ac5a4 sw r4,0x0028(r29)
+0x000ac5a8 lb r18,0x0038(r29)
+0x000ac5ac lb r20,0x003c(r29)
+0x000ac5b0 sw r16,0x0010(r29)
+0x000ac5b4 sw r5,0x002c(r29)
+0x000ac5b8 addu r17,r6,r0
+0x000ac5bc addu r19,r7,r0
+0x000ac5c0 jal 0x000ac2f8
+0x000ac5c4 addiu r4,r29,0x0028
+0x000ac5c8 lb r3,-0x6eac(r28)
+0x000ac5cc nop
+0x000ac5d0 bne r3,r0,0x000ac6d4
+0x000ac5d4 addu r16,r2,r0
+0x000ac5d8 lbu r2,0x002c(r29)
+0x000ac5dc addiu r1,r0,0x00ff
+0x000ac5e0 bne r2,r1,0x000ac62c
+0x000ac5e4 nop
+0x000ac5e8 lw r2,0x0004(r16)
+0x000ac5ec addu r3,r18,r0
+0x000ac5f0 lw r2,0x0078(r2)
+0x000ac5f4 nop
+0x000ac5f8 sub r2,r17,r2
+0x000ac5fc div r2,r18
+0x000ac600 mflo r2
+0x000ac604 sh r2,-0x6e94(r28)
+0x000ac608 lw r2,0x0004(r16)
+0x000ac60c nop
+0x000ac610 lw r2,0x0080(r2)
+0x000ac614 nop
+0x000ac618 sub r2,r19,r2
+0x000ac61c div r2,r3
+0x000ac620 mflo r2
+0x000ac624 beq r0,r0,0x000ac694
+0x000ac628 sh r2,-0x6e92(r28)
+0x000ac62c jal 0x000ac2f8
+0x000ac630 addiu r4,r29,0x002c
+0x000ac634 lw r3,0x0004(r2)
+0x000ac638 nop
+0x000ac63c lw r4,0x0078(r3)
+0x000ac640 lw r3,0x0004(r16)
+0x000ac644 nop
+0x000ac648 lw r3,0x0078(r3)
+0x000ac64c nop
+0x000ac650 sub r3,r4,r3
+0x000ac654 div r3,r18
+0x000ac658 addu r4,r18,r0
+0x000ac65c mflo r3
+0x000ac660 sh r3,-0x6e94(r28)
+0x000ac664 lw r2,0x0004(r2)
+0x000ac668 nop
+0x000ac66c lw r3,0x0080(r2)
+0x000ac670 lw r2,0x0004(r16)
+0x000ac674 nop
+0x000ac678 lw r2,0x0080(r2)
+0x000ac67c nop
+0x000ac680 sub r2,r3,r2
+0x000ac684 div r2,r4
+0x000ac688 mflo r2
+0x000ac68c sh r2,-0x6e92(r28)
+0x000ac690 nop
+0x000ac694 addiu r2,r0,0x0001
+0x000ac698 sb r2,-0x6eac(r28)
+0x000ac69c lw r2,0x0004(r16)
+0x000ac6a0 lui r1,0x8014
+0x000ac6a4 lw r5,0x0078(r2)
+0x000ac6a8 lw r4,0x007c(r2)
+0x000ac6ac lw r3,0x0080(r2)
+0x000ac6b0 lw r2,0x0084(r2)
+0x000ac6b4 sw r5,-0x7858(r1)
+0x000ac6b8 lui r1,0x8014
+0x000ac6bc sw r4,-0x7854(r1)
+0x000ac6c0 lui r1,0x8014
+0x000ac6c4 sw r3,-0x7850(r1)
+0x000ac6c8 lui r1,0x8014
+0x000ac6cc beq r0,r0,0x000ac7e8
+0x000ac6d0 sw r2,-0x784c(r1)
+0x000ac6d4 lw r6,0x0004(r16)
+0x000ac6d8 lh r5,-0x6e94(r28)
+0x000ac6dc lw r2,0x0078(r6)
+0x000ac6e0 lh r3,-0x6e92(r28)
+0x000ac6e4 add r5,r2,r5
+0x000ac6e8 lw r2,0x0080(r6)
+0x000ac6ec lbu r4,0x0028(r29)
+0x000ac6f0 lw r6,0x007c(r6)
+0x000ac6f4 jal 0x000a1540
+0x000ac6f8 add r7,r2,r3
+0x000ac6fc lbu r4,0x0028(r29)
+0x000ac700 jal 0x000a14c0
+0x000ac704 nop
+0x000ac708 sll r3,r0,0x18
+0x000ac70c lh r2,-0x6e94(r28)
+0x000ac710 addu r4,r0,r0
+0x000ac714 bgez r2,0x000ac744
+0x000ac718 sra r3,r3,0x18
+0x000ac71c lw r5,0x0004(r16)
+0x000ac720 nop
+0x000ac724 lw r2,0x0078(r5)
+0x000ac728 nop
+0x000ac72c slt r1,r17,r2
+0x000ac730 bne r1,r0,0x000ac768
+0x000ac734 nop
+0x000ac738 sw r17,0x0078(r5)
+0x000ac73c beq r0,r0,0x000ac768
+0x000ac740 addiu r3,r0,0x0001
+0x000ac744 lw r5,0x0004(r16)
+0x000ac748 nop
+0x000ac74c lw r2,0x0078(r5)
+0x000ac750 nop
+0x000ac754 slt r1,r2,r17
+0x000ac758 bne r1,r0,0x000ac768
+0x000ac75c nop
+0x000ac760 sw r17,0x0078(r5)
+0x000ac764 addiu r3,r0,0x0001
+0x000ac768 lh r2,-0x6e92(r28)
+0x000ac76c nop
+0x000ac770 bgez r2,0x000ac7a0
+0x000ac774 nop
+0x000ac778 lw r5,0x0004(r16)
+0x000ac77c nop
+0x000ac780 lw r2,0x0080(r5)
+0x000ac784 nop
+0x000ac788 slt r1,r19,r2
+0x000ac78c bne r1,r0,0x000ac7c4
+0x000ac790 nop
+0x000ac794 sw r19,0x0080(r5)
+0x000ac798 beq r0,r0,0x000ac7c4
+0x000ac79c addiu r4,r0,0x0001
+0x000ac7a0 lw r5,0x0004(r16)
+0x000ac7a4 nop
+0x000ac7a8 lw r2,0x0080(r5)
+0x000ac7ac nop
+0x000ac7b0 slt r1,r2,r19
+0x000ac7b4 bne r1,r0,0x000ac7c4
+0x000ac7b8 nop
+0x000ac7bc sw r19,0x0080(r5)
+0x000ac7c0 addiu r4,r0,0x0001
+0x000ac7c4 addiu r1,r0,0x0001
+0x000ac7c8 bne r3,r1,0x000ac7e8
+0x000ac7cc nop
+0x000ac7d0 addiu r1,r0,0x0001
+0x000ac7d4 bne r4,r1,0x000ac7e8
+0x000ac7d8 nop
+0x000ac7dc sb r0,-0x6eac(r28)
+0x000ac7e0 beq r0,r0,0x000ac840
+0x000ac7e4 addiu r2,r0,0x0001
+0x000ac7e8 addiu r1,r0,0x0001
+0x000ac7ec bne r20,r1,0x000ac83c
+0x000ac7f0 nop
+0x000ac7f4 lw r2,0x0004(r16)
+0x000ac7f8 lui r4,0x8014
+0x000ac7fc addiu r4,r4,0x87a8
+0x000ac800 jal 0x000d892c
+0x000ac804 addiu r5,r2,0x0078
+0x000ac808 lw r2,0x0004(r16)
+0x000ac80c lui r1,0x8014
+0x000ac810 lw r5,0x0078(r2)
+0x000ac814 lw r4,0x007c(r2)
+0x000ac818 lw r3,0x0080(r2)
+0x000ac81c lw r2,0x0084(r2)
+0x000ac820 sw r5,-0x7858(r1)
+0x000ac824 lui r1,0x8014
+0x000ac828 sw r4,-0x7854(r1)
+0x000ac82c lui r1,0x8014
+0x000ac830 sw r3,-0x7850(r1)
+0x000ac834 lui r1,0x8014
+0x000ac838 sw r2,-0x784c(r1)
+0x000ac83c addu r2,r0,r0
+0x000ac840 lw r31,0x0024(r29)
+0x000ac844 lw r20,0x0020(r29)
+0x000ac848 lw r19,0x001c(r29)
+0x000ac84c lw r18,0x0018(r29)
+0x000ac850 lw r17,0x0014(r29)
+0x000ac854 lw r16,0x0010(r29)
+0x000ac858 jr r31
+0x000ac85c addiu r29,r29,0x0028

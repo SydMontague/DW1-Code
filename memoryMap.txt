@@ -79,6 +79,7 @@
 
 == TRN_REL.BIN ==
 0x0008A744    handleBrainMoveLearnChance(digimonType = r4) -> success = r2
+
 0x0008E824    doSlotsRigging(reelId = r4, dataOffset = r5)
 
 == SLUS ==
@@ -86,19 +87,27 @@
 
 0x00090A18    ChangeClearRCnt(irq = r4, flag = r5)
 
+0x00091174    exit(exitcode = r4)
 0x00091184    std_out_puts(stringPtr = r4)
-0x0009119C    abs(val = r4) -> result = r2 // BIOS call
+0x0009119C    abs(val = r4) -> result = r2
+0x000911AC    SaveState(buf = r4) -> result = r2
+0x000911BC    RestoreState(buf = r4, param = r5) -> result = r2
+0x000911CC    strcat(dst = r4, src = r5) -> dst = r2
+0x000911DC    strcmp(str1 = r4, str2 = r5) -> result = r2
+0x000911EC    strncmp(str1 = r4, str2 = r5, maxlen = r6) -> result = r2
+0x000911FC    strcpy(dst = r4, src = r5) -> dst = r2
+0x0009120C    strncpy(dst = r4, src = r5, maxlen = r6) -> dst = r2
+0x0009121C    strlen(src = r4) -> length = r2
+0x0009122C    strrchr(src = r4, char = r5) -> address = r2
+0x0009123C    bzero(dst = r4, len = r5) -> dst = r2 // zeroes memory
+0x0009124C    memcpy(dest = r4, src = r5, length = r6)
+0x0009125C    memset(dest = r4, fillbyte = r5, length = r6)
+0x0009126C    memchr(src = r4, scanbyte = r5, len = r6) -> address = r2
+0x0009127C    rand() -> value = r2 // BIOS call
+0x0009128C    printf(txtPtr = r4, params = r5,r6,r7,stack)
 
 0x00091C10    vsyncWait(targetFrame = r4, timeout = r5)
 0x00091CA8    vsync(frameCount = r4) -> blankCount = r4 //either hblank or vblank
-
-0x0009121C    strlen(src = r4) -> length = r2
-
-0x0009124C    memcpy(dest = r4, src = r5, length = r6)
-0x0009125C    memset(dest = r4, fillbyte = r5, length = r6)
-
-0x0009127C    rand() -> value = r2 // BIOS call
-0x0009128C    printf(txtPtr = r4, params = r5,r6,r7,stack)
 
 0x000923AC    proxySetDMAIRQHandler(stringPtr = r4, arrayPtr = r5) -> oldHandler = r2
 
@@ -138,6 +147,9 @@
 
 0x0009B804    rotVecToRotMatrix(rotVec = r4, destMatrixPtr = r5) -> matrixPtr = r2
 
+0x000A14C0    setupEntityMatrix(entityId = r4)
+0x000A1540    setEntityPosition(entityId = r4, posX = r5, posY = r6, posZ = r7)
+
 0x000A1CD8    resetFlattenGlobal()
 
 0x000A254C    getDigimonModelComponent(digimonType = r4, entityType = r5) -> modelComponent = r2
@@ -154,13 +166,54 @@
 
 0x000A4A08    setFoodTimer(digimonId = r4)
 
+0x000A568C    tickConditionBoundaries()
+0x000A5804    tickSleepMechanics()
+0x000A5EA0    tickUnhappinessMechanics()
+
 0x000A6D00    sleepRegen()
+
+0x000A70E4    tickTirednessMechanics()
+
+0x000A75DC    tickHungerMechanics()
+0x000A7960    handleConditionBubbles()
+
+0x000A856C    tickSicknessMechanics()
+0x000A8A3C    tickDeathCondition()
+
+0x000A8F38    tickPartner()
 
 0x000AA188    setMenuState(value = r4) //set 0x134C91 to r4, 0x134C92 to 0
 
 0x000AC050    loadMenuState() -> r2   //loads 0x134C91 into r2
+0x000AC06C    waitForEntityWalkTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, val5 = load(sp + 0x10)) -> finishedWaiting = r2
+
+0x000AC2F8    loadEntityDataFromScriptId(scriptIdPtr = r4) -> entityPtr = r2, store(scriptIdPtr, entityId)
+
+0x000AC3C8    waitForEntityLookAtEntity(scriptId1 = r4, scriptId2 = r5) -> finishedWaiting = r2
+0x000AC550    waitForEntitySetRotation(scriptId = r4, rotation = r5) -> finished = r2
+0x000AC58C    waitForEntityMoveTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, duration = load(sp + 0x10), val6 = load(sp + 0x14)) -> finishedWaiting = r2
 
 0x000ACBF4    addTamerLevel(chance = r4, amount = r5)
+
+// libcd functions, most not decompiled
+0x000B0010    CdControl(command = r4, paramPtr = r5, resultPtr = r6) -> success = r2
+
+0x000B0450    CdIntToPos(val1 = r4, target = r5)
+0x000B0554    CdPosToInt(cdlloc = r4) -> sectorId = r2
+
+0x000B1D48    lib_CdListDirs() -> success = r2 // stored in 0x13A210
+
+0x000B234C    lib_CdReadFromSector(sectorCount = r4, loc = r5, targetBuf = r6) -> success = r2
+0x000B23C0    CdSearchFile(filePtr = r4, filePath = r5)
+
+0x000B2BB4    CdRead(sectors = r4, targetPtr = r5, mode = r6) -> result = r2
+0x000B2CB4    CdReadSync(mode = r4, result = r5) -> remaining = r2
+
+0x000B6EDC    getRotationDifference(locationPtr1 = r4, locationPtr2 = r5) -> store(r6, targetAngle), store(r7, counterClockwiseDiff), store(load(sp + 0x10), clockwiseDiff)
+0x000B6FB0    rotateEntity(rotationPtr = r4, targetAngle = load(r5), cClockwiseDiff = load(r6), clockwiseDiff = load(r7), stepSize = load(sp + 0x10)) -> finishedRotating = r2
+
+
+0x000BA40C    deferred -> store(0x123ED6, r4)
 
 0x000C0BBC    checkMapCollisionX(entityPtr = r4, useYMin = r5) -> isColliding = r2
 0x000C0D74    checkMapCollisionY(entityPtr = r4, useXMin = r5) -> isColliding = r2
@@ -215,8 +268,6 @@
 
 0x000D3648    entityCheckCombatArea(entityPtr = r4, oldLocationPtr = r5, width = r6, height = r7) -> hasMovedOutside = r2
 
-
-
 0x000D3858    isRectInRect(rectArray = r4, xMin = r5, yMin = r6, xMax = r7, yMax = load(sp + 0x10)) -> isInRect = r2
 0x000D38D4    hasMovedOutsideCombatArea(screenPosOld = r4, screenPosOld = r5, width = r6, height = r7) -> hasMovedOutside = r2
 
@@ -237,10 +288,22 @@
 0x000D5430    entityIsOffScreen(entityPtr = r4, width = r5, height = r6) -> isOffScreen = r2
 0x000D5608    isOffScreen(screenPos = r4, width = r5, height = r6) -> isOffScreen = r2
 
+0x000D7618    0x000D7618() -> r2 = r2 // 1 if 0x134D9C is >= 25
+
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
 
+0x000DF2D0    setConditionAnimation()
+0x000DF42C    setIdleAnimation()
 0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
+
+0x000E2544    getFreshEvolutionTarget(digimonType = r4) -> targetType = r2
+0x000E2598    getInTrainingEvolutionTarget(digimonType = r4) -> targetType = r2
+0x000E26B8    calculateRequirementScore(digimonType = r4, targetType = r5, isMaxCM = r6, isMaxBattles = r7, bestDigimon = load(sp + 0x10) -> requirementScore = r2
+0x000E2BB4    getRookieEvolutionTarget(digimonType = r4) -> targetType = r2
+0x000E2F08    getChampionEvolutionTarget(digimonType = r4) -> targetType = r2
+0x000E3234    handleSpecialEvolutions(mode = r4, entityPtr = r5) -> targetType = r2
+0x000E3510    getNumMasteredMoves() -> masteredMoves = r2
 
 0x000E5290    swapByte(valPtr1 = r4, valPtr2 = r5)
 0x000E52C0    swapValues(valPtr1 = r4, valPtr2 = r5)
@@ -262,6 +325,15 @@
 
 0x000E8970    startBattleIdleAnimation(entityPtr = r4, statsPtr = r5, flags = r6)
 
+
+0x000E9D24    setButterfly(entityPtr = r4) -> instanceId = r2
+
+0x000E9FB4    unsetButterfly(instanceId = r4)
+
+0x000EC538    setBubble(bubbleType = r4, entityPtr = r4) -> instanceId = r2
+
+0x000ECE20    unsetBubble(instanceId = r4)
+
 0x000ECEE8    battleStatsGainsAndDrops(itemDropArray = r4)
 
 0x000EFA18    recalculatePPandArena()
@@ -278,20 +350,35 @@
 
 0x000FC374    dailyPStatTrigger()   //increases PStat 29-32 by 1, rerolls card shop cards
 
+0x000FF824    hasDigimonRaised(digimonId = r4) -> isRaised = r2 // deferred isTriggerCalled(512 + digimonId)
+0x0010020C    0x0010020C() // resets some values at 0x1BE810
+
+0x00102144    scriptIdToEntityId(scriptId = r4) -> entityId = r2
+
+0x001026E8    loadFileSection(filePath = r4, target = r5, start = r6, size = r7)
+
+0x00105B14    callScriptSection(scriptId = r4, scriptSection = r5, value = r6)
+
+0x00106218    getScript(scriptId = r4) -> scriptPtr = r2
+0x0010629C    getScriptSection(scriptPtr = r4, sectionId = r5) -> scriptPtr = r2
+
 0x001062E0    readPStat(target = r4) -> r2
 
 0x0010643C    isTriggerSet(triggerId = r4) -> isSet = r2
 0x00106474    writePStat(target = r4, value = r5)
 
+0x00106598    pollNextScriptByte() -> store(r4, byteValue)
+0x001065C0    setTrigger(triggerId = r4)
 0x001065FC    unsetTrigger(triggerId = r4)
 
-0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerFlag)
+0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerMask)
 
 0x00106E0C    rollCardPack() -> cardId = r2
 
 0x0010CB90    clearTextArea()
 0x0010CBC4    clearTextSubArea(array = r4)
 
+0x0010CC0C    setTextColor(colorCode = r4)
 0x0010CC28    renderCharacter(charVal = r4, xPos = r5, yPos = r6) -> characterWidth = r2
 0x0010CF24    renderString(stringPtr = r4, xPos = r5, yPos = r6)
 
@@ -299,9 +386,3 @@
 // change player type
 0xEE9B0 -> <DigimonID> 00 04 24
 0xEEA4C
-
-
-val = happiness - discipline
-
-if(random < val)
-  sickness

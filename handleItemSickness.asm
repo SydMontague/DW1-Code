@@ -18,7 +18,7 @@ void handleItemSickness(int chance) {
     store(0x138498, 0)
   }
 
-  0x000AA188(20)
+  setMenuState(20)
   0x0010CB90()
   0x0010CC0C(10)
 

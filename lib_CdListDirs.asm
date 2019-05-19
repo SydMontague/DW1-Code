@@ -1,0 +1,250 @@
+int lib_CdListDirs() {
+  logLevel = load(0x123724) // 0 = off, 1 = error, 2 = info, 3 = verbose
+  
+  // read partition
+  if(lib_CdReadFromSector(1, 16, 0x13B810) != 1) {
+    if(logLevel > 0)
+      printf(0x1146F0) // "CD_newmedia: Read error in cd_read(PVD)"
+    
+    return 0
+  }
+  
+  if(strncmp(0x13B811, 0x11471C, 5) != 0) { // "CD001"
+    if(logLevel > 0)
+      printf(0x114724) // "CD_newmedia: Disc format error in cd_read(PVD)"
+      
+    return 0
+  }
+  
+  store(sp + 0x18, load(0x13B810 + 0x8C))
+  
+  // read root dir
+  if(lib_CdReadFromSector(1, load(sp + 0x18), 0x13B810) != 1) {
+    if(logLevel > 0)
+      printf(0x114754, load(sp + 0x18)) // "CD_newmedia: Read error (PT:%08x)"
+    
+    return 0
+  }
+  
+  if(logLevel >= 2)
+    printf(0x114778) // "CD_newmedia: sarching dir" [sic]
+  
+  pathTablePtr = 0x13B810
+  dirId = 0
+  
+  while(pathTablePtr < 0x13C010) { // make sure the local dir table only take up 2048 bytes
+    if(load(pathTablePtr) == 0)
+      break
+    
+    dirTablePtr = 0x13A210 + dirId++ * 0x2C
+    
+    parentId = load(pathTablePtr + 0x06)
+    lba = load(pathTablePtr + 0x02)
+    
+    store(dirTablePtr + 0x00, dirId)
+    store(dirTablePtr + 0x04, parentId)
+    store(dirTablePtr + 0x08, lba)
+    
+    nameLen = load(pathTablePtr)
+    memcpy(dirTablePtr + 0x0C, pathTablePtr + 0x08, nameLen)
+    store(dirTablePtr + 0x0C + nameLen, 0)
+    
+    // advance by entry size and padding
+    pathTablePtr = pathTablePtr + 0x08 + nameLen + nameLen & 1
+    
+    // Sector, Id, Parent, Name
+    if(logLevel >= 2)
+      printf(0x114798, lba, dirId, parentId, dirTablePtr + 0x0C) // "%08x,%04x,%04x,%s"
+    
+    if(dirId >= 0x80)
+      break
+  }
+  
+  if(dirId < 0x80)
+    store(0x13A214 + dirId * 44, 0)
+  
+  store(0x1237E0, 0)
+  
+  if(logLevel >= 2)
+    printf(0x1147AC, r5) // "CD_newmedia: %d dir entries found"
+  
+  return 1
+}
+
+0x000b1d48 addiu r29,r29,0xffc0
+0x000b1d4c addiu r4,r0,0x0001
+0x000b1d50 addiu r5,r0,0x0010
+0x000b1d54 sw r16,0x0020(r29)
+0x000b1d58 lui r16,0x8014
+0x000b1d5c addiu r16,r16,0xb810
+0x000b1d60 addu r6,r16,r0
+0x000b1d64 sw r31,0x003c(r29)
+0x000b1d68 sw r22,0x0038(r29)
+0x000b1d6c sw r21,0x0034(r29)
+0x000b1d70 sw r20,0x0030(r29)
+0x000b1d74 sw r19,0x002c(r29)
+0x000b1d78 sw r18,0x0028(r29)
+0x000b1d7c jal 0x000b234c
+0x000b1d80 sw r17,0x0024(r29)
+0x000b1d84 addu r17,r2,r0
+0x000b1d88 addiu r2,r0,0x0001
+0x000b1d8c beq r17,r2,0x000b1dbc
+0x000b1d90 addiu r4,r16,0x0001
+0x000b1d94 lui r2,0x8012
+0x000b1d98 lw r2,0x3724(r2)
+0x000b1d9c nop
+0x000b1da0 blez r2,0x000b1fe4
+0x000b1da4 addu r2,r0,r0
+0x000b1da8 lui r4,0x8011
+0x000b1dac jal 0x0009128c
+0x000b1db0 addiu r4,r4,0x46f0
+0x000b1db4 j 0x000b1fe4
+0x000b1db8 addu r2,r0,r0
+0x000b1dbc lui r5,0x8011
+0x000b1dc0 addiu r5,r5,0x471c
+0x000b1dc4 jal 0x000911ec
+0x000b1dc8 addiu r6,r0,0x0005
+0x000b1dcc beq r2,r0,0x000b1dfc
+0x000b1dd0 nop
+0x000b1dd4 lui r2,0x8012
+0x000b1dd8 lw r2,0x3724(r2)
+0x000b1ddc nop
+0x000b1de0 blez r2,0x000b1fe4
+0x000b1de4 addu r2,r0,r0
+0x000b1de8 lui r4,0x8011
+0x000b1dec jal 0x0009128c
+0x000b1df0 addiu r4,r4,0x4724
+0x000b1df4 j 0x000b1fe4
+0x000b1df8 addu r2,r0,r0
+0x000b1dfc lwl r2,0x008f(r16)
+0x000b1e00 lwr r2,0x008c(r16)
+0x000b1e04 nop
+0x000b1e08 swl r2,0x001b(r29)
+0x000b1e0c swr r2,0x0018(r29)
+0x000b1e10 addiu r4,r0,0x0001
+0x000b1e14 lw r5,0x0018(r29)
+0x000b1e18 jal 0x000b234c
+0x000b1e1c addu r6,r16,r0
+0x000b1e20 beq r2,r17,0x000b1e54
+0x000b1e24 nop
+0x000b1e28 lui r2,0x8012
+0x000b1e2c lw r2,0x3724(r2)
+0x000b1e30 nop
+0x000b1e34 blez r2,0x000b1fe4
+0x000b1e38 addu r2,r0,r0
+0x000b1e3c lw r5,0x0018(r29)
+0x000b1e40 lui r4,0x8011
+0x000b1e44 jal 0x0009128c
+0x000b1e48 addiu r4,r4,0x4754
+0x000b1e4c j 0x000b1fe4
+0x000b1e50 addu r2,r0,r0
+0x000b1e54 lui r2,0x8012
+0x000b1e58 lw r2,0x3724(r2)
+0x000b1e5c nop
+0x000b1e60 slti r2,r2,0x0002
+0x000b1e64 bne r2,r0,0x000b1e78
+0x000b1e68 addu r17,r16,r0
+0x000b1e6c lui r4,0x8011
+0x000b1e70 jal 0x0009128c
+0x000b1e74 addiu r4,r4,0x4778
+0x000b1e78 addiu r3,r17,0x0800
+0x000b1e7c sltu r2,r17,r3
+0x000b1e80 beq r2,r0,0x000b1f8c
+0x000b1e84 addu r7,r0,r0
+0x000b1e88 lui r20,0x8014
+0x000b1e8c addiu r20,r20,0xa218
+0x000b1e90 addiu r22,r20,0x0004
+0x000b1e94 addu r21,r3,r0
+0x000b1e98 lbu r2,0x0000(r17)
+0x000b1e9c nop
+0x000b1ea0 beq r2,r0,0x000b1f8c
+0x000b1ea4 sll r2,r7,0x01
+0x000b1ea8 addu r2,r2,r7
+0x000b1eac sll r2,r2,0x02
+0x000b1eb0 subu r2,r2,r7
+0x000b1eb4 sll r16,r2,0x02
+0x000b1eb8 addu r2,r16,r20
+0x000b1ebc lwl r3,0x0005(r17)
+0x000b1ec0 lwr r3,0x0002(r17)
+0x000b1ec4 nop
+0x000b1ec8 swl r3,0x0003(r2)
+0x000b1ecc swr r3,0x0000(r2)
+0x000b1ed0 addu r18,r16,r22
+0x000b1ed4 addu r4,r18,r0
+0x000b1ed8 lbu r2,0x0006(r17)
+0x000b1edc addiu r19,r7,0x0001
+0x000b1ee0 lui r1,0x8014
+0x000b1ee4 addu r1,r1,r16
+0x000b1ee8 sw r19,-0x5df0(r1)
+0x000b1eec lui r1,0x8014
+0x000b1ef0 addu r1,r1,r16
+0x000b1ef4 sw r2,-0x5dec(r1)
+0x000b1ef8 lbu r6,0x0000(r17)
+0x000b1efc jal 0x0009124c
+0x000b1f00 addiu r5,r17,0x0008
+0x000b1f04 lbu r2,0x0000(r17)
+0x000b1f08 nop
+0x000b1f0c addu r2,r18,r2
+0x000b1f10 sb r0,0x0000(r2)
+0x000b1f14 lbu r3,0x0000(r17)
+0x000b1f18 nop
+0x000b1f1c andi r2,r3,0x0001
+0x000b1f20 addiu r2,r2,0x0008
+0x000b1f24 addu r3,r3,r2
+0x000b1f28 lui r2,0x8012
+0x000b1f2c lw r2,0x3724(r2)
+0x000b1f30 nop
+0x000b1f34 slti r2,r2,0x0002
+0x000b1f38 bne r2,r0,0x000b1f74
+0x000b1f3c addu r17,r17,r3
+0x000b1f40 lui r5,0x8014
+0x000b1f44 addu r5,r5,r16
+0x000b1f48 lw r5,-0x5de8(r5)
+0x000b1f4c lui r6,0x8014
+0x000b1f50 addu r6,r6,r16
+0x000b1f54 lw r6,-0x5df0(r6)
+0x000b1f58 lui r7,0x8014
+0x000b1f5c addu r7,r7,r16
+0x000b1f60 lw r7,-0x5dec(r7)
+0x000b1f64 lui r4,0x8011
+0x000b1f68 addiu r4,r4,0x4798
+0x000b1f6c jal 0x0009128c
+0x000b1f70 sw r18,0x0010(r29)
+0x000b1f74 addu r7,r19,r0
+0x000b1f78 slti r2,r7,0x0080
+0x000b1f7c beq r2,r0,0x000b1fb4
+0x000b1f80 sltu r2,r17,r21
+0x000b1f84 bne r2,r0,0x000b1e98
+0x000b1f88 nop
+0x000b1f8c slti r2,r7,0x0080
+0x000b1f90 beq r2,r0,0x000b1fb4
+0x000b1f94 sll r2,r7,0x01
+0x000b1f98 addu r2,r2,r7
+0x000b1f9c sll r2,r2,0x02
+0x000b1fa0 subu r2,r2,r7
+0x000b1fa4 sll r2,r2,0x02
+0x000b1fa8 lui r1,0x8014
+0x000b1fac addu r1,r1,r2
+0x000b1fb0 sw r0,-0x5dec(r1)
+0x000b1fb4 lui r2,0x8012
+0x000b1fb8 lw r2,0x3724(r2)
+0x000b1fbc lui r1,0x8012
+0x000b1fc0 sw r0,0x37e0(r1)
+0x000b1fc4 slti r2,r2,0x0002
+0x000b1fc8 bne r2,r0,0x000b1fe4
+0x000b1fcc addiu r2,r0,0x0001
+0x000b1fd0 lui r4,0x8011
+0x000b1fd4 addiu r4,r4,0x47ac
+0x000b1fd8 jal 0x0009128c
+0x000b1fdc addu r5,r7,r0
+0x000b1fe0 addiu r2,r0,0x0001
+0x000b1fe4 lw r31,0x003c(r29)
+0x000b1fe8 lw r22,0x0038(r29)
+0x000b1fec lw r21,0x0034(r29)
+0x000b1ff0 lw r20,0x0030(r29)
+0x000b1ff4 lw r19,0x002c(r29)
+0x000b1ff8 lw r18,0x0028(r29)
+0x000b1ffc lw r17,0x0024(r29)
+0x000b2000 lw r16,0x0020(r29)
+0x000b2004 jr r31
+0x000b2008 addiu r29,r29,0x0040
