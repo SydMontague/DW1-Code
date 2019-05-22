@@ -185,13 +185,15 @@
 0x000AA188    setMenuState(value = r4) //set 0x134C91 to r4, 0x134C92 to 0
 
 0x000AC050    loadMenuState() -> r2   //loads 0x134C91 into r2
-0x000AC06C    waitForEntityWalkTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, val5 = load(sp + 0x10)) -> finishedWaiting = r2
+0x000AC05C    deferred call -> startAnimation(0x15576C, r4)
+0x000AC06C    waitForEntityWalkTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, val5 = load(sp + 0x10)) -> finished = r2
 
 0x000AC2F8    loadEntityDataFromScriptId(scriptIdPtr = r4) -> entityPtr = r2, store(scriptIdPtr, entityId)
 
-0x000AC3C8    waitForEntityLookAtEntity(scriptId1 = r4, scriptId2 = r5) -> finishedWaiting = r2
+0x000AC3C8    waitForEntityLookAtEntity(scriptId1 = r4, scriptId2 = r5) -> finished = r2
 0x000AC550    waitForEntitySetRotation(scriptId = r4, rotation = r5) -> finished = r2
-0x000AC58C    waitForEntityMoveTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, duration = load(sp + 0x10), val6 = load(sp + 0x14)) -> finishedWaiting = r2
+0x000AC58C    waitForEntityMoveTo(scriptId1 = r4, scriptId2 = r5, targetPosX = r6, targetPosZ = r7, duration = load(sp + 0x10), val6 = load(sp + 0x14)) -> finished = r2
+0x000AC860    waitForEntityMoveToAxis(scriptId = r4, targetValue = r5, axis = r6, duration = r7, withCamera = load(sp + 0x10)) -> finished = r2
 
 0x000ACBF4    addTamerLevel(chance = r4, amount = r5)
 
@@ -209,9 +211,12 @@
 0x000B2BB4    CdRead(sectors = r4, targetPtr = r5, mode = r6) -> result = r2
 0x000B2CB4    CdReadSync(mode = r4, result = r5) -> remaining = r2
 
+0x000B56F4    waitForMoveObjectTo(id = r4, otherId = r5, duration = r6, targetX = r7, targetY = load(sp + 0x10) -> finished = r2
+
 0x000B6EDC    getRotationDifference(locationPtr1 = r4, locationPtr2 = r5) -> store(r6, targetAngle), store(r7, counterClockwiseDiff), store(load(sp + 0x10), clockwiseDiff)
 0x000B6FB0    rotateEntity(rotationPtr = r4, targetAngle = load(r5), cClockwiseDiff = load(r6), clockwiseDiff = load(r7), stepSize = load(sp + 0x10)) -> finishedRotating = r2
 
+0x000B78C4    scriptNPCStartAnimation(scriptId = r4, animationId = r5)
 
 0x000BA40C    deferred -> store(0x123ED6, r4)
 
@@ -301,6 +306,8 @@
 0x000DF42C    setIdleAnimation()
 0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
 
+0x000E1C7C    waitForRotate3DObject(scriptId = r4, speed = r5) -> finished = r2
+
 0x000E2544    getFreshEvolutionTarget(digimonType = r4) -> targetType = r2
 0x000E2598    getInTrainingEvolutionTarget(digimonType = r4) -> targetType = r2
 0x000E26B8    calculateRequirementScore(digimonType = r4, targetType = r5, isMaxCM = r6, isMaxBattles = r7, bestDigimon = load(sp + 0x10) -> requirementScore = r2
@@ -360,6 +367,8 @@
 0x00102144    scriptIdToEntityId(scriptId = r4) -> entityId = r2
 
 0x001026E8    loadFileSection(filePath = r4, target = r5, start = r6, size = r7)
+
+0x0010569C    waitForEntity(waitForId = r4)
 
 0x00105B14    callScriptSection(scriptId = r4, scriptSection = r5, value = r6)
 

@@ -1,0 +1,369 @@
+/* @ 0x153240
+ * 0x00 4 byte X
+ * 0x04 4 byte Y
+ * 0x08 4 byte Z
+ * 0x0C 4 byte unknown
+ * 0x10 2 byte rotation X
+ * 0x12 2 byte rotation Y
+ * 0x14 2 byte rotation Z
+ * 0x16 4 byte unknown
+ * 0x1A 2 byte ID?
+ */
+int waitForRotate3DObject(scriptId, speed) {
+  mode = load(0x15325A + scriptId * 28)
+  
+  switch(mode) {
+    case 0: // 0x0E1CC8
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 0x21) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      axisPtr = 0x153252 + scriptId * 28 // rotation Y
+      store(axisPtr, load(axisPtr) - speed * 33)
+      return 0
+    case 9: // 0x0E1D24
+    case 10: // 0x0E1D24
+    case 11: // 0x0E1D24
+    case 12: // 0x0E1D24
+    case 13: // 0x0E1D24
+    case 16: // 0x0E1D24
+    case 17: // 0x0E1D24
+    case 18: // 0x0E1D24
+    case 19: // 0x0E1D24
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 0x21) {
+        store(0x134E40, 0)
+        store(0x153252 + scriptId * 28, load(0x153258 + scriptId * 28))
+        return 1
+      }
+      
+      axisPtr = 0x153252 + scriptId * 28 // rotation Y
+      store(axisPtr, load(axisPtr) + speed * 33)
+      return 0
+    case 14: // 0x0E1DA0
+    case 15: // 0x0E1DA0
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 0x21) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      axisPtr = 0x153252 + scriptId * 28 // rotation Y
+      store(axisPtr, load(axisPtr) + speed * 33)
+      return 0
+    case 5: // 0x0E1DFC
+    case 31: // 0x0E1DFC
+    case 32: // 0x0E1DFC
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 10) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      axisPtr = 0x153244 + scriptId * 28 // posi Y
+      store(axisPtr, load(axisPtr) - speed * 200)
+      return 0
+    case 21: // 0x0E1E60
+    case 22: // 0x0E1E60
+    case 24: // 0x0E1E60
+    case 27: // 0x0E1E60
+    case 29: // 0x0E1E60
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 10) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      if(load(0x134DA8) == 0x81)
+        axisPtr = 0x153248 + scriptId * 28 // posi Z
+      else
+        axisPtr = 0x153240 + scriptId * 28 // posi X
+        
+      store(axisPtr, load(axisPtr) + 0x1E)
+      return 0
+    case 25: // 0x0E1EE0
+    case 23: // 0x0E1EE0
+    case 20: // 0x0E1EE0
+    case 28: // 0x0E1EE0
+    case 30: // 0x0E1EE0
+      store(0x134E40, load(0x134E40) + 1)
+      
+      if(load(0x134E40) >= 10) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      if(load(0x134DA8) == 0x81)
+        axisPtr = 0x153248 + scriptId * 28 // posi Z
+      else
+        axisPtr = 0x153240 + scriptId * 28 // posi X
+        
+      store(axisPtr, load(axisPtr) - 0x1E)
+      return 0
+    case 26: // 0x0E1F60
+      store(0x134E40, load(0x134E40) + 1)
+      
+      axisPtr = 0x153250 + scriptId * 28 // rotation X
+      store(axisPtr, load(axisPtr) - speed * 110)
+      
+      if(load(axisPtr) < -0x0400) {
+        store(axisPtr, 0xFC00)
+      }
+      
+      if(load(axisPtr) > 0)
+        store(axisPtr, 0)
+        
+      if(load(0x134E40) >= 0x14) {
+        store(0x134E40, 0)
+        return 1
+      }
+      
+      return 0
+    case 1: // 0x0E2004
+    case 2: // 0x0E2004
+    case 3: // 0x0E2004
+    case 4: // 0x0E2004
+    case 6: // 0x0E2004
+    case 7: // 0x0E2004
+    case 8: // 0x0E2004
+    default:
+      return 0
+  }
+}
+
+0x000e1c7c sll r2,r4,0x03
+0x000e1c80 sub r2,r2,r4
+0x000e1c84 lui r3,0x8015
+0x000e1c88 sll r4,r2,0x02
+0x000e1c8c addiu r3,r3,0x325a
+0x000e1c90 addu r3,r3,r4
+0x000e1c94 lh r3,0x0000(r3)
+0x000e1c98 nop
+0x000e1c9c sltiu r1,r3,0x0021
+0x000e1ca0 beq r1,r0,0x000e2004
+0x000e1ca4 addu r2,r4,r0
+0x000e1ca8 lui r4,0x8011
+0x000e1cac addiu r4,r4,0x4ce4
+0x000e1cb0 sll r3,r3,0x02
+0x000e1cb4 addu r3,r3,r4
+0x000e1cb8 lw r3,0x0000(r3)
+0x000e1cbc nop
+0x000e1cc0 jr r3
+0x000e1cc4 nop
+0x000e1cc8 lb r3,-0x6cec(r28)
+0x000e1ccc nop
+0x000e1cd0 addi r3,r3,0x0001
+0x000e1cd4 sb r3,-0x6cec(r28)
+0x000e1cd8 lb r3,-0x6cec(r28)
+0x000e1cdc nop
+0x000e1ce0 slti r1,r3,0x0021
+0x000e1ce4 bne r1,r0,0x000e1cf8
+0x000e1ce8 nop
+0x000e1cec sb r0,-0x6cec(r28)
+0x000e1cf0 beq r0,r0,0x000e2008
+0x000e1cf4 addiu r2,r0,0x0001
+0x000e1cf8 sll r3,r5,0x05
+0x000e1cfc add r3,r3,r5
+0x000e1d00 sll r4,r3,0x10
+0x000e1d04 lui r3,0x8015
+0x000e1d08 addiu r3,r3,0x3252
+0x000e1d0c addu r3,r3,r2
+0x000e1d10 lh r2,0x0000(r3)
+0x000e1d14 sra r4,r4,0x10
+0x000e1d18 sub r2,r2,r4
+0x000e1d1c beq r0,r0,0x000e2004
+0x000e1d20 sh r2,0x0000(r3)
+0x000e1d24 lb r3,-0x6cec(r28)
+0x000e1d28 nop
+0x000e1d2c addi r3,r3,0x0001
+0x000e1d30 sb r3,-0x6cec(r28)
+0x000e1d34 lb r3,-0x6cec(r28)
+0x000e1d38 nop
+0x000e1d3c slti r1,r3,0x0021
+0x000e1d40 bne r1,r0,0x000e1d74
+0x000e1d44 nop
+0x000e1d48 lui r3,0x8015
+0x000e1d4c addiu r3,r3,0x3258
+0x000e1d50 sb r0,-0x6cec(r28)
+0x000e1d54 addu r3,r3,r2
+0x000e1d58 lh r4,0x0000(r3)
+0x000e1d5c lui r3,0x8015
+0x000e1d60 addiu r3,r3,0x3252
+0x000e1d64 addu r2,r3,r2
+0x000e1d68 sh r4,0x0000(r2)
+0x000e1d6c beq r0,r0,0x000e2008
+0x000e1d70 addiu r2,r0,0x0001
+0x000e1d74 sll r3,r5,0x05
+0x000e1d78 add r3,r3,r5
+0x000e1d7c sll r4,r3,0x10
+0x000e1d80 lui r3,0x8015
+0x000e1d84 addiu r3,r3,0x3252
+0x000e1d88 addu r3,r3,r2
+0x000e1d8c lh r2,0x0000(r3)
+0x000e1d90 sra r4,r4,0x10
+0x000e1d94 add r2,r2,r4
+0x000e1d98 beq r0,r0,0x000e2004
+0x000e1d9c sh r2,0x0000(r3)
+0x000e1da0 lb r3,-0x6cec(r28)
+0x000e1da4 nop
+0x000e1da8 addi r3,r3,0x0001
+0x000e1dac sb r3,-0x6cec(r28)
+0x000e1db0 lb r3,-0x6cec(r28)
+0x000e1db4 nop
+0x000e1db8 slti r1,r3,0x0021
+0x000e1dbc bne r1,r0,0x000e1dd0
+0x000e1dc0 nop
+0x000e1dc4 sb r0,-0x6cec(r28)
+0x000e1dc8 beq r0,r0,0x000e2008
+0x000e1dcc addiu r2,r0,0x0001
+0x000e1dd0 sll r3,r5,0x05
+0x000e1dd4 add r3,r3,r5
+0x000e1dd8 sll r4,r3,0x10
+0x000e1ddc lui r3,0x8015
+0x000e1de0 addiu r3,r3,0x3252
+0x000e1de4 addu r3,r3,r2
+0x000e1de8 lh r2,0x0000(r3)
+0x000e1dec sra r4,r4,0x10
+0x000e1df0 add r2,r2,r4
+0x000e1df4 beq r0,r0,0x000e2004
+0x000e1df8 sh r2,0x0000(r3)
+0x000e1dfc lb r3,-0x6cec(r28)
+0x000e1e00 nop
+0x000e1e04 addi r3,r3,0x0001
+0x000e1e08 sb r3,-0x6cec(r28)
+0x000e1e0c lb r3,-0x6cec(r28)
+0x000e1e10 nop
+0x000e1e14 slti r1,r3,0x000a
+0x000e1e18 bne r1,r0,0x000e1e2c
+0x000e1e1c nop
+0x000e1e20 sb r0,-0x6cec(r28)
+0x000e1e24 beq r0,r0,0x000e2008
+0x000e1e28 addiu r2,r0,0x0001
+0x000e1e2c sll r3,r5,0x02
+0x000e1e30 add r4,r3,r5
+0x000e1e34 sll r3,r4,0x02
+0x000e1e38 add r3,r4,r3
+0x000e1e3c sll r4,r3,0x03
+0x000e1e40 lui r3,0x8015
+0x000e1e44 addiu r3,r3,0x3244
+0x000e1e48 addu r3,r3,r2
+0x000e1e4c lw r2,0x0000(r3)
+0x000e1e50 nop
+0x000e1e54 sub r2,r2,r4
+0x000e1e58 beq r0,r0,0x000e2004
+0x000e1e5c sw r2,0x0000(r3)
+0x000e1e60 lb r3,-0x6cec(r28)
+0x000e1e64 nop
+0x000e1e68 addi r3,r3,0x0001
+0x000e1e6c sb r3,-0x6cec(r28)
+0x000e1e70 lb r3,-0x6cec(r28)
+0x000e1e74 nop
+0x000e1e78 slti r1,r3,0x000a
+0x000e1e7c bne r1,r0,0x000e1e90
+0x000e1e80 nop
+0x000e1e84 sb r0,-0x6cec(r28)
+0x000e1e88 beq r0,r0,0x000e2008
+0x000e1e8c addiu r2,r0,0x0001
+0x000e1e90 lbu r3,-0x6d84(r28)
+0x000e1e94 addiu r1,r0,0x0081
+0x000e1e98 bne r3,r1,0x000e1ec0
+0x000e1e9c nop
+0x000e1ea0 lui r3,0x8015
+0x000e1ea4 addiu r3,r3,0x3248
+0x000e1ea8 addu r3,r3,r2
+0x000e1eac lw r2,0x0000(r3)
+0x000e1eb0 nop
+0x000e1eb4 addi r2,r2,0x001e
+0x000e1eb8 beq r0,r0,0x000e2004
+0x000e1ebc sw r2,0x0000(r3)
+0x000e1ec0 lui r3,0x8015
+0x000e1ec4 addiu r3,r3,0x3240
+0x000e1ec8 addu r3,r3,r2
+0x000e1ecc lw r2,0x0000(r3)
+0x000e1ed0 nop
+0x000e1ed4 addi r2,r2,0x001e
+0x000e1ed8 beq r0,r0,0x000e2004
+0x000e1edc sw r2,0x0000(r3)
+0x000e1ee0 lb r3,-0x6cec(r28)
+0x000e1ee4 nop
+0x000e1ee8 addi r3,r3,0x0001
+0x000e1eec sb r3,-0x6cec(r28)
+0x000e1ef0 lb r3,-0x6cec(r28)
+0x000e1ef4 nop
+0x000e1ef8 slti r1,r3,0x000a
+0x000e1efc bne r1,r0,0x000e1f10
+0x000e1f00 nop
+0x000e1f04 sb r0,-0x6cec(r28)
+0x000e1f08 beq r0,r0,0x000e2008
+0x000e1f0c addiu r2,r0,0x0001
+0x000e1f10 lbu r3,-0x6d84(r28)
+0x000e1f14 addiu r1,r0,0x0081
+0x000e1f18 bne r3,r1,0x000e1f40
+0x000e1f1c nop
+0x000e1f20 lui r3,0x8015
+0x000e1f24 addiu r3,r3,0x3248
+0x000e1f28 addu r3,r3,r2
+0x000e1f2c lw r2,0x0000(r3)
+0x000e1f30 nop
+0x000e1f34 addi r2,r2,-0x001e
+0x000e1f38 beq r0,r0,0x000e2004
+0x000e1f3c sw r2,0x0000(r3)
+0x000e1f40 lui r3,0x8015
+0x000e1f44 addiu r3,r3,0x3240
+0x000e1f48 addu r3,r3,r2
+0x000e1f4c lw r2,0x0000(r3)
+0x000e1f50 nop
+0x000e1f54 addi r2,r2,-0x001e
+0x000e1f58 beq r0,r0,0x000e2004
+0x000e1f5c sw r2,0x0000(r3)
+0x000e1f60 lb r3,-0x6cec(r28)
+0x000e1f64 nop
+0x000e1f68 addi r3,r3,0x0001
+0x000e1f6c sb r3,-0x6cec(r28)
+0x000e1f70 sll r3,r5,0x03
+0x000e1f74 sub r3,r3,r5
+0x000e1f78 sll r3,r3,0x03
+0x000e1f7c sub r3,r3,r5
+0x000e1f80 lui r5,0x8015
+0x000e1f84 sll r3,r3,0x01
+0x000e1f88 addiu r5,r5,0x3250
+0x000e1f8c sll r6,r3,0x10
+0x000e1f90 addu r4,r5,r2
+0x000e1f94 lh r3,0x0000(r4)
+0x000e1f98 sra r6,r6,0x10
+0x000e1f9c sub r3,r3,r6
+0x000e1fa0 sh r3,0x0000(r4)
+0x000e1fa4 addu r3,r4,r0
+0x000e1fa8 lh r3,0x0000(r3)
+0x000e1fac nop
+0x000e1fb0 slti r1,r3,-0x0400
+0x000e1fb4 beq r1,r0,0x000e1fc4
+0x000e1fb8 nop
+0x000e1fbc addiu r3,r0,0xfc00
+0x000e1fc0 sh r3,0x0000(r4)
+0x000e1fc4 lui r4,0x8015
+0x000e1fc8 addiu r4,r4,0x3250
+0x000e1fcc addu r3,r4,r2
+0x000e1fd0 lh r2,0x0000(r3)
+0x000e1fd4 nop
+0x000e1fd8 blez r2,0x000e1fe4
+0x000e1fdc nop
+0x000e1fe0 sh r0,0x0000(r3)
+0x000e1fe4 lb r2,-0x6cec(r28)
+0x000e1fe8 nop
+0x000e1fec slti r1,r2,0x0014
+0x000e1ff0 bne r1,r0,0x000e2004
+0x000e1ff4 nop
+0x000e1ff8 sb r0,-0x6cec(r28)
+0x000e1ffc beq r0,r0,0x000e2008
+0x000e2000 addiu r2,r0,0x0001
+0x000e2004 addu r2,r0,r0
+0x000e2008 jr r31
+0x000e200c nop

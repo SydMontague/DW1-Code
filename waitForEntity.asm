@@ -1,0 +1,271 @@
+void waitForEntity(someId) {
+  waitForPtr = 0x1BE6B4 + someId * 12
+  
+  switch(load(waitForPtr)) { // waitFor mode
+    case 0: // 0x1056FC
+      finished = waitForEntityLookAtEntity(load(waitForPtr + 0x01), load(waitForPtr + 0x02))
+      break
+    case 1: // 0x105714
+      finished = waitForEntitySetRotation(load(waitForPtr + 0x01), load(waitForPtr + 0x04))
+      break
+    case 2: // 0x10572C
+      finished = waitForEntityWalkTo(load(waitForPtr + 0x01), -1, load(waitForPtr + 0x04), load(waitForPtr + 0x06), 0)
+      break
+    case 3: // 0x10574C
+      finished = waitForEntityWalkTo(load(waitForPtr + 0x01), load(waitForPtr + 0x02), 0, 0, 0)
+      break
+    case 4: // 0x10576C
+      finished = waitForEntityWalkTo(load(waitForPtr + 0x01), -1, load(waitForPtr + 0x04), load(waitForPtr + 0x06), 1)
+      break
+    case 5: // 0x105790
+      finished = waitForEntityWalkTo(load(waitForPtr + 0x01), load(waitForPtr + 0x02), 0, 0, 1)
+      break
+    case 6: // 0x1057B4
+      finished = waitForMoveCameraTo(load(waitForPtr + 0x04), load(waitForPtr + 0x06), load(waitForPtr + 0x03))
+      break
+    case 7: // 0x1057D0
+      finished = waitForMoveCameraToEntity(load(waitForPtr + 0x01), load(waitForPtr + 0x03))
+      break
+    case 8: // 0x1057E8
+      finished = waitForEntityMoveTo(load(waitForPtr + 0x01), -1, load(waitForPtr + 0x04), load(waitForPtr + 0x06), load(waitForPtr + 0x03), 0)
+      break
+    case 9: // 0x105814
+      finished = waitForEntityMoveTo(load(waitForPtr + 0x01), load(waitForPtr + 0x02), 0, 0, load(waitForPtr + 0x03), 0)
+      break
+    case 10: // 0x10583C
+      finished = waitForEntityMoveTo(load(waitForPtr + 0x01), -1, load(waitForPtr + 0x04), load(waitForPtr + 0x06), load(waitForPtr + 0x03), 1)
+      break
+    case 11: // 0x10586C
+      finished = waitForEntityMoveTo(load(waitForPtr + 0x01), load(waitForPtr + 0x02), 0, 0, load(waitForPtr + 0x03), 1)
+      break
+    case 12: // 0x105898
+      finished = waitForRotate3DObject(load(waitForPtr + 0x01), load(waitForPtr + 0x02))
+      break
+    case 13: // 0x1058BC
+      finished = waitForMoveObjectTo(load(waitForPtr + 0x01), someId - 12, load(waitForPtr + 0x02), load(waitForPtr + 0x08), load(waitForPtr + 0x0A)
+      break
+    case 14: // 0x1058F4
+      finished = waitForEntityMoveToAxis(load(waitForPtr + 0x01), load(waitForPtr + 0x04), load(waitForPtr + 0x02), load(waitForPtr + 0x03), 0)
+      break
+    case 15: // 0x105918
+      finished = waitForEntityMoveToAxis(load(waitForPtr + 0x01), load(waitForPtr + 0x04), load(waitForPtr + 0x02), load(waitForPtr + 0x03), 1)
+      break
+  }
+  
+  if(finished != 0) {
+    if(someId < 10 && load(waitForPtr) < 8) {
+      if(someId == 0)
+        startAnimation(0x15576C, 0) // deferred over 0x000AC05C
+      else if(someId == 1)
+        startAnimation(0x1557A8, 0) // deferred over 0x000DF5E4
+      else if(someId < 10)
+        scriptNPCStartAnimation(load(waitForPtr + 0x01), 0)
+    }
+    
+    store(waitForPtr, -1)
+  }
+}
+
+0x0010569c addiu r29,r29,0xffd8
+0x001056a0 sw r31,0x0020(r29)
+0x001056a4 sw r17,0x001c(r29)
+0x001056a8 addu r17,r4,r0
+0x001056ac sll r3,r17,0x01
+0x001056b0 add r3,r3,r17
+0x001056b4 sll r4,r3,0x02
+0x001056b8 lui r3,0x801c
+0x001056bc sw r16,0x0018(r29)
+0x001056c0 addiu r3,r3,0xe6b4
+0x001056c4 addu r16,r3,r4
+0x001056c8 lbu r4,0x0000(r16)
+0x001056cc nop
+0x001056d0 sltiu r1,r4,0x0010
+0x001056d4 beq r1,r0,0x00105938
+0x001056d8 nop
+0x001056dc lui r3,0x8011
+0x001056e0 addiu r3,r3,0x5760
+0x001056e4 sll r2,r4,0x02
+0x001056e8 addu r2,r2,r3
+0x001056ec lw r2,0x0000(r2)
+0x001056f0 nop
+0x001056f4 jr r2
+0x001056f8 nop
+0x001056fc lbu r4,0x0001(r16)
+0x00105700 lbu r5,0x0002(r16)
+0x00105704 jal 0x000ac3c8
+0x00105708 nop
+0x0010570c beq r0,r0,0x00105938
+0x00105710 nop
+0x00105714 lbu r4,0x0001(r16)
+0x00105718 lh r5,0x0004(r16)
+0x0010571c jal 0x000ac550
+0x00105720 nop
+0x00105724 beq r0,r0,0x00105938
+0x00105728 nop
+0x0010572c sw r0,0x0010(r29)
+0x00105730 lbu r4,0x0001(r16)
+0x00105734 lh r6,0x0004(r16)
+0x00105738 lh r7,0x0006(r16)
+0x0010573c jal 0x000ac06c
+0x00105740 addiu r5,r0,0x00ff
+0x00105744 beq r0,r0,0x00105938
+0x00105748 nop
+0x0010574c sw r0,0x0010(r29)
+0x00105750 lbu r4,0x0001(r16)
+0x00105754 lbu r5,0x0002(r16)
+0x00105758 addu r6,r0,r0
+0x0010575c jal 0x000ac06c
+0x00105760 addu r7,r0,r0
+0x00105764 beq r0,r0,0x00105938
+0x00105768 nop
+0x0010576c addiu r2,r0,0x0001
+0x00105770 sw r2,0x0010(r29)
+0x00105774 lbu r4,0x0001(r16)
+0x00105778 lh r6,0x0004(r16)
+0x0010577c lh r7,0x0006(r16)
+0x00105780 jal 0x000ac06c
+0x00105784 addiu r5,r0,0x00ff
+0x00105788 beq r0,r0,0x00105938
+0x0010578c nop
+0x00105790 addiu r2,r0,0x0001
+0x00105794 sw r2,0x0010(r29)
+0x00105798 lbu r4,0x0001(r16)
+0x0010579c lbu r5,0x0002(r16)
+0x001057a0 addu r6,r0,r0
+0x001057a4 jal 0x000ac06c
+0x001057a8 addu r7,r0,r0
+0x001057ac beq r0,r0,0x00105938
+0x001057b0 nop
+0x001057b4 lh r4,0x0004(r16)
+0x001057b8 lh r5,0x0006(r16)
+0x001057bc lbu r6,0x0003(r16)
+0x001057c0 jal 0x000d88cc
+0x001057c4 nop
+0x001057c8 beq r0,r0,0x00105938
+0x001057cc nop
+0x001057d0 lbu r4,0x0001(r16)
+0x001057d4 lbu r5,0x0003(r16)
+0x001057d8 jal 0x000d88fc
+0x001057dc nop
+0x001057e0 beq r0,r0,0x00105938
+0x001057e4 nop
+0x001057e8 lbu r2,0x0003(r16)
+0x001057ec nop
+0x001057f0 sw r2,0x0010(r29)
+0x001057f4 sw r0,0x0014(r29)
+0x001057f8 lbu r4,0x0001(r16)
+0x001057fc lh r6,0x0004(r16)
+0x00105800 lh r7,0x0006(r16)
+0x00105804 jal 0x000ac58c
+0x00105808 addiu r5,r0,0x00ff
+0x0010580c beq r0,r0,0x00105938
+0x00105810 nop
+0x00105814 lbu r2,0x0003(r16)
+0x00105818 addu r6,r0,r0
+0x0010581c sw r2,0x0010(r29)
+0x00105820 sw r0,0x0014(r29)
+0x00105824 lbu r4,0x0001(r16)
+0x00105828 lbu r5,0x0002(r16)
+0x0010582c jal 0x000ac58c
+0x00105830 addu r7,r0,r0
+0x00105834 beq r0,r0,0x00105938
+0x00105838 nop
+0x0010583c lbu r2,0x0003(r16)
+0x00105840 nop
+0x00105844 sw r2,0x0010(r29)
+0x00105848 addiu r2,r0,0x0001
+0x0010584c sw r2,0x0014(r29)
+0x00105850 lbu r4,0x0001(r16)
+0x00105854 lh r6,0x0004(r16)
+0x00105858 lh r7,0x0006(r16)
+0x0010585c jal 0x000ac58c
+0x00105860 addiu r5,r0,0x00ff
+0x00105864 beq r0,r0,0x00105938
+0x00105868 nop
+0x0010586c lbu r2,0x0003(r16)
+0x00105870 addu r6,r0,r0
+0x00105874 sw r2,0x0010(r29)
+0x00105878 addiu r2,r0,0x0001
+0x0010587c sw r2,0x0014(r29)
+0x00105880 lbu r4,0x0001(r16)
+0x00105884 lbu r5,0x0002(r16)
+0x00105888 jal 0x000ac58c
+0x0010588c addu r7,r0,r0
+0x00105890 beq r0,r0,0x00105938
+0x00105894 nop
+0x00105898 lbu r3,0x0001(r16)
+0x0010589c lbu r2,0x0002(r16)
+0x001058a0 sll r4,r3,0x10
+0x001058a4 sll r5,r2,0x18
+0x001058a8 sra r4,r4,0x10
+0x001058ac jal 0x000e1c7c
+0x001058b0 sra r5,r5,0x18
+0x001058b4 beq r0,r0,0x00105938
+0x001058b8 nop
+0x001058bc lh r2,0x000a(r16)
+0x001058c0 nop
+0x001058c4 sw r2,0x0010(r29)
+0x001058c8 andi r2,r17,0x00ff
+0x001058cc addi r3,r2,-0x000c
+0x001058d0 lbu r2,0x0002(r16)
+0x001058d4 lbu r4,0x0001(r16)
+0x001058d8 sll r6,r2,0x18
+0x001058dc lh r7,0x0008(r16)
+0x001058e0 andi r5,r3,0x00ff
+0x001058e4 jal 0x000b56f4
+0x001058e8 sra r6,r6,0x18
+0x001058ec beq r0,r0,0x00105938
+0x001058f0 nop
+0x001058f4 sw r0,0x0010(r29)
+0x001058f8 lbu r4,0x0001(r16)
+0x001058fc lh r5,0x0004(r16)
+0x00105900 lbu r6,0x0002(r16)
+0x00105904 lbu r7,0x0003(r16)
+0x00105908 jal 0x000ac860
+0x0010590c nop
+0x00105910 beq r0,r0,0x00105938
+0x00105914 nop
+0x00105918 addiu r2,r0,0x0001
+0x0010591c sw r2,0x0010(r29)
+0x00105920 lbu r4,0x0001(r16)
+0x00105924 lh r5,0x0004(r16)
+0x00105928 lbu r6,0x0002(r16)
+0x0010592c lbu r7,0x0003(r16)
+0x00105930 jal 0x000ac860
+0x00105934 nop
+0x00105938 beq r2,r0,0x001059b4
+0x0010593c nop
+0x00105940 slti r1,r17,0x000a
+0x00105944 beq r1,r0,0x001059ac
+0x00105948 nop
+0x0010594c lbu r2,0x0000(r16)
+0x00105950 nop
+0x00105954 sltiu r1,r2,0x0008
+0x00105958 beq r1,r0,0x001059ac
+0x0010595c nop
+0x00105960 bne r17,r0,0x00105978
+0x00105964 nop
+0x00105968 jal 0x000ac05c
+0x0010596c addu r4,r0,r0
+0x00105970 beq r0,r0,0x001059b0
+0x00105974 addiu r2,r0,0x00ff
+0x00105978 addiu r1,r0,0x0001
+0x0010597c bne r17,r1,0x00105994
+0x00105980 nop
+0x00105984 jal 0x000df5e4
+0x00105988 addu r4,r0,r0
+0x0010598c beq r0,r0,0x001059b0
+0x00105990 addiu r2,r0,0x00ff
+0x00105994 slti r1,r17,0x000a
+0x00105998 beq r1,r0,0x001059ac
+0x0010599c nop
+0x001059a0 lbu r4,0x0001(r16)
+0x001059a4 jal 0x000b78c4
+0x001059a8 addu r5,r0,r0
+0x001059ac addiu r2,r0,0x00ff
+0x001059b0 sb r2,0x0000(r16)
+0x001059b4 lw r31,0x0020(r29)
+0x001059b8 lw r17,0x001c(r29)
+0x001059bc lw r16,0x0018(r29)
+0x001059c0 jr r31
+0x001059c4 addiu r29,r29,0x0028
