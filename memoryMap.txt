@@ -213,10 +213,16 @@
 
 0x000B56F4    waitForMoveObjectTo(id = r4, otherId = r5, duration = r6, targetX = r7, targetY = load(sp + 0x10) -> finished = r2
 
+0x000B5984    setObjectsVisible(objId = r4, numObjs = r5, visible = r6)
+
 0x000B6EDC    getRotationDifference(locationPtr1 = r4, locationPtr2 = r5) -> store(r6, targetAngle), store(r7, counterClockwiseDiff), store(load(sp + 0x10), clockwiseDiff)
 0x000B6FB0    rotateEntity(rotationPtr = r4, targetAngle = load(r5), cClockwiseDiff = load(r6), clockwiseDiff = load(r7), stepSize = load(sp + 0x10)) -> finishedRotating = r2
 
+0x000B7848    0x000B7848(val1 = r4, val2 = r5)
 0x000B78C4    scriptNPCStartAnimation(scriptId = r4, animationId = r5)
+
+0x000B797C    scriptInstrUnknown54(scriptId = r4)
+
 
 0x000BA40C    deferred -> store(0x123ED6, r4)
 
@@ -306,6 +312,8 @@
 0x000DF42C    setIdleAnimation()
 0x000DF4D0    setDigimonState(value = r4) //set 0x134C5B to r4, 0x134C5C to 0
 
+0x000DF5E4    deferred call -> startAnimation(0x1557A8, r4)
+
 0x000E1C7C    waitForRotate3DObject(scriptId = r4, speed = r5) -> finished = r2
 
 0x000E2544    getFreshEvolutionTarget(digimonType = r4) -> targetType = r2
@@ -368,6 +376,12 @@
 
 0x001026E8    loadFileSection(filePath = r4, target = r5, start = r6, size = r7)
 
+0x001035A8    scriptInstruction46to58(intructionId = r4)
+
+0x001053EC    0x001053EC()
+
+0x001054E4    scriptStartAnimation(scriptId = r4, animId = r5)
+
 0x0010569C    waitForEntity(waitForId = r4)
 
 0x00105B14    callScriptSection(scriptId = r4, scriptSection = r5, value = r6)
@@ -380,9 +394,18 @@
 0x0010643C    isTriggerSet(triggerId = r4) -> isSet = r2
 0x00106474    writePStat(target = r4, value = r5)
 
+0x001064BC    0x001064BC(ptr)
+
 0x00106598    pollNextScriptByte() -> store(r4, byteValue)
 0x001065C0    setTrigger(triggerId = r4)
 0x001065FC    unsetTrigger(triggerId = r4)
+
+0x00106638    skipOnePollTwoScriptBytes() -> store(r4, byteValue1), store(r5, byteValue2)
+
+0x00106694    pollNextTwoScriptBytes() -> store(r4, byteValue1), store(r5, byteValue2)
+
+0x00106A30    pollNextScriptShort() -> store(r4, shortValue)
+0x00106A58    pollNextTwoScriptShorts() -> store(r4, shortValue1), store(r5, shortValue2)
 
 0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerMask)
 
