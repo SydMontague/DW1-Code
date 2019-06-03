@@ -1,0 +1,717 @@
+// TODO not all function calls decompiled, names for the functions missing
+void scriptInstruction46to58(intructionId) {
+  switch(instructionId - 0x46) {
+    case 0: // 0x46 0x001035DC loadDigimon
+      digimonId = pollNextScriptByte()
+      0x001069C0(digimonId)
+      break
+    case 1: // 0x47 0x001035F8 setDigimon
+      0x001062F8(-1)
+      typeId = pollNextScriptByte()
+      actorId, autotalk = pollNextTwoScriptBytes()
+      
+      0x000B6118(typeId, actorId, autotalk)
+      break
+    case 2: // 0x48 0x00103630 unloadEntity
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      0x000B63C4(actorId)
+      break
+    case 3: // 0x49 0x00103654 callDigimonRoutine
+      0x001062F8(-1)
+      routineId = pollNextScriptByte()
+      0x000DF5F4(routineId)
+      break
+    case 4: // 0x4A 0x00103678 waitForEntity
+      scriptId = pollNextScriptByte()
+      store(0x134FE8, 0x4A) // active instruction
+      entityId = -1
+      
+      if(scriptId != -1) {
+        if(scriptId == 200)
+          entityId = 10
+        else if(scriptId == 202)
+          entityId = 11
+        else if(scriptId == 203)
+          entityId = 12
+        else if(scriptId == 204)
+          entityId = 13
+        else if(scriptId == 205)
+          entityId = 14
+        else if(scriptId == 206)
+          entityId = 15
+        else if(scriptId == 207)
+          entityId = 16
+        else if(scriptId == 208)
+          entityId = 17
+        else if(scriptId == 209)
+          entityId = 18
+        else if(scriptId == 210)
+          entityId = 19
+        else if(scriptId == 211)
+          entityId = 20
+        else if(scriptId == 212)
+          entityId = 21
+        else if(scriptId == 201)
+          entityId = 25
+        else if(scriptId == 213)
+          entityId = 25
+        else if(scriptId == 214)
+          entityId = 26
+        else
+          entityId = scriptIdToEntityId(byteValue)
+      }
+      
+      store(0x134FA4, entityId)
+      RestoreState(0x1B7EBC, 2) // returns
+    case 5: // 0x4B 0x00103860 warpTo
+      0x001062F8(-1)
+      mapId = pollNextScriptByte()
+      spawnPoint, activateTrigger = pollNextTwoScriptBytes()
+      
+      store(0x134FF8, mapId)
+      store(0x134FFA, spawnPoint)
+      0x001053EC()
+      store(sp + 0x1E, 4)
+      store(sp + 0x1F, activateTrigger)
+      
+      0x001064BC(sp + 0x18)
+      RestoreState(0x1B7EBC, 3)
+    case 6: // 0x4C 0x001038C8 entityLookAtEntity
+      0x001062F8(-1)
+      actorId, targetId = skipOnePollTwoScriptBytes()
+      actorId = scriptIdToEntityId(actorId)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 0)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x02, targetId)
+      }
+      break
+    case 7: // 0x4D 0x0010392C entitySetRotation
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      rotation = pollNextScriptShort()
+      actorId = scriptIdToEntityId(actorId)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 1)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x04, rotation)
+      }
+      break
+    case 8: // 0x4E 0x00103998 entityWalkTo
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      posX, posY = pollNextTwoScriptShorts()
+      sprint, unknown = pollNextTwoScriptBytes()
+      
+      0x00105464(actorId, sprint)
+      actorId = scriptIdToEntityId(actorId)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 2)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x04, posX)
+        store(0x1BE6B4 + actorId * 12 + 0x06, posY)
+      }
+      break
+    case 9: // 0x4F 0x00103A30 moveCameraTo
+      0x001062F8(-1)
+      speed = pollNextScriptByte()
+      posX, posY = pollNextTwoScriptShorts()
+      
+      store(0x1BE72C + 0x00, 6)
+      store(0x1BE72C + 0x03, speed)
+      store(0x1BE72C + 0x04, posX)
+      store(0x1BE72C + 0x06, posY)
+      break
+    case 10: // 0x50 0x00103A80 moveCameraToEntity
+      0x001062F8(-1)
+      actorId, speed = skipOnePollTwoScriptBytes()
+      
+      store(0x1BE72C + 0x00, 7)
+      store(0x1BE72C + 0x01, actorId)
+      store(0x1BE72C + 0x03, speed)
+      break
+    case 11: // 0x51 0x00103ABC entityWalkToEntity
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      sprint, targetId = pollNextTwoScriptBytes()
+      
+      0x00105464(actorId, sprint)
+      actorId = scriptIdToEntityId(actorId)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 3)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x02, targetId)
+      }
+      break
+    case 12: // 0x52 0x00103B3C entityWalkToWithCamera
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      posX, posY = pollNextTwoScriptShorts()
+      sprint, unknown = pollNextTwoScriptBytes()
+      
+      0x00105464(actorId, sprint)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 4)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x04, posX)
+        store(0x1BE6B4 + actorId * 12 + 0x06, posY)
+      }
+      break
+    case 13: // 0x53 0x00103BD4 entityWalkToEntityWithCamera
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      sprint, targetId = pollNextTwoScriptBytes()
+      
+      0x00105464(actorId, sprint)
+      actorId = scriptIdToEntityId(actorId)
+      
+      if(actorId != -1) {
+        store(0x1BE6B4 + actorId * 12 + 0x00, 5)
+        store(0x1BE6B4 + actorId * 12 + 0x01, actorId)
+        store(0x1BE6B4 + actorId * 12 + 0x02, targetId)
+      }
+    case 14: // 0x54 0x00103C54 unknown54 | never used
+      0x001062F8(-1)
+      actorId = pollNextScriptByte()
+      scriptInstrUnknown54(actorId)
+      break
+    case 15: // 0x55 0x00103C78 setTextboxOrigin
+      store(0x134FDC, load(0x134FDC) + 1)
+      posX, posY = pollNextTwoScriptShorts()
+      posZ = pollNextScriptShort()
+      store(0x134FD2, posX)
+      store(0x134FD4, posY)
+      store(0x134FD6, posZ)
+      break
+    case 16: // 0x56 0x00103CA0 playAnimation
+      scriptId, animId = skipOnePollTwoScriptBytes()
+      scriptStartAnimation(scriptId, animId)
+      break
+    case 17: // 0x57 0x00103CC4 setObjVisibility
+      objId, visible = skipOnePollTwoScriptBytes()
+      setObjectsVisible(objId, 1, visible)
+      break
+    case 18: // 0x58 0x00103CE8 teleport
+      0x001062F8(-1)
+      pstat = pollNextScriptByte()
+      store(0x134FF8, readPStat(pstat)) // target screen
+      store(0x134FFA, readPStat(pstat + 1)) // target exit
+      
+      0x001053EC()
+      
+      store(sp + 0x1E, 4)
+      store(sp + 0x1F, 0xFF)
+      0x001064BC(sp + 0x18)
+      RestoreState(0x1BE7BC, 3)
+    default: break
+  }
+  
+  // 0x00103D50
+  RestoreState(0x1BE7BC, 1)
+  return
+}
+
+0x001035a8 addiu r29,r29,0xffd8
+0x001035ac addi r2,r4,-0x0046
+0x001035b0 sltiu r1,r2,0x0013
+0x001035b4 beq r1,r0,0x00103d50
+0x001035b8 sw r31,0x0010(r29)
+0x001035bc lui r3,0x8011
+0x001035c0 addiu r3,r3,0x5554
+0x001035c4 sll r2,r2,0x02
+0x001035c8 addu r2,r2,r3
+0x001035cc lw r2,0x0000(r2)
+0x001035d0 nop
+0x001035d4 jr r2
+0x001035d8 nop
+0x001035dc jal 0x00106598
+0x001035e0 addiu r4,r29,0x0025
+0x001035e4 lbu r4,0x0025(r29)
+0x001035e8 jal 0x001069c0
+0x001035ec nop
+0x001035f0 beq r0,r0,0x00103d50
+0x001035f4 nop
+0x001035f8 jal 0x001062f8
+0x001035fc addiu r4,r0,0x00ff
+0x00103600 jal 0x00106598
+0x00103604 addiu r4,r29,0x0025
+0x00103608 addiu r4,r29,0x0026
+0x0010360c jal 0x00106694
+0x00103610 addiu r5,r29,0x0027
+0x00103614 lbu r4,0x0025(r29)
+0x00103618 lbu r5,0x0026(r29)
+0x0010361c lbu r6,0x0027(r29)
+0x00103620 jal 0x000b6118
+0x00103624 nop
+0x00103628 beq r0,r0,0x00103d50
+0x0010362c nop
+0x00103630 jal 0x001062f8
+0x00103634 addiu r4,r0,0x00ff
+0x00103638 jal 0x00106598
+0x0010363c addiu r4,r29,0x0025
+0x00103640 lbu r4,0x0025(r29)
+0x00103644 jal 0x000b63c4
+0x00103648 nop
+0x0010364c beq r0,r0,0x00103d50
+0x00103650 nop
+0x00103654 jal 0x001062f8
+0x00103658 addiu r4,r0,0x00ff
+0x0010365c jal 0x00106598
+0x00103660 addiu r4,r29,0x0025
+0x00103664 lbu r4,0x0025(r29)
+0x00103668 jal 0x000df5f4
+0x0010366c nop
+0x00103670 beq r0,r0,0x00103d50
+0x00103674 nop
+0x00103678 jal 0x00106598
+0x0010367c addiu r4,r29,0x0025
+0x00103680 addiu r2,r0,0x004a
+0x00103684 lbu r4,0x0025(r29)
+0x00103688 addiu r1,r0,0x00ff
+0x0010368c beq r4,r1,0x00103848
+0x00103690 sb r2,-0x6b44(r28)
+0x00103694 addu r2,r4,r0
+0x00103698 addiu r1,r0,0x00c8
+0x0010369c bne r2,r1,0x001036b0
+0x001036a0 nop
+0x001036a4 addiu r2,r0,0x000a
+0x001036a8 beq r0,r0,0x00103848
+0x001036ac sb r2,0x0025(r29)
+0x001036b0 addu r2,r4,r0
+0x001036b4 addiu r1,r0,0x00ca
+0x001036b8 bne r2,r1,0x001036cc
+0x001036bc nop
+0x001036c0 addiu r2,r0,0x000b
+0x001036c4 beq r0,r0,0x00103848
+0x001036c8 sb r2,0x0025(r29)
+0x001036cc addu r2,r4,r0
+0x001036d0 addiu r1,r0,0x00cb
+0x001036d4 bne r2,r1,0x001036e8
+0x001036d8 nop
+0x001036dc addiu r2,r0,0x000c
+0x001036e0 beq r0,r0,0x00103848
+0x001036e4 sb r2,0x0025(r29)
+0x001036e8 addu r2,r4,r0
+0x001036ec addiu r1,r0,0x00cc
+0x001036f0 bne r2,r1,0x00103704
+0x001036f4 nop
+0x001036f8 addiu r2,r0,0x000d
+0x001036fc beq r0,r0,0x00103848
+0x00103700 sb r2,0x0025(r29)
+0x00103704 addu r2,r4,r0
+0x00103708 addiu r1,r0,0x00cd
+0x0010370c bne r2,r1,0x00103720
+0x00103710 nop
+0x00103714 addiu r2,r0,0x000e
+0x00103718 beq r0,r0,0x00103848
+0x0010371c sb r2,0x0025(r29)
+0x00103720 addu r2,r4,r0
+0x00103724 addiu r1,r0,0x00ce
+0x00103728 bne r2,r1,0x0010373c
+0x0010372c nop
+0x00103730 addiu r2,r0,0x000f
+0x00103734 beq r0,r0,0x00103848
+0x00103738 sb r2,0x0025(r29)
+0x0010373c addu r2,r4,r0
+0x00103740 addiu r1,r0,0x00cf
+0x00103744 bne r2,r1,0x00103758
+0x00103748 nop
+0x0010374c addiu r2,r0,0x0010
+0x00103750 beq r0,r0,0x00103848
+0x00103754 sb r2,0x0025(r29)
+0x00103758 addu r2,r4,r0
+0x0010375c addiu r1,r0,0x00d0
+0x00103760 bne r2,r1,0x00103774
+0x00103764 nop
+0x00103768 addiu r2,r0,0x0011
+0x0010376c beq r0,r0,0x00103848
+0x00103770 sb r2,0x0025(r29)
+0x00103774 addu r2,r4,r0
+0x00103778 addiu r1,r0,0x00d1
+0x0010377c bne r2,r1,0x00103790
+0x00103780 nop
+0x00103784 addiu r2,r0,0x0012
+0x00103788 beq r0,r0,0x00103848
+0x0010378c sb r2,0x0025(r29)
+0x00103790 addu r2,r4,r0
+0x00103794 addiu r1,r0,0x00d2
+0x00103798 bne r2,r1,0x001037ac
+0x0010379c nop
+0x001037a0 addiu r2,r0,0x0013
+0x001037a4 beq r0,r0,0x00103848
+0x001037a8 sb r2,0x0025(r29)
+0x001037ac addu r2,r4,r0
+0x001037b0 addiu r1,r0,0x00d3
+0x001037b4 bne r2,r1,0x001037c8
+0x001037b8 nop
+0x001037bc addiu r2,r0,0x0014
+0x001037c0 beq r0,r0,0x00103848
+0x001037c4 sb r2,0x0025(r29)
+0x001037c8 addu r2,r4,r0
+0x001037cc addiu r1,r0,0x00d4
+0x001037d0 bne r2,r1,0x001037e4
+0x001037d4 nop
+0x001037d8 addiu r2,r0,0x0015
+0x001037dc beq r0,r0,0x00103848
+0x001037e0 sb r2,0x0025(r29)
+0x001037e4 addu r2,r4,r0
+0x001037e8 addiu r1,r0,0x00c9
+0x001037ec bne r2,r1,0x00103800
+0x001037f0 nop
+0x001037f4 addiu r2,r0,0x0019
+0x001037f8 beq r0,r0,0x00103848
+0x001037fc sb r2,0x0025(r29)
+0x00103800 addu r2,r4,r0
+0x00103804 addiu r1,r0,0x00d5
+0x00103808 bne r2,r1,0x00103820
+0x0010380c nop
+0x00103810 addiu r2,r0,0x0019
+0x00103814 sb r2,0x0025(r29)
+0x00103818 beq r0,r0,0x00103848
+0x0010381c sw r0,-0x6cfc(r28)
+0x00103820 addu r2,r4,r0
+0x00103824 addiu r1,r0,0x00d6
+0x00103828 bne r2,r1,0x0010383c
+0x0010382c nop
+0x00103830 addiu r2,r0,0x001a
+0x00103834 beq r0,r0,0x00103848
+0x00103838 sb r2,0x0025(r29)
+0x0010383c jal 0x00102144
+0x00103840 nop
+0x00103844 sb r2,0x0025(r29)
+0x00103848 lbu r2,0x0025(r29)
+0x0010384c lui r4,0x801c
+0x00103850 sb r2,-0x6b88(r28)
+0x00103854 addiu r4,r4,0xe7bc
+0x00103858 jal 0x000911bc
+0x0010385c addiu r5,r0,0x0002
+0x00103860 jal 0x001062f8
+0x00103864 addiu r4,r0,0x00ff
+0x00103868 jal 0x00106598
+0x0010386c addiu r4,r29,0x0025
+0x00103870 addiu r4,r29,0x0026
+0x00103874 jal 0x00106694
+0x00103878 addiu r5,r29,0x0027
+0x0010387c lbu r2,0x0025(r29)
+0x00103880 nop
+0x00103884 sh r2,-0x6b34(r28)
+0x00103888 lbu r2,0x0026(r29)
+0x0010388c nop
+0x00103890 sh r2,-0x6b32(r28)
+0x00103894 jal 0x001053ec
+0x00103898 nop
+0x0010389c addiu r2,r0,0x0004
+0x001038a0 sb r2,0x001e(r29)
+0x001038a4 lbu r2,0x0027(r29)
+0x001038a8 nop
+0x001038ac sb r2,0x001f(r29)
+0x001038b0 jal 0x001064bc
+0x001038b4 addiu r4,r29,0x0018
+0x001038b8 lui r4,0x801c
+0x001038bc addiu r4,r4,0xe7bc
+0x001038c0 jal 0x000911bc
+0x001038c4 addiu r5,r0,0x0003
+0x001038c8 jal 0x001062f8
+0x001038cc addiu r4,r0,0x00ff
+0x001038d0 addiu r4,r29,0x0025
+0x001038d4 jal 0x00106638
+0x001038d8 addiu r5,r29,0x0026
+0x001038dc lbu r4,0x0025(r29)
+0x001038e0 jal 0x00102144
+0x001038e4 nop
+0x001038e8 andi r3,r2,0x00ff
+0x001038ec addiu r1,r0,0x00ff
+0x001038f0 beq r3,r1,0x00103d50
+0x001038f4 nop
+0x001038f8 sll r2,r3,0x01
+0x001038fc add r2,r2,r3
+0x00103900 sll r3,r2,0x02
+0x00103904 lui r2,0x801c
+0x00103908 addiu r2,r2,0xe6b4
+0x0010390c addu r2,r2,r3
+0x00103910 sb r0,0x0000(r2)
+0x00103914 lbu r3,0x0025(r29)
+0x00103918 nop
+0x0010391c sb r3,0x0001(r2)
+0x00103920 lbu r3,0x0026(r29)
+0x00103924 beq r0,r0,0x00103d50
+0x00103928 sb r3,0x0002(r2)
+0x0010392c jal 0x001062f8
+0x00103930 addiu r4,r0,0x00ff
+0x00103934 jal 0x00106598
+0x00103938 addiu r4,r29,0x0025
+0x0010393c jal 0x00106a30
+0x00103940 addiu r4,r29,0x0020
+0x00103944 lbu r4,0x0025(r29)
+0x00103948 jal 0x00102144
+0x0010394c nop
+0x00103950 andi r3,r2,0x00ff
+0x00103954 addiu r1,r0,0x00ff
+0x00103958 beq r3,r1,0x00103d50
+0x0010395c nop
+0x00103960 sll r2,r3,0x01
+0x00103964 add r2,r2,r3
+0x00103968 sll r3,r2,0x02
+0x0010396c lui r2,0x801c
+0x00103970 addiu r2,r2,0xe6b4
+0x00103974 addu r2,r2,r3
+0x00103978 addiu r3,r0,0x0001
+0x0010397c sb r3,0x0000(r2)
+0x00103980 lbu r3,0x0025(r29)
+0x00103984 nop
+0x00103988 sb r3,0x0001(r2)
+0x0010398c lh r3,0x0020(r29)
+0x00103990 beq r0,r0,0x00103d50
+0x00103994 sh r3,0x0004(r2)
+0x00103998 jal 0x001062f8
+0x0010399c addiu r4,r0,0x00ff
+0x001039a0 jal 0x00106598
+0x001039a4 addiu r4,r29,0x0025
+0x001039a8 addiu r4,r29,0x0020
+0x001039ac jal 0x00106a58
+0x001039b0 addiu r5,r29,0x0022
+0x001039b4 addiu r4,r29,0x0026
+0x001039b8 jal 0x00106694
+0x001039bc addiu r5,r29,0x0027
+0x001039c0 lbu r5,0x0026(r29)
+0x001039c4 lbu r4,0x0025(r29)
+0x001039c8 jal 0x00105464
+0x001039cc nop
+0x001039d0 lbu r4,0x0025(r29)
+0x001039d4 jal 0x00102144
+0x001039d8 nop
+0x001039dc andi r3,r2,0x00ff
+0x001039e0 addiu r1,r0,0x00ff
+0x001039e4 beq r3,r1,0x00103d50
+0x001039e8 nop
+0x001039ec sll r2,r3,0x01
+0x001039f0 add r2,r2,r3
+0x001039f4 sll r3,r2,0x02
+0x001039f8 lui r2,0x801c
+0x001039fc addiu r2,r2,0xe6b4
+0x00103a00 addu r2,r2,r3
+0x00103a04 addiu r3,r0,0x0002
+0x00103a08 sb r3,0x0000(r2)
+0x00103a0c lbu r3,0x0025(r29)
+0x00103a10 nop
+0x00103a14 sb r3,0x0001(r2)
+0x00103a18 lh r3,0x0020(r29)
+0x00103a1c nop
+0x00103a20 sh r3,0x0004(r2)
+0x00103a24 lh r3,0x0022(r29)
+0x00103a28 beq r0,r0,0x00103d50
+0x00103a2c sh r3,0x0006(r2)
+0x00103a30 jal 0x001062f8
+0x00103a34 addiu r4,r0,0x00ff
+0x00103a38 jal 0x00106598
+0x00103a3c addiu r4,r29,0x0025
+0x00103a40 addiu r4,r29,0x0020
+0x00103a44 jal 0x00106a58
+0x00103a48 addiu r5,r29,0x0022
+0x00103a4c lui r2,0x801c
+0x00103a50 addiu r2,r2,0xe72c
+0x00103a54 addiu r3,r0,0x0006
+0x00103a58 sb r3,0x0000(r2)
+0x00103a5c lh r3,0x0020(r29)
+0x00103a60 nop
+0x00103a64 sh r3,0x0004(r2)
+0x00103a68 lh r3,0x0022(r29)
+0x00103a6c nop
+0x00103a70 sh r3,0x0006(r2)
+0x00103a74 lbu r3,0x0025(r29)
+0x00103a78 beq r0,r0,0x00103d50
+0x00103a7c sb r3,0x0003(r2)
+0x00103a80 jal 0x001062f8
+0x00103a84 addiu r4,r0,0x00ff
+0x00103a88 addiu r4,r29,0x0025
+0x00103a8c jal 0x00106638
+0x00103a90 addiu r5,r29,0x0026
+0x00103a94 lui r2,0x801c
+0x00103a98 addiu r2,r2,0xe72c
+0x00103a9c addiu r3,r0,0x0007
+0x00103aa0 sb r3,0x0000(r2)
+0x00103aa4 lbu r3,0x0025(r29)
+0x00103aa8 nop
+0x00103aac sb r3,0x0001(r2)
+0x00103ab0 lbu r3,0x0026(r29)
+0x00103ab4 beq r0,r0,0x00103d50
+0x00103ab8 sb r3,0x0003(r2)
+0x00103abc jal 0x001062f8
+0x00103ac0 addiu r4,r0,0x00ff
+0x00103ac4 jal 0x00106598
+0x00103ac8 addiu r4,r29,0x0025
+0x00103acc addiu r4,r29,0x0026
+0x00103ad0 jal 0x00106694
+0x00103ad4 addiu r5,r29,0x0027
+0x00103ad8 lbu r5,0x0026(r29)
+0x00103adc lbu r4,0x0025(r29)
+0x00103ae0 jal 0x00105464
+0x00103ae4 nop
+0x00103ae8 lbu r4,0x0025(r29)
+0x00103aec jal 0x00102144
+0x00103af0 nop
+0x00103af4 andi r3,r2,0x00ff
+0x00103af8 addiu r1,r0,0x00ff
+0x00103afc beq r3,r1,0x00103d50
+0x00103b00 nop
+0x00103b04 sll r2,r3,0x01
+0x00103b08 add r2,r2,r3
+0x00103b0c sll r3,r2,0x02
+0x00103b10 lui r2,0x801c
+0x00103b14 addiu r2,r2,0xe6b4
+0x00103b18 addu r2,r2,r3
+0x00103b1c addiu r3,r0,0x0003
+0x00103b20 sb r3,0x0000(r2)
+0x00103b24 lbu r3,0x0025(r29)
+0x00103b28 nop
+0x00103b2c sb r3,0x0001(r2)
+0x00103b30 lbu r3,0x0027(r29)
+0x00103b34 beq r0,r0,0x00103d50
+0x00103b38 sb r3,0x0002(r2)
+0x00103b3c jal 0x001062f8
+0x00103b40 addiu r4,r0,0x00ff
+0x00103b44 jal 0x00106598
+0x00103b48 addiu r4,r29,0x0025
+0x00103b4c addiu r4,r29,0x0020
+0x00103b50 jal 0x00106a58
+0x00103b54 addiu r5,r29,0x0022
+0x00103b58 addiu r4,r29,0x0026
+0x00103b5c jal 0x00106694
+0x00103b60 addiu r5,r29,0x0027
+0x00103b64 lbu r5,0x0026(r29)
+0x00103b68 lbu r4,0x0025(r29)
+0x00103b6c jal 0x00105464
+0x00103b70 nop
+0x00103b74 lbu r4,0x0025(r29)
+0x00103b78 jal 0x00102144
+0x00103b7c nop
+0x00103b80 andi r3,r2,0x00ff
+0x00103b84 addiu r1,r0,0x00ff
+0x00103b88 beq r3,r1,0x00103d50
+0x00103b8c nop
+0x00103b90 sll r2,r3,0x01
+0x00103b94 add r2,r2,r3
+0x00103b98 sll r3,r2,0x02
+0x00103b9c lui r2,0x801c
+0x00103ba0 addiu r2,r2,0xe6b4
+0x00103ba4 addu r2,r2,r3
+0x00103ba8 addiu r3,r0,0x0004
+0x00103bac sb r3,0x0000(r2)
+0x00103bb0 lbu r3,0x0025(r29)
+0x00103bb4 nop
+0x00103bb8 sb r3,0x0001(r2)
+0x00103bbc lh r3,0x0020(r29)
+0x00103bc0 nop
+0x00103bc4 sh r3,0x0004(r2)
+0x00103bc8 lh r3,0x0022(r29)
+0x00103bcc beq r0,r0,0x00103d50
+0x00103bd0 sh r3,0x0006(r2)
+0x00103bd4 jal 0x001062f8
+0x00103bd8 addiu r4,r0,0x00ff
+0x00103bdc jal 0x00106598
+0x00103be0 addiu r4,r29,0x0025
+0x00103be4 addiu r4,r29,0x0026
+0x00103be8 jal 0x00106694
+0x00103bec addiu r5,r29,0x0027
+0x00103bf0 lbu r5,0x0026(r29)
+0x00103bf4 lbu r4,0x0025(r29)
+0x00103bf8 jal 0x00105464
+0x00103bfc nop
+0x00103c00 lbu r4,0x0025(r29)
+0x00103c04 jal 0x00102144
+0x00103c08 nop
+0x00103c0c andi r3,r2,0x00ff
+0x00103c10 addiu r1,r0,0x00ff
+0x00103c14 beq r3,r1,0x00103d50
+0x00103c18 nop
+0x00103c1c sll r2,r3,0x01
+0x00103c20 add r2,r2,r3
+0x00103c24 sll r3,r2,0x02
+0x00103c28 lui r2,0x801c
+0x00103c2c addiu r2,r2,0xe6b4
+0x00103c30 addu r2,r2,r3
+0x00103c34 addiu r3,r0,0x0005
+0x00103c38 sb r3,0x0000(r2)
+0x00103c3c lbu r3,0x0025(r29)
+0x00103c40 nop
+0x00103c44 sb r3,0x0001(r2)
+0x00103c48 lbu r3,0x0027(r29)
+0x00103c4c beq r0,r0,0x00103d50
+0x00103c50 sb r3,0x0002(r2)
+0x00103c54 jal 0x001062f8
+0x00103c58 addiu r4,r0,0x00ff
+0x00103c5c jal 0x00106598
+0x00103c60 addiu r4,r29,0x0025
+0x00103c64 lbu r4,0x0025(r29)
+0x00103c68 jal 0x000b797c
+0x00103c6c nop
+0x00103c70 beq r0,r0,0x00103d50
+0x00103c74 nop
+0x00103c78 lw r2,-0x6b50(r28)
+0x00103c7c addiu r4,r28,0x94a6
+0x00103c80 addiu r2,r2,0x0001
+0x00103c84 sw r2,-0x6b50(r28)
+0x00103c88 jal 0x00106a58
+0x00103c8c addiu r5,r28,0x94a8
+0x00103c90 jal 0x00106a30
+0x00103c94 addiu r4,r28,0x94aa
+0x00103c98 beq r0,r0,0x00103d50
+0x00103c9c nop
+0x00103ca0 addiu r4,r29,0x0025
+0x00103ca4 jal 0x00106638
+0x00103ca8 addiu r5,r29,0x0026
+0x00103cac lbu r5,0x0026(r29)
+0x00103cb0 lbu r4,0x0025(r29)
+0x00103cb4 jal 0x001054e4
+0x00103cb8 nop
+0x00103cbc beq r0,r0,0x00103d50
+0x00103cc0 nop
+0x00103cc4 addiu r4,r29,0x0025
+0x00103cc8 jal 0x00106638
+0x00103ccc addiu r5,r29,0x0026
+0x00103cd0 lbu r4,0x0025(r29)
+0x00103cd4 lbu r6,0x0026(r29)
+0x00103cd8 jal 0x000b5984
+0x00103cdc addiu r5,r0,0x0001
+0x00103ce0 beq r0,r0,0x00103d50
+0x00103ce4 nop
+0x00103ce8 jal 0x001062f8
+0x00103cec addiu r4,r0,0x00ff
+0x00103cf0 jal 0x00106598
+0x00103cf4 addiu r4,r29,0x0025
+0x00103cf8 lbu r4,0x0025(r29)
+0x00103cfc jal 0x001062e0
+0x00103d00 nop
+0x00103d04 sh r2,-0x6b34(r28)
+0x00103d08 lbu r2,0x0025(r29)
+0x00103d0c nop
+0x00103d10 addi r2,r2,0x0001
+0x00103d14 jal 0x001062e0
+0x00103d18 andi r4,r2,0x00ff
+0x00103d1c sh r2,-0x6b32(r28)
+0x00103d20 jal 0x001053ec
+0x00103d24 nop
+0x00103d28 addiu r2,r0,0x0004
+0x00103d2c sb r2,0x001e(r29)
+0x00103d30 addiu r2,r0,0x00ff
+0x00103d34 sb r2,0x001f(r29)
+0x00103d38 jal 0x001064bc
+0x00103d3c addiu r4,r29,0x0018
+0x00103d40 lui r4,0x801c
+0x00103d44 addiu r4,r4,0xe7bc
+0x00103d48 jal 0x000911bc
+0x00103d4c addiu r5,r0,0x0003
+0x00103d50 lui r4,0x801c
+0x00103d54 addiu r4,r4,0xe7bc
+0x00103d58 jal 0x000911bc
+0x00103d5c addiu r5,r0,0x0001
+0x00103d60 lw r31,0x0010(r29)
+0x00103d64 nop
+0x00103d68 jr r31
+0x00103d6c addiu r29,r29,0x0028
