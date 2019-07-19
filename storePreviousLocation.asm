@@ -2,8 +2,7 @@ void storePreviousLocation(offset, tileX, tileY) {
   store(0x13D5F0 + offset, tileX)
   store(0x13D5D0 + offset, tileY)
   
-  r2 = load(0x134D59) + 1
-  store(0x134D59, r2)
+  store(0x134D59, load(0x134D59) + 1)
 }
 
 0x000d4564 lui r2,0x8014

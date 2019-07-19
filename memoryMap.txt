@@ -1,4 +1,6 @@
 == BTL_REL.BIN ==
+0x00056CA8    combatInit()
+
 0x00057BD0    partnerAiTick()
 
 0x00059078    resetFlatten(combatId = r4)
@@ -18,6 +20,8 @@
 0x0005D6E0    setChargeupFlag(entityPtr = r4, combatPtr = r5, techId = r6)
 
 0x0005D990    0x0005D990(entityData = r4, combatData = r5) -> result = r2
+
+0x0005DEC4    battleTickFrame()
 
 0x0005DFC8    addFinisherValue(combatData = r4, amount = r5) // addToFinisher
 
@@ -83,8 +87,39 @@
 0x0008E824    doSlotsRigging(reelId = r4, dataOffset = r5)
 
 == SLUS ==
+0x00090800    FlushCache()
+0x00090810    GPU_cw(gp0cmd = r4)
+0x00090820    _bu_init()
+0x00090830    CdRemove()
+0x00090848    DeliverEvent(class = r4, spec = r5)
+0x00090858    OpenEvent(class = r4, spec = r5, mode = r6, func = r7) -> eventDescriptor = r2
+0x00090868    CloseEvent(event = r4) -> r2 = 1
+0x00090878    WaitEvent(event = r4) -> isReady = r2
+0x00090888    TestEvent(event = r4) -> isReady = r2
+0x00090898    EnableEvent(event = r4) -> r2 = 1
+0x000908A8    DisableEvent(event = r4) -> r2 = 1
+0x000908B8    InitPad(buf1 = r4, size1 = r5, buf2 = r6, size2 = r7)
+0x000908C8    StartPad()
+0x000908D8    StopPad()
+0x000908E8    OutdatedPadInitAndStart(type = r4, button_dest = r5, unused = r6, unused = r7)
+0x000908F8    OutdatedPadGetButtons()
+0x00090908    ReturnFromException()
+0x00090918    SetDefaultExitFromException()
+0x00090928    SetCustomExitFromException()
+0x00090938    EnterCriticalSection()
+0x00090948    ExitCriticalSection()
+0x00090958    FileOpen(fileName = r4, accessMode = r5) -> fileHandle = r2
+0x00090968    FileSeek(fileHandle = r4, offset = r5, seekType = r6)
+0x00090978    FileRead(fileHandle = r4, dest = r5, length = r6) -> bytesRead = r2
+0x00090988    FileWrite(fileHandle = r4, src = r5, length = r6) -> bytesWritten = r2
+0x00090998    FileClose(fileHandle = r4) -> fileHandle = r2
+0x000909A8    FormatDevice(deviceName = r4) -> success = r2
+0x000909B8    firstfile(fileName = r4, dirEntry = r5) -> dirEntry = r2
+0x000909C8    nextfile(dirEntry = r4) -> direntry = r2
+0x000909D8    FileDelete(fileName = r4) -> success = r2
 0x000909E8    ChangeClearPad(val = r4)
-
+0x000909F8    SysEnqIntRP(priority = r4, struct = r5)
+0x00090A08    SysDeqIntRP(priority = r4, struct = r5)
 0x00090A18    ChangeClearRCnt(irq = r4, flag = r5)
 
 0x00091174    exit(exitcode = r4)
@@ -106,6 +141,7 @@
 0x0009127C    rand() -> value = r2 // BIOS call
 0x0009128C    printf(txtPtr = r4, params = r5,r6,r7,stack)
 
+0x00091BE8    getPadButtons() -> buttonFlags = r2
 0x00091C10    vsyncWait(targetFrame = r4, timeout = r5)
 0x00091CA8    vsync(frameCount = r4) -> blankCount = r4 //either hblank or vblank
 
@@ -115,7 +151,11 @@
 
 0x00092708    setDMAIRQHandler(dmaIrqId = r4, newHandler = r5) -> oldHandler = r2
 
+0x00092AD4    probSwapPointer(ptr1 = r4, ptr2 = r5)
+
 0x00092CBC    printRectDebugInfo(stringPtr = r4, arrayPtr = r5)
+
+0x0009324C    gpuClearOTagR(otPtr = r4, otCount = r5) -> otCount = r2
 
 0x0009332C    fillRect(headerPtr = r4, color = r5) -> unused = r2
 0x0009355C    uploadTexture(headerPtr = r4, dataStartPtr = r5) -> hasFailed = r2
@@ -130,11 +170,32 @@
 0x000942C8    setGPUTimeout()
 0x000942FC    checkGPUTimeout()
 
+0x00094718    SetDispMask(isDisplayed = r4)
 0x000947B0    drawSync(syncMode = r4) -> result = r2
 0x00094818    clearImage(headerPtr, red, green, blue)
 0x000948A8    loadImage(headerPtr = r4, dataPtr = r5)
 
+0x00094A20    ClearOTagR(otPtr = r4, otCount = r5) -> otCount = r2
+0x00094ACC    DrawOTag(otPtr = r4)
+0x00094B3C    PutDrawEnv(drawEnvPtr = r4)
+0x00094BFC    PutDispEnv(dispEnvPtr = r4)
+
+0x000979C0    setupClearColor(red = r4, green = r5, blue = r6, ptr = r7)
+0x00097AF8    r2 = load(0x136E0C)
+0x00097B08    0x00097B08()
+0x00097C18    setupDrawEnv()
+0x00097C98    setupDispAndDrawEnv()
+
+0x00097D48    storeScreenOffset(posX = r4, posY = r5)
+
+0x00098808    deferred call -> drawOTag(load(r4 + 0x10))
+
+0x00098C28    set0x136FE4(value = r4) // store(0x136FE4, value)
+0x00098C38    get0x136FE4() -> value = r2 // load(0x136FE4)
+
 0x00097DD8    setTransformationMatrix(matrixPtr = r4)
+
+0x00098838    initOrderingTable(val1 = r4, val2 = r5, otPtrPtr)
 
 0x0009AB10    rotateVectorByMatrix(matrixPtr = r4, vectorPtr = r5, resultPtr = r6) -> resultPtr = r2
 
@@ -144,6 +205,8 @@
 0x0009B200    setGTERotationMatrix(matrixPtr = r4)
 
 0x0009B290    setGTETranslationVector(matrixPtr = r4)
+
+0x0009B340    setGTEScreenOffset(offsetX = r4, offsetY = r5)
 
 0x0009B804    rotVecToRotMatrix(rotVec = r4, destMatrixPtr = r5) -> matrixPtr = r2
 
@@ -157,6 +220,8 @@
 
 0x000A2F64    setObject(objectId = r4, instanceId = r5, funcPtr1 = r6, funcPtr2 = r7) -> success = r2
 0x000A3008    unsetObject(objectId = r4, instanceId = r5) -> success = r2
+0x000A30C8    tickObjects()
+0x000A315C    tickObjects2()
 
 0x000A36D4    random(upperLimit = r4) -> r2 //TODO
 
@@ -274,7 +339,7 @@
 0x000D2A48    0x000D2A48(val2, val3) -> retValue = r2 // TODO, something SPU related
 
 0x000D3078    isTileWithinScreenArea(tileX = r4, tileY = r5) -> isWithinScreenArea = r2
-0x000D3174    0x000D3174()
+0x000D3174    pollStoredLocation()
 0x000D31AC    entityIsInEntity(entityPtr = r4, entityPtr2 = r5) -> isColliding = r2
 
 0x000D3648    entityCheckCombatArea(entityPtr = r4, oldLocationPtr = r5, width = r6, height = r7) -> hasMovedOutside = r2

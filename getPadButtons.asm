@@ -1,0 +1,15 @@
+int getPadButtons() {
+  OutdatedPadGetButtons()
+  return ~load(0x135450)
+}
+
+0x00091be8 addiu r29,r29,0xffe8
+0x00091bec sw r31,0x0010(r29)
+0x00091bf0 jal 0x000908f8
+0x00091bf4 nop
+0x00091bf8 lui r2,0x8013
+0x00091bfc lw r2,0x5450(r2)
+0x00091c00 lw r31,0x0010(r29)
+0x00091c04 nor r2,r0,r2
+0x00091c08 jr r31
+0x00091c0c addiu r29,r29,0x0018

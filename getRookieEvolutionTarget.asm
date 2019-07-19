@@ -25,23 +25,23 @@ int getRookieEvolutionTarget(digimonType) {
       score += load(0x1557F0) / 10
       count++
     }
-    if(load(0x13ABF0 + targetType * 0x1C) != -1) { // MP
+    if(load(0x12ABF0 + targetType * 0x1C) != -1) { // MP
       score += load(0x1557F2) / 10
       count++
     }
-    if(load(0x13ABF2 + targetType * 0x1C) != -1) { // Offense
+    if(load(0x12ABF2 + targetType * 0x1C) != -1) { // Offense
       score += load(0x1557E0)
       count++
     }
-    if(load(0x13ABF4 + targetType * 0x1C) != -1) { // Defense
+    if(load(0x12ABF4 + targetType * 0x1C) != -1) { // Defense
       score += load(0x1557E2)
       count++
     }
-    if(load(0x13ABF6 + targetType * 0x1C) != -1) { // Speed
+    if(load(0x12ABF6 + targetType * 0x1C) != -1) { // Speed
       score += load(0x1557E4)
       count++
     }
-    if(load(0x13ABF8 + targetType * 0x1C) != -1) { // Brains
+    if(load(0x12ABF8 + targetType * 0x1C) != -1) { // Brains
       score += load(0x1557E6)
       count++
     }

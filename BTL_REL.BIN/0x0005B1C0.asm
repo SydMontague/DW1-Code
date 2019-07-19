@@ -1,17 +1,17 @@
 0x0005B1C0() {
   combatHead = load(0x134D4C)
   for(r5 = 0; r5 < 4; r5++) {
-    store(combatHead + 0x05A0 + r5 * 0x28, 0)
-    store(combatHead + 0x05A8 + r5 * 0x28, 50)
-    store(combatHead + 0x05AA + r5 * 0x28, 3)
-    store(combatHead + 0x05AC + r5 * 0x28, 31)
-    store(combatHead + 0x05AE + r5 * 0x28, 88)
-    store(combatHead + 0x05AF + r5 * 0x28, 236)
-    store(combatHead + 0x05B0 + r5 * 0x28, 272)
-    store(combatHead + 0x05B2 + r5 * 0x28, 499)
-    store(combatHead + 0x05B4 + r5 * 0x28, 128)
-    store(combatHead + 0x05B5 + r5 * 0x28, -1)
-    store(combatHead + 0x05B6 + r5 * 0x28, 128)
+    store(combatHead + 0x05A0 + 0x00 + r5 * 0x28, 0)
+    store(combatHead + 0x05A0 + 0x08 + r5 * 0x28, 50)
+    store(combatHead + 0x05A0 + 0x0A + r5 * 0x28, 3)
+    store(combatHead + 0x05A0 + 0x0C + r5 * 0x28, 31)
+    store(combatHead + 0x05A0 + 0x0E + r5 * 0x28, 88)
+    store(combatHead + 0x05A0 + 0x0F + r5 * 0x28, 236)
+    store(combatHead + 0x05A0 + 0x10 + r5 * 0x28, 272)
+    store(combatHead + 0x05A0 + 0x12 + r5 * 0x28, 499)
+    store(combatHead + 0x05A0 + 0x14 + r5 * 0x28, 128)
+    store(combatHead + 0x05A0 + 0x15 + r5 * 0x28, -1)
+    store(combatHead + 0x05A0 + 0x16 + r5 * 0x28, 128)
   }
 }
 

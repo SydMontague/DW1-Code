@@ -1,10 +1,13 @@
-0x00056CA8() {
+void combatInit() {
   0x000623A0() // done, name missing
   resetFlattenGlobal()
   
   store(0x13507C, -1)
   
-  getEntityTileFromModel(0x12F348, 0x134D58, 0x134D57) // deferred via 0x0005B1AC()
+  tileX, tileY = getEntityTileFromModel(0x12F348) // deferred via 0x0005B1AC()
+  store(0x134D58, tileX)
+  store(0x134D57, tileY)
+  
   0x0005B1C0() // done, name missing
   
   combatHead = load(0x134D4C)
@@ -156,21 +159,17 @@
     
     store(0x13D610 + 0x00 + i * 0x0C, load(entityStatsPtr + 0x10)) // HP
     store(0x13D610 + 0x02 + i * 0x0C, load(entityStatsPtr + 0x12)) // MP
-    store(0x13D610 + 0x04 + i * 0x0C, load(entityStatsPtr))        // Off
+    store(0x13D610 + 0x04 + i * 0x0C, load(entityStatsPtr + 0x00)) // Off
     store(0x13D610 + 0x06 + i * 0x0C, load(entityStatsPtr + 0x02)) // Def
     store(0x13D610 + 0x08 + i * 0x0C, load(entityStatsPtr + 0x04)) // Speed
     store(0x13D610 + 0x0A + i * 0x0C, load(entityStatsPtr + 0x06)) // Brains
   }
   
   if(load(0x138460) & 0x0060 != 0) { // is sick or injured
-    offense = load(0x1557E0) * 0.8
-    store(0x1557E0, offense)
-    defense = load(0x1557E2) * 0.8
-    store(0x1557E2, defense)
-    speed = load(0x1557E4) * 0.8
-    store(0x1557E4, speed)
-    brains = load(0x1557E6) * 0.8
-    store(0x1557E6, brains)
+    store(0x1557E0, load(0x1557E0) * 0.8) // offense
+    store(0x1557E2, load(0x1557E2) * 0.8) // defense
+    store(0x1557E4, load(0x1557E4) * 0.8) // speed
+    store(0x1557E6, load(0x1557E6) * 0.8) // brains
   }
   
   store(combatHead + 0x0648, load(0x1557F4)) // store current HP

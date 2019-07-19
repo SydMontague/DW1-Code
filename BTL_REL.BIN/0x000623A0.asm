@@ -5,6 +5,7 @@ int 0x000623A0() {
   store(0x73E63, 128)
   store(0x73E64, 256)
   store(0x73E68, 128)
+  store(0x73E69, 128)
   store(0x73E6A, 128)
   store(0x73E6C, 20)
   store(0x73E6E, 20)

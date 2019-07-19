@@ -31,8 +31,7 @@
     // -> is fleeing
     startAnimation(entitiyPtr, 0x24) // fast walk animation
     
-    r2 = load(entitiyPtr + 0x30) | 0x0004
-    store(entitiyPtr + 0x30, r2)
+    store(entitiyPtr + 0x30, load(entitiyPtr + 0x30) | 0x0004)
     
     r5 = load(entitiyPtr + 0x58)
     r4 = load(entitiyPtr + 0x5A)
@@ -53,34 +52,34 @@
     store(sp + 0x34 + fleeingEnemyCount++ * 2, entityId)
   }
   
-  hasFleeingEnemies = fleeingEnemyCount == 0 ? 1 : 0 // has fleeing enemies
+  hasNoFleeingEnemies = fleeingEnemyCount == 0 ? 1 : 0 // has fleeing enemies
     
-  r20 = load(0x134F73) - 1
+  waypointCount = load(0x134D53) - 1
   store(0x134D50, 0)
   
-  startAnimation(0x15576C, 3)
+  startAnimation(0x15576C, 3) // set Hiro running
   playSound(0, 0x10)
   
-  r16 = 0
+  someValue = 0
   
-  for(frameCount = 0; frameCount < 0xC8 || hasFleeingEnemies == 0 || r16 == 0; frameCount++) {
+  for(frameCount = 0; frameCount < 0xC8 || hasNoFleeingEnemies == 0 || someValue == 0; frameCount++) {
     playerPtr = load(0x12F344) // playerPtr
     
+    // walk Hiro to combat position
     if(load(playerPtr + 0x2E) != 1) { // is not in battle idle animation
       locationPtr = load(playerPtr + 0x04) + 0x78
       
       tileX, tileY = getModelTile(locationPtr)
       
-      if(r20 >= 0) {
-        lTileX = load(0x13D5B0 + r20)
-        lTileY = load(0x13D590 + r20)
+      if(waypointCount >= 0) { // has waypoints left
+        lTileX = load(0x13D5B0 + waypointCount)
+        lTileY = load(0x13D590 + waypointCount)
         
         entityLookAtTile(playerPtr, lTileX, lTileY)
         
         if(tileX == lTileX && tileX == lTileY) {
-          r20--
-          tmp = load(0x134D53) - 1
-          store(0x134D53, tmp)
+          waypointCount--
+          store(0x134D53, load(0x134D53) - 1)
         }
         
         partnerPtr = load(0x12F348)
@@ -100,64 +99,64 @@
       }
     }
     
-    if(r20 == -1) {
-      r2 = load(0x134D6C)
+    // pointless?
+    if(waypointCount == -1) {
+      enemyCount = load(0x134D6C) // enemy count
       
-      for(r16 = 1; r2 < r16; r16++); // pointless??
+      for(i = 1; enemyCount < i; i++);
     }
     
+    // Hiro is at his spot
     if(collisionResponse == 11 && load(playerPtr + 0x2E) != 1) {
-      startAnimation(r4, 1)
-      partnerPtr = load(0x12F348)
+      startAnimation(playerPtr, 1) // set him idle
       
+      // make him look at the partner Digimon
+      partnerPtr = load(0x12F348)
       entityLookAtLocation(playerPtr, load(partnerPtr + 0x04) + 0x78)
       frameCount = 0xC6
     }
     
-    for(r16 = 0; r16 < fleeingEnemyCount; r16++) {
-      entityId = load(sp + 0x34 + r16 * 2)
+    for(entityCounter = 0; entityCounter < fleeingEnemyCount; entityCounter++) {
+      entityId = load(sp + 0x34 + entityCounter * 2)
       entityPtr = load(0x12F344 + entityId * 4)
       
       if(entityIsOffScreen(entityPtr, 320, 240) == 0)
         break
     }
     
-    if(r16 == fleeingEnemyCount)
-      hasFleeingEnemies = 1
+    if(entityCounter == fleeingEnemyCount)
+      hasNoFleeingEnemies = 1
       
-    r16 = load(0x1350C0) // deferred via 0x00063EF0()
-    0x000D4034()
+    someValue = load(0x1350C0) // deferred via 0x00063EF0()
+    0x000D4034() // TODO name, some waypoint stuff
     
-    r2 = load(combatHead + 0x066D)
-    r2 = load(0x12F344 + r2 * 4)
-    r2 = load(r2 + 0x04)
-    entityLookAtLocation(0x1557A8, r2 + 0x78)
-    0x0005DEC4()
-    
+    // let partner look at enemy #1
+    enemyId = load(combatHead + 0x066D)
+    enemyPtr = load(0x12F344 + enemyId * 4)
+    locationPtr = load(enemyPtr + 0x04)
+    entityLookAtLocation(0x1557A8, locationPtr + 0x78)
+    battleTickFrame()
   }
   
-  if(r20 != -1) {
-    r2 = r20 + 1
-    store(0x134D53, r2)
-    r2 = load(0x134D53) - 1
-    store(0x134D50, r2)
+  if(waypointCount != -1) {
+    store(0x134D53, waypointCount + 1)
+    store(0x134D50, load(0x134D53) - 1)
   }
   else
     0x000D3ADC()
   
-  r4 = playerPtr
   r2 = load(r4 + 0x2E)
   
   if(r2 != 1) {
-    startAnimation(r4, 1)
-    r2 = load(0x12F348)
-    r2 = load(r2 + 0x04)
-    r4 = playerPtr
-    entityLookAtLocation(r4, r2 + 0x78)
+    startAnimation(playerPtr, 1)
+    partnerPtr = load(0x12F348)
+    partnerLocPtr = load(partnerPtr + 0x04)
+    
+    entityLookAtLocation(playerPtr, partnerLocPtr + 0x78)
   }
   
   for(r16 = 0; r16 < fleeingEnemyCount; r16++) {
-    r2 = load(sp + r16 * 2 + 0x34)
+    r2 = load(sp + 0x34 + r16 * 2)
     r3 = 0x12F344 + r2 * 4
     r2 = load(0x12F344 + r2 * 4)
     store(r2 + 0x34, 0)
@@ -171,7 +170,7 @@
   playSound(0, 0x11)
   
   while(0x00063EF0() == 0)
-    0x0005DEC4()
+    battleTickFrame()
   
   0x00063EE4()
   store(0x134F0A, 1)

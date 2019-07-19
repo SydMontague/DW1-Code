@@ -1,11 +1,11 @@
 void 0x000A3B20() {
-  array = int[8]
+  array = int[7]
   
-  for(i = 0; i < 8; i++)
+  for(i = 0; i < 7; i++)
     array[i] = load(0x122584 + i * 4)
   
   for(i = 0; i < 16; i++)
-    for(j = 0; j < 8; j++)
+    for(j = 0; j < 7; j++)
       store(0x137A24 + i * 0x1C + j * 4, array[j])
 }
 

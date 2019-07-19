@@ -5,7 +5,7 @@ void combatMain() {
   store(0x134D8C, xCenter)
   store(0x134D88, yCenter)
   
-  0x00056CA8()
+  combatInit()
   0x0005736C()
   
   while(0x00057920() == 0) {

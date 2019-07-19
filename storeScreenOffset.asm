@@ -1,0 +1,10 @@
+storeScreenOffset(posX, posY) {
+  store(0x136DFC, posX)
+  store(0x136DFE, posY)
+}
+
+0x00097d48 lui r2,0x8013
+0x00097d4c addiu r2,r2,0x6dfc
+0x00097d50 sh r4,0x0000(r2)
+0x00097d54 jr r31
+0x00097d58 sh r5,0x0002(r2)

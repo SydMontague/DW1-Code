@@ -1,3 +1,4 @@
+// waypoint stuff, navigate around obstacles
 0x000D4034() {
   playerPtr = load(0x12F344)
   partnerPtr = load(0x12F348)
@@ -31,8 +32,7 @@
       offset = (load(0x134D5A) + load(0x134D59) - r16 - 2) % 30
       
       if(isFiveTileWidePathOpen(playerTileX, playerTileY, load(0x13D5F0 + offset), load(0x13D5D0 + offset)) == 0) {
-        r2 = load(0x134D5A) - r16 - 1
-        store(0x134D59, r2)
+        store(0x134D59, load(0x134D5A) - r16 - 1)
         break
       }
       
@@ -59,7 +59,7 @@
         store(partnerPtr + 0x10, locX / 32768)
         store(partnerPtr + 0x18, locY / 32768)
         
-        0x000D3174() // TODO
+        pollStoredLocation() // TODO
       }
     }
   }
@@ -75,7 +75,7 @@
       entityLookAtTile(partnerPtr, load(0x13D5F0 + offset), load(0x13D5D0 + offset))
       
       if(load(0x13D5F0 + offset) == partnerModelTileX && partnerModelTileY == load(0x13D5D0 + offset))
-        0x000D3174() // TODO
+        pollStoredLocation() // TODO
     }
     else {
       playerLocationPtr = load(playerPtr + 0x04)
@@ -93,7 +93,7 @@
     else if(collisionResponse != 0)
       startBattleIdleAnimation(0x1557A8, 0x1557E0, 0)
   }
-  else if(load(0x134F0A) == 3 && 0x000D31AC(playerPtr, partnerPtr) == 1)
+  else if(load(0x134F0A) == 3 && entityIsInEntity(playerPtr, partnerPtr) == 1)
     handleBattleIdle(0x1557A8, 0x1557E0, 0)
   
   store(0x134D5C, playerTileX)
