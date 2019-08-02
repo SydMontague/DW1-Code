@@ -33,12 +33,11 @@ void partnerAiTick() {
       && brains < 301 
       && frameCount % checkInterval == 0
       && random(100) < 70 - discipline) {
-        
-      flags = load(statusFlagPtr) | 0x2000 // set dumb flag
-      store(statusFlagPtr, flags)
+      
+      store(statusFlagPtr, load(statusFlagPtr) | 0x2000) // set dumb flag
       store(combatPtr + 0x2A, 100) // set dumb timer
     }
-    //0x00057cf0
+    
     cooldown = load(combatPtr + 0x28)
     if(cooldown >= 2)
       store(combatPtr + 0x28, cooldown - 1)

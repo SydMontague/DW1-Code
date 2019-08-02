@@ -1,0 +1,255 @@
+0x0005A9F8(combatId) {
+  combatHead = load(0x134D4C)
+  entityId = load(combatHead + 0x66C + combatId) * 4
+  entityPtr = load(0x12F344 + entityId)
+  combatPtr = combatHead + combatId * 0x168
+  
+  // set/unset an unknown flag, probably "is colliding"
+  if(entityCheckCollision(0, entityPtr, 280, 200) != -1)
+    store(entityPtr + 0x30, load(entityPtr + 0x30) | 0x02)
+  else
+    store(entityPtr + 0x30, load(entityPtr + 0x30) & 0x05)
+  
+  // no AI flag, unknown, unknown
+  if(load(0x134D74) != 0 && load(0x134D60) == entityPtr && load(0x135080) > 0)
+    return
+  
+  if(load(combatPtr + 0x34) & 0x28 == 0x28) { // flattened and attacking
+    someVal = load(combatPtr + 0x24) - 1
+    store(combatPtr + 0x24, someVal)
+    
+    if(someVal == 0)
+      store(entityPtr + 0x30, load(entityPtr + 0x30) & 0x00FE) // unknown flag
+    else if(someVal == 10)
+      store(entityPtr + 0x36, 0) // unknown
+    else if(someVal == 22)
+      0x00071098(entityPtr)
+  }
+  
+  if(load(entityPtr + 0x30) & 1 != 0)
+    return
+  
+  if(load(0x134D60) == entityPtr) {
+    store(0x134D74, 0)
+    store(0x134D60, 0)
+  }
+  
+  store(combatPtr + 0x3B, 0) // unknown value
+  
+  if(load(combatPtr + 0x34) & 0x0020 != 0) {
+    if(combatId == 0)
+      store(combatHead + 0x640, load(combatHead + 0x640) + 1) // hit count
+    
+    store(combatPtr + 0x34, load(combatPtr + 0x34) & 0xFBFF) // unset unknown flag
+    store(combatPtr + 0x34, load(combatPtr + 0x34) | 0x1000) // set on cooldown
+    store(combatPtr + 0x28, 40) // cooldown timer
+    
+    addFinisherValue(combatPtr, load(combatPtr + 0x18) * 0.04) // finisher goal
+  }
+  
+  if(load(combatPtr + 0x26) <= 0) {
+    if(load(combatPtr + 0x34) & 0x0008 != 0) // is flattened
+      store(entityPtr + 0x36, 0) // move range
+    
+    if(load(combatPtr + 0x34) & 0x0020 == 0) // is attacking
+      store(entityPtr + 0x53, 0) // unknown
+      
+    flag = load(combatPtr + 0x34)
+    
+    if(flag & 0x0080 != 0) { // if blocking
+      store(combatPtr + 0x34, flag & 0xFF7F) // unset blocking flag
+      0x0005B254(combatPtr)
+    }
+    else
+      store(combatPtr + 0x34, flag & 0xFF0F) // unset blocking, attacking, transforming, knocked back flag
+  }
+  
+  if(load(combatPtr + 0x34) & 0x0010 == 0) { // is knocked back
+    if(load(combatPtr + 0x22) == -1)
+      store(combatPtr + 0x22, 0x41)
+  }
+  else {
+    store(combatPtr + 0x2A, 0) // dumb timer
+    store(combatPtr + 0x34, load(combatPtr + 0x34) & 0xDFFF) // unset stupid
+  }
+}
+
+0x0005a9f8 addiu r29,r29,0xffe0
+0x0005a9fc sw r31,0x001c(r29)
+0x0005aa00 sw r18,0x0018(r29)
+0x0005aa04 sw r17,0x0014(r29)
+0x0005aa08 lw r2,-0x6de0(r28)
+0x0005aa0c addu r18,r4,r0
+0x0005aa10 addu r4,r2,r0
+0x0005aa14 sw r16,0x0010(r29)
+0x0005aa18 addu r2,r18,r2
+0x0005aa1c lbu r2,0x066c(r2)
+0x0005aa20 addiu r6,r0,0x0118
+0x0005aa24 sll r3,r2,0x02
+0x0005aa28 lui r2,0x8013
+0x0005aa2c addiu r2,r2,0xf344
+0x0005aa30 addu r2,r2,r3
+0x0005aa34 lw r17,0x0000(r2)
+0x0005aa38 addiu r7,r0,0x00c8
+0x0005aa3c sll r2,r18,0x04
+0x0005aa40 sub r3,r2,r18
+0x0005aa44 sll r2,r3,0x02
+0x0005aa48 sub r2,r2,r3
+0x0005aa4c sll r2,r2,0x03
+0x0005aa50 addu r16,r4,r2
+0x0005aa54 addu r4,r0,r0
+0x0005aa58 jal 0x000d45ec
+0x0005aa5c addu r5,r17,r0
+0x0005aa60 addiu r1,r0,0xffff
+0x0005aa64 beq r2,r1,0x0005aa80
+0x0005aa68 nop
+0x0005aa6c lbu r2,0x0030(r17)
+0x0005aa70 nop
+0x0005aa74 ori r2,r2,0x0002
+0x0005aa78 beq r0,r0,0x0005aa90
+0x0005aa7c sb r2,0x0030(r17)
+0x0005aa80 lbu r2,0x0030(r17)
+0x0005aa84 nop
+0x0005aa88 andi r2,r2,0x0005
+0x0005aa8c sb r2,0x0030(r17)
+0x0005aa90 lw r2,-0x6db8(r28)
+0x0005aa94 nop
+0x0005aa98 beq r2,r0,0x0005aac0
+0x0005aa9c nop
+0x0005aaa0 lw r2,-0x6dcc(r28)
+0x0005aaa4 nop
+0x0005aaa8 bne r2,r17,0x0005aac0
+0x0005aaac nop
+0x0005aab0 lw r2,-0x6aac(r28)
+0x0005aab4 nop
+0x0005aab8 bgtz r2,0x0005acac
+0x0005aabc nop
+0x0005aac0 lhu r2,0x0034(r16)
+0x0005aac4 addiu r1,r0,0x0028
+0x0005aac8 andi r2,r2,0x0028
+0x0005aacc bne r2,r1,0x0005ab34
+0x0005aad0 nop
+0x0005aad4 lh r2,0x0024(r16)
+0x0005aad8 nop
+0x0005aadc addi r2,r2,-0x0001
+0x0005aae0 sh r2,0x0024(r16)
+0x0005aae4 lh r2,0x0024(r16)
+0x0005aae8 nop
+0x0005aaec beq r2,r0,0x0005ab24
+0x0005aaf0 nop
+0x0005aaf4 addiu r1,r0,0x000a
+0x0005aaf8 beq r2,r1,0x0005ab1c
+0x0005aafc nop
+0x0005ab00 addiu r1,r0,0x001c
+0x0005ab04 bne r2,r1,0x0005ab34
+0x0005ab08 nop
+0x0005ab0c jal 0x00071098
+0x0005ab10 addu r4,r17,r0
+0x0005ab14 beq r0,r0,0x0005ab38
+0x0005ab18 lbu r2,0x0030(r17)
+0x0005ab1c beq r0,r0,0x0005ab34
+0x0005ab20 sb r0,0x0036(r17)
+0x0005ab24 lbu r2,0x0030(r17)
+0x0005ab28 nop
+0x0005ab2c andi r2,r2,0x00fe
+0x0005ab30 sb r2,0x0030(r17)
+0x0005ab34 lbu r2,0x0030(r17)
+0x0005ab38 nop
+0x0005ab3c andi r2,r2,0x0001
+0x0005ab40 bne r2,r0,0x0005acac
+0x0005ab44 nop
+0x0005ab48 lw r2,-0x6dcc(r28)
+0x0005ab4c nop
+0x0005ab50 bne r2,r17,0x0005ab60
+0x0005ab54 nop
+0x0005ab58 sw r0,-0x6db8(r28)
+0x0005ab5c sw r0,-0x6dcc(r28)
+0x0005ab60 sb r0,0x003b(r16)
+0x0005ab64 lhu r2,0x0034(r16)
+0x0005ab68 nop
+0x0005ab6c andi r2,r2,0x0020
+0x0005ab70 beq r2,r0,0x0005abf4
+0x0005ab74 nop
+0x0005ab78 bne r18,r0,0x0005ab98
+0x0005ab7c nop
+0x0005ab80 lw r3,-0x6de0(r28)
+0x0005ab84 nop
+0x0005ab88 lhu r2,0x0640(r3)
+0x0005ab8c nop
+0x0005ab90 addiu r2,r2,0x0001
+0x0005ab94 sh r2,0x0640(r3)
+0x0005ab98 lhu r2,0x0034(r16)
+0x0005ab9c addu r4,r16,r0
+0x0005aba0 andi r2,r2,0xfbff
+0x0005aba4 sh r2,0x0034(r16)
+0x0005aba8 lhu r2,0x0034(r16)
+0x0005abac nop
+0x0005abb0 ori r2,r2,0x1000
+0x0005abb4 sh r2,0x0034(r16)
+0x0005abb8 addiu r2,r0,0x0028
+0x0005abbc sh r2,0x0028(r16)
+0x0005abc0 lh r2,0x0018(r16)
+0x0005abc4 nop
+0x0005abc8 sll r3,r2,0x01
+0x0005abcc lui r2,0x51eb
+0x0005abd0 ori r2,r2,0x851f
+0x0005abd4 mult r2,r3
+0x0005abd8 mfhi r2
+0x0005abdc srl r3,r3,0x1f
+0x0005abe0 sra r2,r2,0x04
+0x0005abe4 addu r2,r2,r3
+0x0005abe8 sll r5,r2,0x10
+0x0005abec jal 0x0005dfc8
+0x0005abf0 sra r5,r5,0x10
+0x0005abf4 lh r2,0x0026(r16)
+0x0005abf8 nop
+0x0005abfc bgtz r2,0x0005ac68
+0x0005ac00 nop
+0x0005ac04 lhu r2,0x0034(r16)
+0x0005ac08 nop
+0x0005ac0c andi r2,r2,0x0008
+0x0005ac10 beq r2,r0,0x0005ac1c
+0x0005ac14 nop
+0x0005ac18 sb r0,0x0036(r17)
+0x0005ac1c lhu r2,0x0034(r16)
+0x0005ac20 nop
+0x0005ac24 andi r2,r2,0x0020
+0x0005ac28 bne r2,r0,0x0005ac34
+0x0005ac2c nop
+0x0005ac30 sb r0,0x0053(r17)
+0x0005ac34 lhu r3,0x0034(r16)
+0x0005ac38 nop
+0x0005ac3c andi r2,r3,0x0080
+0x0005ac40 beq r2,r0,0x0005ac60
+0x0005ac44 nop
+0x0005ac48 andi r2,r3,0xff7f
+0x0005ac4c sh r2,0x0034(r16)
+0x0005ac50 jal 0x0005b254
+0x0005ac54 addu r4,r16,r0
+0x0005ac58 beq r0,r0,0x0005ac6c
+0x0005ac5c lhu r2,0x0034(r16)
+0x0005ac60 andi r2,r3,0xff0f
+0x0005ac64 sh r2,0x0034(r16)
+0x0005ac68 lhu r2,0x0034(r16)
+0x0005ac6c nop
+0x0005ac70 andi r2,r2,0x0010
+0x0005ac74 bne r2,r0,0x0005ac98
+0x0005ac78 nop
+0x0005ac7c lh r2,0x0022(r16)
+0x0005ac80 addiu r1,r0,0xffff
+0x0005ac84 bne r2,r1,0x0005acac
+0x0005ac88 nop
+0x0005ac8c addiu r2,r0,0x0041
+0x0005ac90 beq r0,r0,0x0005acac
+0x0005ac94 sh r2,0x0022(r16)
+0x0005ac98 sh r0,0x002a(r16)
+0x0005ac9c lhu r2,0x0034(r16)
+0x0005aca0 nop
+0x0005aca4 andi r2,r2,0xdfff
+0x0005aca8 sh r2,0x0034(r16)
+0x0005acac lw r31,0x001c(r29)
+0x0005acb0 lw r18,0x0018(r29)
+0x0005acb4 lw r17,0x0014(r29)
+0x0005acb8 lw r16,0x0010(r29)
+0x0005acbc jr r31
+0x0005acc0 addiu r29,r29,0x0020

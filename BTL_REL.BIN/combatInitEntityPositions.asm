@@ -1,4 +1,4 @@
-0x0005736C() {
+combatInitEntityPositions() {
   combatHead = load(0x134D4C)
   flags = load(combatHead + 0x34)
   
@@ -11,7 +11,11 @@
   entityLookAtLocation(0x1557A8, somePtr + 0x78) // partner Digimon to enemy Digimon #1
   initializeBattleText()
   
+  playerPtr = load(0x12F344)
+  partnerPtr = load(0x12F348)
+  
   fleeingEnemyCount = 0
+  fleeingEnemyArray = short[4]
   
   for(entityId = 2; entityId < 10; entityId++) {
     entitiyPtr = load(0x12F344 + entityId * 4)
@@ -33,27 +37,25 @@
     
     store(entitiyPtr + 0x30, load(entitiyPtr + 0x30) | 0x0004)
     
-    r5 = load(entitiyPtr + 0x58)
-    r4 = load(entitiyPtr + 0x5A)
-    r3 = load(entitiyPtr + 0x5C)
-    r2 = load(entitiyPtr + 0x5E)
+    tempArray = short[4]
+    tempArray[0] = load(entitiyPtr + 0x58)
+    tempArray[1] = load(entitiyPtr + 0x5A)
+    tempArray[2] = load(entitiyPtr + 0x5C)
+    tempArray[3] = load(entitiyPtr + 0x5E)
     
-    store(sp + 0x54, r5)
-    store(sp + 0x56, r4)
-    store(sp + 0x58, r3)
-    store(sp + 0x5A, r2)
+    positionArray = int[3]
+    positionArray[0] = tempArray[0]
+    positionArray[1] = tempArray[1]
+    positionArray[2] = tempArray[2]
     
-    store(sp + 0x44, load(sp + 0x54))
-    store(sp + 0x48, load(sp + 0x56))
-    store(sp + 0x4C, load(sp + 0x58))
+    entityLookAtLocation(entitiyPtr, positionArray)
     
-    entityLookAtLocation(entitiyPtr, sp + 0x44)
-    
+    fleeingEnemyArray[fleeingEnemyCount++] = entityId
     store(sp + 0x34 + fleeingEnemyCount++ * 2, entityId)
   }
   
   hasNoFleeingEnemies = fleeingEnemyCount == 0 ? 1 : 0 // has fleeing enemies
-    
+  
   waypointCount = load(0x134D53) - 1
   store(0x134D50, 0)
   
@@ -63,7 +65,6 @@
   someValue = 0
   
   for(frameCount = 0; frameCount < 0xC8 || hasNoFleeingEnemies == 0 || someValue == 0; frameCount++) {
-    playerPtr = load(0x12F344) // playerPtr
     
     // walk Hiro to combat position
     if(load(playerPtr + 0x2E) != 1) { // is not in battle idle animation
@@ -82,7 +83,6 @@
           store(0x134D53, load(0x134D53) - 1)
         }
         
-        partnerPtr = load(0x12F348)
         collisionResponse = entityCheckCollision(partnerPtr, playerPtr, 310, 230)
       }
       else {
@@ -92,10 +92,8 @@
         
         if(tileX == lTileX && tileY == lTileY)
           collisionResponse = 11
-        else {
-          partnerPtr = load(0x12F348)
+        else
           collisionResponse = entityCheckCollision(partnerPtr, playerPtr, 300, 220)
-        }
       }
     }
     
@@ -111,14 +109,14 @@
       startAnimation(playerPtr, 1) // set him idle
       
       // make him look at the partner Digimon
-      partnerPtr = load(0x12F348)
       entityLookAtLocation(playerPtr, load(partnerPtr + 0x04) + 0x78)
+      
+      // tell the loop to come to an end
       frameCount = 0xC6
     }
     
     for(entityCounter = 0; entityCounter < fleeingEnemyCount; entityCounter++) {
-      entityId = load(sp + 0x34 + entityCounter * 2)
-      entityPtr = load(0x12F344 + entityId * 4)
+      entityPtr = load(0x12F344 + fleeingEnemyArray[entityCounter] * 4)
       
       if(entityIsOffScreen(entityPtr, 320, 240) == 0)
         break
@@ -143,36 +141,34 @@
     store(0x134D50, load(0x134D53) - 1)
   }
   else
-    0x000D3ADC()
+    clearWaypointCounter()
   
-  r2 = load(r4 + 0x2E)
-  
-  if(r2 != 1) {
+  if(load(playerPtr + 0x2E) != 1) { // active Animation
     startAnimation(playerPtr, 1)
-    partnerPtr = load(0x12F348)
     partnerLocPtr = load(partnerPtr + 0x04)
-    
     entityLookAtLocation(playerPtr, partnerLocPtr + 0x78)
   }
   
-  for(r16 = 0; r16 < fleeingEnemyCount; r16++) {
-    r2 = load(sp + 0x34 + r16 * 2)
-    r3 = 0x12F344 + r2 * 4
-    r2 = load(0x12F344 + r2 * 4)
-    store(r2 + 0x34, 0)
-    r3 = load(r3)
-    r2 = load(r3 + 0x30) & 0xFB
-    store(r3 + 0x30, r2)
+  for(entityCounter = 0; entityCounter < fleeingEnemyCount; entityCounter++) {
+    entityPtr = load(0x12F344 + fleeingEnemyArray[entityCounter] * 4)
+    
+    store(entityPtr + 0x34, 0)
+    store(entityPtr + 0x30, load(r3 + 0x30) & 0xFB)
   }
   
-  0x00063A20()
-  0x00063A2C()
+  unsetObject(0x1A6, 0) // deferred via 0x00063A20()
+  
+  // deferred via 0x00063A2C()
+  store(0x1350C0, 0)
+  setObject(0x1A6, 0, 0, 0x63A48)
+  //
+  
   playSound(0, 0x11)
   
-  while(0x00063EF0() == 0)
+  while(load(0x1350C0) == 0) // deferred via 0x00063EF0()
     battleTickFrame()
   
-  0x00063EE4()
+  unsetObject(0x1A6, 0) // deferred via 0x00063EE4()
   store(0x134F0A, 1)
   
   return 1

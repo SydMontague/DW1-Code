@@ -1,10 +1,10 @@
-int getScriptSection(scriptPtr, val2) {
+int getScriptSection(scriptPtr, id) {
   sectionPtr = scriptPtr + 2
   
   do {
     sectionId = load(sectionPtr)
   
-    if(sectionId == val2)
+    if(sectionId == id)
       return scriptPtr + load(sectionPtr + 0x02)
     
     sectionPtr += 4

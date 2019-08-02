@@ -9,7 +9,7 @@ int hasZeroHP(combatId) {
   entityPtr = load(0x12F344 + entityId * 4)
   currentHP = load(entityPtr + 0x4C)
   remainingDamage = load(combatHead + combatId * 0x168 + 0x2E)
-    
+  
   return currentHP - remainingDamage <= 0 ? 1 : 0
 }
 

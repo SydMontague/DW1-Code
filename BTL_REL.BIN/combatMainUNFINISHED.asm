@@ -6,18 +6,17 @@ void combatMain() {
   store(0x134D88, yCenter)
   
   combatInit()
-  0x0005736C()
+  combatInitEntityPositions()
   
-  while(0x00057920() == 0) {
+  while(checkCombatEndCondition() == 0) {
     partnerAiTick()
-    0x00058394()
+    enemyAiTick()
     0x00058874()
     0x00058AA4()
     0x0005DEC4()
     0x000E62D0()
     
-    frameCount = load(0x134D66)
-    store(0x134D66, frameCount + 1)
+    store(0x134D66, load(0x134D66) + 1) // frame count
   }
   
   0x000E642C()

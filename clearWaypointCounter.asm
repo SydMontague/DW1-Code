@@ -1,0 +1,10 @@
+clearWaypointCounter() {
+  store(0x134D54, 0)
+  store(0x134D53, 0)
+  store(0x134D50, 0)
+}
+
+0x000d3adc sb r0,-0x6dd8(r28)
+0x000d3ae0 sb r0,-0x6dd9(r28)
+0x000d3ae4 jr r31
+0x000d3ae8 sb r0,-0x6ddc(r28)
