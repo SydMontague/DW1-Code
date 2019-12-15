@@ -47,10 +47,10 @@ void startAnimation(int entityPtr, int animId) {
   for(int i = 1; i < nodeCount; i++  nodePtr + 0x88) {
     localNodePtr = nodePtr + i * 0x88
     
-    if(frameCount == 0) {
-      store(localNodePtr + 0x60, 0x100)
-      store(localNodePtr + 0x64, 0x100)
-      store(localNodePtr + 0x68, 0x100)
+    if(frameCount & 0x8000 == 0) {
+      store(localNodePtr + 0x60, 0x1000)
+      store(localNodePtr + 0x64, 0x1000)
+      store(localNodePtr + 0x68, 0x1000)
     }
     else {
       store(localNodePtr + 0x60, load(animInstrPtr))
