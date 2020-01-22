@@ -254,6 +254,8 @@
 0x000A75DC    tickHungerMechanics()
 0x000A7960    handleConditionBubbles()
 
+0x000A8100    handlePoopWeightLoss(digimonType = r4)
+
 0x000A856C    tickSicknessMechanics()
 0x000A8A3C    tickDeathCondition()
 
@@ -313,6 +315,8 @@
 0x000C19A4    setupModelMatrix(nodePtr = r4)
 0x000C1A04    startAnimation(entityPtr = r4, animId = r5)
 
+0x000C2910    0x000C2910() // handle textbox entity?
+
 0x000C3860    handleEvoItems(itemId = r4)
 0x000C396C    handleFood(itemId = r4)
 0x000C44C0    handleChips(itemId = r4)
@@ -326,7 +330,10 @@
 
 0x000C563C    healValue(valueAddress = r4, amount = r5, upperLimit = r6)
 
+0x000C574C    handlePortaPotty()
 0x000C57D0    modifyLifetime(amount = r4)
+
+
 
 0x000C5804    addEnergy(amount = r4)
 0x000C586C    subtractTiredness(amount = r4)
@@ -444,13 +451,24 @@
 
 0x000F1AB0    swapBytes(val = r4) -> swappedVal = r2
 
+0x000FC054    isKeyDown(keyFlag = r4) -> isDown = r2
+0x000FC098    isXPressedAfterDialogue() -> isPressed = r2
+
 0x000FC2D0    allocateArray(size = r4) -> arrayPtr = r2
 0x000FC310    freeArray(arrayPtr = r4) 
 
 0x000FC374    dailyPStatTrigger()   //increases PStat 29-32 by 1, rerolls card shop cards
 
 0x000FF824    hasDigimonRaised(digimonId = r4) -> isRaised = r2 // deferred isTriggerCalled(512 + digimonId)
+
+0x000FFDF4    0x000FFDF4() -> bool = r2 // something textbox related
+
+0x00100E40    0x00100E40(val = r4) -> bool = r2 // checks if textbox is finished opening?
+0x00100F20    0x00100F20(val = r4) -> bool = r2 // advances to next textbox?
+
 0x0010020C    0x0010020C() // resets some values at 0x1BE810
+
+0x00101160    0x00101160() // textbox entity function?
 
 0x00102144    scriptIdToEntityId(scriptId = r4) -> entityId = r2
 

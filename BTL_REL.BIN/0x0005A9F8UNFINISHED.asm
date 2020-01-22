@@ -22,8 +22,8 @@
       store(entityPtr + 0x30, load(entityPtr + 0x30) & 0x00FE) // unknown flag
     else if(someVal == 10)
       store(entityPtr + 0x36, 0) // unknown
-    else if(someVal == 22)
-      0x00071098(entityPtr)
+    else if(someVal == 28)
+      0x00071098(entityPtr) // fire flatten projectile
   }
   
   if(load(entityPtr + 0x30) & 1 != 0)

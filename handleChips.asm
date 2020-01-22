@@ -16,11 +16,10 @@ void handleChips(int itemId) {
    * 0x800C4648
    */
   switch(itemId - 0x16) {
-    case 0:
-      r2 = load(0x134FF4) // is not interacting/loading something?
-      if(r2 == 1) {
+    case 0: // autopilot
+      if(load(0x134FF4) == 1) { // is not interacting/loading something?
         0x000C55FC()
-        0x00105B14(0, 0x4DD, 0)
+        callScriptSection(0, 0x4DD, 0)
       }
       break
     case 1:
@@ -56,8 +55,8 @@ void handleChips(int itemId) {
       mp = 1000
       lifetime = -24
       break
-    case 10:
-      0x000C574C()
+    case 10: // porta potty
+      handlePortaPotty()
       return
   }
   
