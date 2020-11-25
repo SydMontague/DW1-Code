@@ -13,7 +13,7 @@ void combatMain() {
     enemyAiTick()
     0x00058874()
     0x00058AA4()
-    0x0005DEC4()
+    battleTickFrame()
     0x000E62D0()
     
     store(0x134D66, load(0x134D66) + 1) // frame count

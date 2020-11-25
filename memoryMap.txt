@@ -9,12 +9,18 @@
 
 0x00059078    resetFlatten(combatId = r4)
 
+0x00059508    0x00059508(entityPtr, enemyPtr, combatId) // handle attack if not about to get countered?
+
+0x0005A9F8    0x0005A9F8(combatId = r4) // handle attack?
+
 0x0005AF44    increaseSpeedBuffer(combatData = r4, statsData = r5)
 0x0005AFD8    handleDeath(entityPtr = r4, combatPtr = r5, combatId = r6)
 0x0005B070    hasAffordableMoves(arrayPtr = r4, combatId = r5) -> numAffordableMoves = r2
 
 0x0005B1AC    deferred call -> getEntityTileFromModel(0x12F348, 0x134D58, 0x134D57)
 0x0005B1C0    0x0005B1C0()
+
+0x0005B254    clearBlockingData(combatPtr = r4)
 
 0x0005BBE4    getChanceToHit(attackerPtr = r4, victimPtr = r5, victimCombatPtr = r6, moveId = r7) -> chanceToHit = r2
 
@@ -89,6 +95,8 @@
 0x0006FEE0    removeStunSprite(instanceId = r4, entityPtr = r5)
 
 0x00070BFC    0x00070BFC(id = r4) // unsets an 0x80D object
+
+0x00071098    fireFlattenProjectile(entityPtr = r4) -> instanceId = r2
 
 == KAR_REL.BIN ==
 0x00053878    curlingInit(isTutorial = r4)
@@ -211,6 +219,7 @@
 
 0x0009AB10    rotateVectorByMatrix(matrixPtr = r4, vectorPtr = r5, resultPtr = r6) -> resultPtr = r2
 
+0x0009B030    rotateVector(matrixPtr = r4, vectorPtr = r5, resultPtr = r6) -> resultPtr = r2
 0x0009B090    copy12toOffset20(dest = r4, src = r5) -> dest = r2
 0x0009B0C0    scaleMatrix(destMatrixPtr = r4, scaleVector = r5) -> matrixPtr = r2
 
@@ -290,6 +299,8 @@
 0x000B2BB4    CdRead(sectors = r4, targetPtr = r5, mode = r6) -> result = r2
 0x000B2CB4    CdReadSync(mode = r4, result = r5) -> remaining = r2
 
+// libcd end
+
 0x000B56F4    waitForMoveObjectTo(id = r4, otherId = r5, duration = r6, targetX = r7, targetY = load(sp + 0x10) -> finished = r2
 
 0x000B5984    setObjectsVisible(objId = r4, numObjs = r5, visible = r6)
@@ -344,18 +355,26 @@
 0x000C59B0    setTrainingBoost(flag = r4, mod = r5, duration = r6)
 0x000C59E0    handleItemSickness(chance = r4)
 
+// sound library, either libsnd or libspu (or both)
+0x000C5C04    0x000C5C04()
+0x000C5C34
+
 0x000C6134    getNextSPUVoice(unused = r4) -> voiceId = r2
 0x000C61D4    0x000C61D4(val1, val2, val3) -> bitMask = r2
 
 0x000C6374    playSound(val1, val2)
 
+0x000C6784    0x000C6784()
+
 0x000C8DA8    getSPUVoiceState(voiceMask = r4) -> voiceState = r2
 
-0x000CEA04    0x000CEA04(voiceId, val2, val3, val4, val5, val6, val7, val8) -> voiceId = r2
+0x000CEA04    0x000CEA04(voiceId, val2, val3, val4, val5, val6, val7, val8) -> voiceId = r2 // maybe SsUtKeyOnV
 
 0x000CF430    0x000CF430() // TODO something SPU related
 
 0x000D2A48    0x000D2A48(val2, val3) -> retValue = r2 // TODO, something SPU related
+
+// libsnd/libspu end
 
 0x000D3078    isTileWithinScreenArea(tileX = r4, tileY = r5) -> isWithinScreenArea = r2
 0x000D3174    pollStoredLocation()
@@ -389,6 +408,8 @@
 0x000D8780    storeEntityLocation(scriptId = r4, targetPtr = r5)
 0x000D8860    spawnCameraMovement(instanceId)
 0x000D88CC    waitForMoveCameraTo(posX = r4, posZ = r5, speed = r6) -> isFinished = r2
+
+0x000D9A3C    getOriginalType(digimonType) -> originalType = r2
 
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
@@ -474,12 +495,13 @@
 
 0x001026E8    loadFileSection(filePath = r4, target = r5, start = r6, size = r7)
 
-0x001035A8    scriptInstruction46to58(intructionId = r4)
+0x001035A8    scriptInstruction46to58(instructionId = r4)
+0x00103D70    scriptInstruction5Ato5F(instructionId = r4)
 
 0x001053EC    0x001053EC()
 
 0x001054E4    scriptStartAnimation(scriptId = r4, animId = r5)
-
+0x00105558    handleMusicOverride() -> store(r4, trackId), store(r5, variationId)
 0x0010569C    waitForEntity(waitForId = r4)
 
 0x00105B14    callScriptSection(scriptId = r4, scriptSection = r5, value = r6)
@@ -491,6 +513,8 @@
 
 0x0010643C    isTriggerSet(triggerId = r4) -> isSet = r2
 0x00106474    writePStat(target = r4, value = r5)
+
+0x001064F0    0x001064F0()
 
 0x001064BC    0x001064BC(ptr)
 
@@ -504,6 +528,7 @@
 
 0x00106A30    pollNextScriptShort() -> store(r4, shortValue)
 0x00106A58    pollNextTwoScriptShorts() -> store(r4, shortValue1), store(r5, shortValue2)
+0x00106A80    playBGM(trackId = r4)
 
 0x00106CA8    getTriggerOffsets(triggerId = r4) -> store(r5, triggerAddress), store(r6, triggerMask)
 

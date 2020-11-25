@@ -1,0 +1,112 @@
+int, int handleMusicOverride() {   
+    switch(readPStat(245)) {
+        case 0: 
+            currentHour = load(0x134EBC)
+            if(currentHour < 6 || currentHour > 20)
+                return load(r4), 1
+            else
+                return load(r4), 0
+        case 1: 
+            return load(r4), 0
+        case 2: 
+            return 6, 2
+        case 3:  
+            return 11, 2
+        case 4: 
+            return 15, 2
+        case 5: 
+            return 21, 0
+        case 6: 
+            return 21, 1
+        case 7:
+            return 26, 0 
+        case 8: 
+            return 26, 1
+        case 9: 
+            return 27, 0 
+        case 10:
+            return 27, 1 
+    }
+}
+
+0x00105558 addiu r29,r29,0xffe0
+0x0010555c sw r31,0x0018(r29)
+0x00105560 sw r17,0x0014(r29)
+0x00105564 sw r16,0x0010(r29)
+0x00105568 addu r17,r4,r0
+0x0010556c addu r16,r5,r0
+0x00105570 jal 0x001062e0
+0x00105574 addiu r4,r0,0x00f5
+0x00105578 andi r2,r2,0x00ff
+0x0010557c sltiu r1,r2,0x000b
+0x00105580 beq r1,r0,0x00105688
+0x00105584 nop
+0x00105588 lui r3,0x8011
+0x0010558c addiu r3,r3,0x55b8
+0x00105590 sll r2,r2,0x02
+0x00105594 addu r2,r2,r3
+0x00105598 lw r2,0x0000(r2)
+0x0010559c nop
+0x001055a0 jr r2
+0x001055a4 nop
+0x001055a8 lh r2,-0x6c70(r28)
+0x001055ac nop
+0x001055b0 slti r1,r2,0x0006
+0x001055b4 bne r1,r0,0x001055d0
+0x001055b8 addu r3,r2,r0
+0x001055bc slti r1,r3,0x0015
+0x001055c0 beq r1,r0,0x001055d0
+0x001055c4 nop
+0x001055c8 beq r0,r0,0x00105688
+0x001055cc sb r0,0x0000(r16)
+0x001055d0 addiu r2,r0,0x0001
+0x001055d4 beq r0,r0,0x00105688
+0x001055d8 sb r2,0x0000(r16)
+0x001055dc beq r0,r0,0x00105688
+0x001055e0 sb r0,0x0000(r16)
+0x001055e4 addiu r2,r0,0x0006
+0x001055e8 sb r2,0x0000(r17)
+0x001055ec addiu r2,r0,0x0002
+0x001055f0 beq r0,r0,0x00105688
+0x001055f4 sb r2,0x0000(r16)
+0x001055f8 addiu r2,r0,0x000b
+0x001055fc sb r2,0x0000(r17)
+0x00105600 addiu r2,r0,0x0002
+0x00105604 beq r0,r0,0x00105688
+0x00105608 sb r2,0x0000(r16)
+0x0010560c addiu r2,r0,0x000f
+0x00105610 sb r2,0x0000(r17)
+0x00105614 addiu r2,r0,0x0002
+0x00105618 beq r0,r0,0x00105688
+0x0010561c sb r2,0x0000(r16)
+0x00105620 addiu r2,r0,0x0015
+0x00105624 sb r2,0x0000(r17)
+0x00105628 beq r0,r0,0x00105688
+0x0010562c sb r0,0x0000(r16)
+0x00105630 addiu r2,r0,0x0015
+0x00105634 sb r2,0x0000(r17)
+0x00105638 addiu r2,r0,0x0001
+0x0010563c beq r0,r0,0x00105688
+0x00105640 sb r2,0x0000(r16)
+0x00105644 addiu r2,r0,0x001a
+0x00105648 sb r2,0x0000(r17)
+0x0010564c beq r0,r0,0x00105688
+0x00105650 sb r0,0x0000(r16)
+0x00105654 addiu r2,r0,0x001a
+0x00105658 sb r2,0x0000(r17)
+0x0010565c addiu r2,r0,0x0001
+0x00105660 beq r0,r0,0x00105688
+0x00105664 sb r2,0x0000(r16)
+0x00105668 addiu r2,r0,0x001b
+0x0010566c sb r2,0x0000(r17)
+0x00105670 beq r0,r0,0x00105688
+0x00105674 sb r0,0x0000(r16)
+0x00105678 addiu r2,r0,0x001b
+0x0010567c sb r2,0x0000(r17)
+0x00105680 addiu r2,r0,0x0001
+0x00105684 sb r2,0x0000(r16)
+0x00105688 lw r31,0x0018(r29)
+0x0010568c lw r17,0x0014(r29)
+0x00105690 lw r16,0x0010(r29)
+0x00105694 jr r31
+0x00105698 addiu r29,r29,0x0020

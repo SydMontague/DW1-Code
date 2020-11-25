@@ -1,0 +1,77 @@
+void scriptInstruction5Ato5F(instructionId) {
+    switch(instructionId - 0x5A) {
+        case 0: // 0x5A playSound
+            val1, val2 = skipOnePollTwoScriptBytes()
+            playSound(val1, val2)
+            break
+        case 3: // 0x5D startBGM
+            playBGM(pollNextScriptByte())
+            break
+        case 4: // 0x5E
+            0x001064F0(pollNextScriptByte())
+            break
+        case 1: // 0x5B
+        case 2: // 0x5C
+        case 5: // 0x5F
+            pollNextScriptByte()
+            break
+        default:
+            break
+    }
+
+    RestoreState(0x1BE7BC, 1)
+}
+
+0x00103d70 addiu r29,r29,0xffe0
+0x00103d74 addi r2,r4,-0x005a
+0x00103d78 sltiu r1,r2,0x0006
+0x00103d7c beq r1,r0,0x00103e24
+0x00103d80 sw r31,0x0010(r29)
+0x00103d84 lui r3,0x8011
+0x00103d88 addiu r3,r3,0x55a0
+0x00103d8c sll r2,r2,0x02
+0x00103d90 addu r2,r2,r3
+0x00103d94 lw r2,0x0000(r2)
+0x00103d98 nop
+0x00103d9c jr r2
+0x00103da0 nop
+0x00103da4 addiu r4,r29,0x001e
+0x00103da8 jal 0x00106638
+0x00103dac addiu r5,r29,0x001f
+0x00103db0 lbu r4,0x001e(r29)
+0x00103db4 lbu r5,0x001f(r29)
+0x00103db8 jal 0x000c6374
+0x00103dbc nop
+0x00103dc0 beq r0,r0,0x00103e24
+0x00103dc4 nop
+0x00103dc8 jal 0x00106598
+0x00103dcc addiu r4,r29,0x001e
+0x00103dd0 beq r0,r0,0x00103e24
+0x00103dd4 nop
+0x00103dd8 jal 0x00106598
+0x00103ddc addiu r4,r29,0x001e
+0x00103de0 beq r0,r0,0x00103e24
+0x00103de4 nop
+0x00103de8 jal 0x00106598
+0x00103dec addiu r4,r29,0x001e
+0x00103df0 lbu r4,0x001e(r29)
+0x00103df4 jal 0x00106a80
+0x00103df8 nop
+0x00103dfc beq r0,r0,0x00103e24
+0x00103e00 nop
+0x00103e04 jal 0x00106598
+0x00103e08 addiu r4,r29,0x001e
+0x00103e0c jal 0x001064f0
+0x00103e10 nop
+0x00103e14 beq r0,r0,0x00103e24
+0x00103e18 nop
+0x00103e1c jal 0x00106598
+0x00103e20 addiu r4,r29,0x001e
+0x00103e24 lui r4,0x801c
+0x00103e28 addiu r4,r4,0xe7bc
+0x00103e2c jal 0x000911bc
+0x00103e30 addiu r5,r0,0x0001
+0x00103e34 lw r31,0x0010(r29)
+0x00103e38 nop
+0x00103e3c jr r31
+0x00103e40 addiu r29,r29,0x0020

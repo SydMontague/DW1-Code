@@ -15,15 +15,15 @@
     return
   
   if(load(combatPtr + 0x34) & 0x28 == 0x28) { // flattened and attacking
-    someVal = load(combatPtr + 0x24) - 1
-    store(combatPtr + 0x24, someVal)
+    flatAttackTimer = load(combatPtr + 0x24) - 1
+    store(combatPtr + 0x24, flatAttackTimer)
     
-    if(someVal == 0)
+    if(flatAttackTimer == 0)
       store(entityPtr + 0x30, load(entityPtr + 0x30) & 0x00FE) // unknown flag
-    else if(someVal == 10)
+    else if(flatAttackTimer == 10)
       store(entityPtr + 0x36, 0) // unknown
-    else if(someVal == 28)
-      0x00071098(entityPtr) // fire flatten projectile
+    else if(flatAttackTimer == 28)
+      fireFlattenProjectile(entityPtr) // fire flatten projectile?
   }
   
   if(load(entityPtr + 0x30) & 1 != 0)
@@ -36,6 +36,7 @@
   
   store(combatPtr + 0x3B, 0) // unknown value
   
+  // increase stat, set cooldown, add finisher value
   if(load(combatPtr + 0x34) & 0x0020 != 0) {
     if(combatId == 0)
       store(combatHead + 0x640, load(combatHead + 0x640) + 1) // hit count
@@ -47,9 +48,10 @@
     addFinisherValue(combatPtr, load(combatPtr + 0x18) * 0.04) // finisher goal
   }
   
+  // 
   if(load(combatPtr + 0x26) <= 0) {
     if(load(combatPtr + 0x34) & 0x0008 != 0) // is flattened
-      store(entityPtr + 0x36, 0) // move range
+      store(entityPtr + 0x36, 0) // unknown
     
     if(load(combatPtr + 0x34) & 0x0020 == 0) // is attacking
       store(entityPtr + 0x53, 0) // unknown
@@ -58,7 +60,7 @@
     
     if(flag & 0x0080 != 0) { // if blocking
       store(combatPtr + 0x34, flag & 0xFF7F) // unset blocking flag
-      0x0005B254(combatPtr)
+      clearBlockingData(combatPtr)
     }
     else
       store(combatPtr + 0x34, flag & 0xFF0F) // unset blocking, attacking, transforming, knocked back flag
@@ -66,7 +68,7 @@
   
   if(load(combatPtr + 0x34) & 0x0010 == 0) { // is knocked back
     if(load(combatPtr + 0x22) == -1)
-      store(combatPtr + 0x22, 0x41)
+      store(combatPtr + 0x22, 0x41) // flatten timer?
   }
   else {
     store(combatPtr + 0x2A, 0) // dumb timer

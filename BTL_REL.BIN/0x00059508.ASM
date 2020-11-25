@@ -1,11 +1,10 @@
 0x00059508(entityPtr, enemyPtr, combatId) {
-  r2 = load(entityPtr + 0x30) & 1
-  
-  if(r2 == 0) {
-    r3 = load(entityPtr + 0x1E) // anim frame target
-    r2 = load(entityPtr + 0x1C) // anim frame current
+  if(load(entityPtr + 0x30) & 1 == 0) {
+    animTarget = load(entityPtr + 0x1E) // anim frame target
+    animCurrent = load(entityPtr + 0x1C) // anim frame current
     
-    if(r3 != r2) {
+    // is attacking someone who is countering them?
+    if(animTarget != animCurrent) {
       combatHead = load(0x134D4C)
       numEnemies = load(0x134D6C)
       
@@ -19,7 +18,7 @@
         activeMove = load(entityPtr + 0x2E) - 0x2E
         attackId = load(0x12CED7 + entityType * 0x34 + activeMove)
         
-        if(attackId == 0x2D) // counter
+        if(attackId != 0x2D) // counter
           continue
         
         targetId = load(combatHead + i * 0x168 + 0x37)

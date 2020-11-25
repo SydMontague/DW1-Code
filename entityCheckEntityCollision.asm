@@ -23,7 +23,7 @@ int entityCheckEntityCollision(entityPtr, entityPtr2, diffX, diffY) {
   yMax = posY1 + radius1
   yMin = posY1 - radius1
   
-  if(load(0x124F0A) == 0 && load(0x12F344) == entityPtr) {
+  if(load(0x134F0A) == 0 && load(0x12F344) == entityPtr) {
     isXDown = (load(0x134EE4) & ~load(0x134EE8)) & 0x40 // polled input and last polled input
     
     // check if there is a Digimon you try to talk to
