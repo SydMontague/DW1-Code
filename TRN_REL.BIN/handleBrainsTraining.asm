@@ -1,0 +1,517 @@
+void handleBrainsTraining(digimonType, mode, multiplier) {
+    oldBrains = load(0x1557E6) // brains
+
+    brainsGains = 0
+    mpGains = 0
+    energyCost = 0
+    tiredness = 0
+    happinessCost = 0
+
+    digimonType = digimonType
+    mode = mode
+
+    if(mode == 9) {
+        brainsGains = 15
+        mpGains = 0
+
+        energyCost = 1
+        tiredness = 6
+        happinessCost = 1
+    }
+    else if(mode == 0) {
+        brainsGains = 8
+        mpGains = 10
+
+        energyCost = 1
+        tiredness = 6
+        happinessCost = 1
+    }
+
+    trainingFactor = getTrainingFactor(digimonType, 1, mode)
+
+    boostFlag = load(0x1384AC) 
+    boostFactor = load(0x1384AE)
+
+    if(boostFlag & 0x20 != 0) // MP boost flag
+        mpGains = mpGains * trainingFactor * boostFactor / 100
+    else 
+        mpGains = mpGains * trainingFactor / 10
+    
+    if(boostFlag & 0x08 != 0) // Brains boost flag
+        brainsGains = brainsGains * trainingFactor * boostFactor / 100
+    else {
+        brainsGains = brainsGains * trainingFactor / 10
+    }
+
+    mpGains = mpGains * multiplier / 10
+    brainsGains = brainsGains * multiplier / 10
+
+    if(load(0x138482) == 100) { // tiredness
+        if(mode == 0)
+            mpGains = 1
+        
+        brainsGains = 1
+    }
+
+    if(mpGains >= 1000)
+        mpGains = 999
+    if(brainsGains >= 1000)
+        brainsGains = 999
+
+    storeTrainingStats()
+
+    store(0x13D468, 0)
+    store(0x13D46A, mpGains)
+    store(0x13D46C, 0)
+    store(0x13D46E, 0)
+    store(0x13D470, 0)
+    store(0x13D472, brainsGains)
+
+    renderTrainingResult()
+
+    handleTrainingTimeSkip(tiredness, energyCost, happinessCost)
+
+    newBrains = oldBrains + brainsGains
+    commandLearned = 0
+    lastLineYOffset = 132
+
+    if(oldBrains < 100 && newBrains > 100) {
+        setTextColor(7)
+        renderString(0x8F0D8, 0, 120) // "Give it all you got!"
+        commandLearned = 1
+    }
+    if(oldBrains < 200 && newBrains > 200) {
+        setTextColor(7)
+        renderString(0x8F0F0, 0, 120) // "Take it easy!"
+        commandLearned = 1
+    }
+    if(oldBrains < 300 && newBrains > 300) {
+        setTextColor(7)
+        renderString(0x8F100, 0, 120) // "Get back!"
+        renderString(0x8F10C, 0, 132) // "Change target!"
+        lastLineYOffset = 148
+        commandLearned = 1
+    }
+    if(oldBrains < 400 && newBrains > 400) {
+        setTextColor(7)
+        renderString(0x8F11C, 0, 120) // "Hang in there!"
+        commandLearned = 1
+    }
+    if(oldBrains < 500 && newBrains > 500) {
+        setTextColor(7)
+        renderString(0x8F12C, 0, 120) // "Technique mastered"
+        commandLearned = 1
+    }
+
+    if(commandLearned == 1) {
+        setTextColor(1)
+        renderString(0x8F140, 0, lastLineYOffset) // "New orders!"
+
+        0x000B8E50(2, -88, 18, 176, 48, 2, 0, 0x8A6F8)
+        store(0x135388, 1)
+        return
+    }
+
+    if(oldBrains < 150 && newBrains > 150
+    || oldBrains < 250 && newBrains > 250
+    || oldBrains < 350 && newBrains > 350
+    || oldBrains < 450 && newBrains > 450
+    || oldBrains < 550 && newBrains > 550
+    || oldBrains < 650 && newBrains > 650
+    || oldBrains < 750 && newBrains > 750
+    || oldBrains < 800 && newBrains > 800
+    || oldBrains < 850 && newBrains > 850
+    || oldBrains < 900 && newBrains > 900
+    || oldBrains < 950 && newBrains > 950
+    || newBrains == 999)
+        handleBrainMoveLearnChance(digimonType)
+}
+
+0x000897f8 addiu r29,r29,0xffb8
+0x000897fc sw r31,0x0044(r29)
+0x00089800 sw r30,0x0040(r29)
+0x00089804 sw r23,0x003c(r29)
+0x00089808 sw r22,0x0038(r29)
+0x0008980c sw r21,0x0034(r29)
+0x00089810 sw r20,0x0030(r29)
+0x00089814 sw r19,0x002c(r29)
+0x00089818 sw r18,0x0028(r29)
+0x0008981c sw r17,0x0024(r29)
+0x00089820 lui r1,0x8015
+0x00089824 lh r18,0x57e6(r1)
+0x00089828 sw r16,0x0020(r29)
+0x0008982c sll r17,r0,0x10
+0x00089830 sll r19,r0,0x10
+0x00089834 sll r20,r0,0x10
+0x00089838 addu r30,r4,r0
+0x0008983c addu r22,r5,r0
+0x00089840 addu r23,r6,r0
+0x00089844 sw r0,-0x67a4(r28)
+0x00089848 addu r16,r0,r0
+0x0008984c sra r17,r17,0x10
+0x00089850 addu r21,r0,r0
+0x00089854 sra r19,r19,0x10
+0x00089858 addiu r1,r0,0x0009
+0x0008985c beq r22,r1,0x000898a8
+0x00089860 sra r20,r20,0x10
+0x00089864 bne r22,r0,0x000898d4
+0x00089868 nop
+0x0008986c addiu r2,r0,0x000a
+0x00089870 sll r17,r2,0x10
+0x00089874 addiu r2,r0,0x0008
+0x00089878 sll r16,r2,0x10
+0x0008987c addiu r2,r0,0x0006
+0x00089880 sll r20,r2,0x10
+0x00089884 addiu r2,r0,0x0001
+0x00089888 sll r19,r2,0x10
+0x0008988c sll r21,r2,0x10
+0x00089890 sra r17,r17,0x10
+0x00089894 sra r16,r16,0x10
+0x00089898 sra r20,r20,0x10
+0x0008989c sra r19,r19,0x10
+0x000898a0 beq r0,r0,0x000898d4
+0x000898a4 sra r21,r21,0x10
+0x000898a8 addiu r2,r0,0x000f
+0x000898ac sll r16,r2,0x10
+0x000898b0 addiu r2,r0,0x0006
+0x000898b4 sll r20,r2,0x10
+0x000898b8 addiu r2,r0,0x0001
+0x000898bc sll r19,r2,0x10
+0x000898c0 sll r21,r2,0x10
+0x000898c4 sra r16,r16,0x10
+0x000898c8 sra r20,r20,0x10
+0x000898cc sra r19,r19,0x10
+0x000898d0 sra r21,r21,0x10
+0x000898d4 addu r4,r30,r0
+0x000898d8 addiu r5,r0,0x0001
+0x000898dc jal 0x00089e08
+0x000898e0 addu r6,r22,r0
+0x000898e4 lui r1,0x8014
+0x000898e8 lh r4,-0x7b54(r1)
+0x000898ec sll r2,r2,0x10
+0x000898f0 addu r3,r4,r0
+0x000898f4 andi r4,r4,0x0020
+0x000898f8 beq r4,r0,0x00089950
+0x000898fc sra r2,r2,0x10
+0x00089900 lui r1,0x8014
+0x00089904 lh r4,-0x7b52(r1)
+0x00089908 nop
+0x0008990c mult r2,r4
+0x00089910 mflo r4
+0x00089914 nop
+0x00089918 nop
+0x0008991c mult r17,r4
+0x00089920 lui r4,0x51eb
+0x00089924 mflo r5
+0x00089928 ori r4,r4,0x851f
+0x0008992c nop
+0x00089930 mult r4,r5
+0x00089934 mfhi r4
+0x00089938 srl r5,r5,0x1f
+0x0008993c sra r4,r4,0x05
+0x00089940 addu r4,r4,r5
+0x00089944 sll r17,r4,0x10
+0x00089948 beq r0,r0,0x00089980
+0x0008994c sra r17,r17,0x10
+0x00089950 mult r17,r2
+0x00089954 lui r4,0x6666
+0x00089958 mflo r5
+0x0008995c ori r4,r4,0x6667
+0x00089960 nop
+0x00089964 mult r4,r5
+0x00089968 mfhi r4
+0x0008996c srl r5,r5,0x1f
+0x00089970 sra r4,r4,0x02
+0x00089974 addu r4,r4,r5
+0x00089978 sll r17,r4,0x10
+0x0008997c sra r17,r17,0x10
+0x00089980 andi r3,r3,0x0008
+0x00089984 beq r3,r0,0x000899dc
+0x00089988 nop
+0x0008998c lui r1,0x8014
+0x00089990 lh r3,-0x7b52(r1)
+0x00089994 nop
+0x00089998 mult r2,r3
+0x0008999c mflo r2
+0x000899a0 nop
+0x000899a4 nop
+0x000899a8 mult r16,r2
+0x000899ac lui r2,0x51eb
+0x000899b0 mflo r3
+0x000899b4 ori r2,r2,0x851f
+0x000899b8 nop
+0x000899bc mult r2,r3
+0x000899c0 mfhi r2
+0x000899c4 srl r3,r3,0x1f
+0x000899c8 sra r2,r2,0x05
+0x000899cc addu r2,r2,r3
+0x000899d0 sll r16,r2,0x10
+0x000899d4 beq r0,r0,0x00089a0c
+0x000899d8 sra r16,r16,0x10
+0x000899dc mult r16,r2
+0x000899e0 lui r2,0x6666
+0x000899e4 mflo r3
+0x000899e8 ori r2,r2,0x6667
+0x000899ec nop
+0x000899f0 mult r2,r3
+0x000899f4 mfhi r2
+0x000899f8 srl r3,r3,0x1f
+0x000899fc sra r2,r2,0x02
+0x00089a00 addu r2,r2,r3
+0x00089a04 sll r16,r2,0x10
+0x00089a08 sra r16,r16,0x10
+0x00089a0c mult r17,r23
+0x00089a10 lui r2,0x6666
+0x00089a14 mflo r3
+0x00089a18 ori r4,r2,0x6667
+0x00089a1c nop
+0x00089a20 mult r4,r3
+0x00089a24 lui r1,0x8014
+0x00089a28 mfhi r2
+0x00089a2c srl r3,r3,0x1f
+0x00089a30 sra r2,r2,0x02
+0x00089a34 addu r2,r2,r3
+0x00089a38 sll r17,r2,0x10
+0x00089a3c mult r16,r23
+0x00089a40 sra r17,r17,0x10
+0x00089a44 mflo r2
+0x00089a48 nop
+0x00089a4c nop
+0x00089a50 mult r4,r2
+0x00089a54 srl r3,r2,0x1f
+0x00089a58 mfhi r2
+0x00089a5c sra r2,r2,0x02
+0x00089a60 addu r2,r2,r3
+0x00089a64 sll r16,r2,0x10
+0x00089a68 lh r2,-0x7b7e(r1)
+0x00089a6c addiu r1,r0,0x0064
+0x00089a70 bne r2,r1,0x00089a98
+0x00089a74 sra r16,r16,0x10
+0x00089a78 bne r22,r0,0x00089a8c
+0x00089a7c nop
+0x00089a80 addiu r2,r0,0x0001
+0x00089a84 sll r17,r2,0x10
+0x00089a88 sra r17,r17,0x10
+0x00089a8c addiu r2,r0,0x0001
+0x00089a90 sll r16,r2,0x10
+0x00089a94 sra r16,r16,0x10
+0x00089a98 slti r1,r17,0x03e8
+0x00089a9c bne r1,r0,0x00089ab0
+0x00089aa0 nop
+0x00089aa4 addiu r2,r0,0x03e7
+0x00089aa8 sll r17,r2,0x10
+0x00089aac sra r17,r17,0x10
+0x00089ab0 slti r1,r16,0x03e8
+0x00089ab4 bne r1,r0,0x00089ac8
+0x00089ab8 nop
+0x00089abc addiu r2,r0,0x03e7
+0x00089ac0 sll r16,r2,0x10
+0x00089ac4 sra r16,r16,0x10
+0x00089ac8 jal 0x0008d4cc
+0x00089acc nop
+0x00089ad0 lui r1,0x8014
+0x00089ad4 sh r0,-0x2b98(r1)
+0x00089ad8 lui r1,0x8014
+0x00089adc sh r17,-0x2b96(r1)
+0x00089ae0 lui r1,0x8014
+0x00089ae4 sh r0,-0x2b94(r1)
+0x00089ae8 lui r1,0x8014
+0x00089aec sh r0,-0x2b92(r1)
+0x00089af0 lui r1,0x8014
+0x00089af4 sh r0,-0x2b90(r1)
+0x00089af8 lui r1,0x8014
+0x00089afc sh r16,-0x2b8e(r1)
+0x00089b00 jal 0x0008d594
+0x00089b04 nop
+0x00089b08 addu r4,r20,r0
+0x00089b0c addu r5,r19,r0
+0x00089b10 jal 0x0008a284
+0x00089b14 addu r6,r21,r0
+0x00089b18 add r2,r18,r16
+0x00089b1c sll r16,r2,0x10
+0x00089b20 sra r16,r16,0x10
+0x00089b24 addu r2,r0,r0
+0x00089b28 slti r1,r18,0x0064
+0x00089b2c beq r1,r0,0x00089b60
+0x00089b30 addiu r17,r0,0x0084
+0x00089b34 slti r1,r16,0x0064
+0x00089b38 bne r1,r0,0x00089b60
+0x00089b3c nop
+0x00089b40 jal 0x0010cc0c
+0x00089b44 addiu r4,r0,0x0007
+0x00089b48 lui r4,0x8009
+0x00089b4c addiu r4,r4,0xf0d8
+0x00089b50 addu r5,r0,r0
+0x00089b54 jal 0x0010cf24
+0x00089b58 addiu r6,r0,0x0078
+0x00089b5c addiu r2,r0,0x0001
+0x00089b60 slti r1,r18,0x00c8
+0x00089b64 beq r1,r0,0x00089b98
+0x00089b68 nop
+0x00089b6c slti r1,r16,0x00c8
+0x00089b70 bne r1,r0,0x00089b98
+0x00089b74 nop
+0x00089b78 jal 0x0010cc0c
+0x00089b7c addiu r4,r0,0x0007
+0x00089b80 lui r4,0x8009
+0x00089b84 addiu r4,r4,0xf0f0
+0x00089b88 addu r5,r0,r0
+0x00089b8c jal 0x0010cf24
+0x00089b90 addiu r6,r0,0x0078
+0x00089b94 addiu r2,r0,0x0001
+0x00089b98 slti r1,r18,0x012c
+0x00089b9c beq r1,r0,0x00089be8
+0x00089ba0 nop
+0x00089ba4 slti r1,r16,0x012c
+0x00089ba8 bne r1,r0,0x00089be8
+0x00089bac nop
+0x00089bb0 jal 0x0010cc0c
+0x00089bb4 addiu r4,r0,0x0007
+0x00089bb8 lui r4,0x8009
+0x00089bbc addiu r4,r4,0xf100
+0x00089bc0 addu r5,r0,r0
+0x00089bc4 jal 0x0010cf24
+0x00089bc8 addiu r6,r0,0x0078
+0x00089bcc lui r4,0x8009
+0x00089bd0 addiu r4,r4,0xf10c
+0x00089bd4 addu r5,r0,r0
+0x00089bd8 jal 0x0010cf24
+0x00089bdc addiu r6,r0,0x0084
+0x00089be0 addiu r2,r0,0x0001
+0x00089be4 addiu r17,r0,0x0094
+0x00089be8 slti r1,r18,0x0190
+0x00089bec beq r1,r0,0x00089c20
+0x00089bf0 nop
+0x00089bf4 slti r1,r16,0x0190
+0x00089bf8 bne r1,r0,0x00089c20
+0x00089bfc nop
+0x00089c00 jal 0x0010cc0c
+0x00089c04 addiu r4,r0,0x0007
+0x00089c08 lui r4,0x8009
+0x00089c0c addiu r4,r4,0xf11c
+0x00089c10 addu r5,r0,r0
+0x00089c14 jal 0x0010cf24
+0x00089c18 addiu r6,r0,0x0078
+0x00089c1c addiu r2,r0,0x0001
+0x00089c20 slti r1,r18,0x01f4
+0x00089c24 beq r1,r0,0x00089c58
+0x00089c28 nop
+0x00089c2c slti r1,r16,0x01f4
+0x00089c30 bne r1,r0,0x00089c58
+0x00089c34 nop
+0x00089c38 jal 0x0010cc0c
+0x00089c3c addiu r4,r0,0x0007
+0x00089c40 lui r4,0x8009
+0x00089c44 addiu r4,r4,0xf12c
+0x00089c48 addu r5,r0,r0
+0x00089c4c jal 0x0010cf24
+0x00089c50 addiu r6,r0,0x0078
+0x00089c54 addiu r2,r0,0x0001
+0x00089c58 addiu r1,r0,0x0001
+0x00089c5c bne r2,r1,0x00089cbc
+0x00089c60 nop
+0x00089c64 jal 0x0010cc0c
+0x00089c68 addiu r4,r0,0x0001
+0x00089c6c lui r4,0x8009
+0x00089c70 addiu r4,r4,0xf140
+0x00089c74 addu r5,r0,r0
+0x00089c78 jal 0x0010cf24
+0x00089c7c addu r6,r17,r0
+0x00089c80 addiu r2,r0,0x0030
+0x00089c84 sw r2,0x0010(r29)
+0x00089c88 addiu r4,r0,0x0002
+0x00089c8c sw r4,0x0014(r29)
+0x00089c90 lui r2,0x8009
+0x00089c94 sw r0,0x0018(r29)
+0x00089c98 addiu r2,r2,0xa6f8
+0x00089c9c sw r2,0x001c(r29)
+0x00089ca0 addiu r5,r0,0xffa8
+0x00089ca4 addiu r6,r0,0x0012
+0x00089ca8 jal 0x000b8e50
+0x00089cac addiu r7,r0,0x00b0
+0x00089cb0 addiu r2,r0,0x0001
+0x00089cb4 beq r0,r0,0x00089dd8
+0x00089cb8 sw r2,-0x67a4(r28)
+0x00089cbc slti r1,r18,0x0096
+0x00089cc0 beq r1,r0,0x00089cd4
+0x00089cc4 nop
+0x00089cc8 slti r1,r16,0x0096
+0x00089ccc beq r1,r0,0x00089dd0
+0x00089cd0 nop
+0x00089cd4 slti r1,r18,0x00fa
+0x00089cd8 beq r1,r0,0x00089cec
+0x00089cdc nop
+0x00089ce0 slti r1,r16,0x00fa
+0x00089ce4 beq r1,r0,0x00089dd0
+0x00089ce8 nop
+0x00089cec slti r1,r18,0x015e
+0x00089cf0 beq r1,r0,0x00089d04
+0x00089cf4 nop
+0x00089cf8 slti r1,r16,0x015e
+0x00089cfc beq r1,r0,0x00089dd0
+0x00089d00 nop
+0x00089d04 slti r1,r18,0x01c2
+0x00089d08 beq r1,r0,0x00089d1c
+0x00089d0c nop
+0x00089d10 slti r1,r16,0x01c2
+0x00089d14 beq r1,r0,0x00089dd0
+0x00089d18 nop
+0x00089d1c slti r1,r18,0x0226
+0x00089d20 beq r1,r0,0x00089d34
+0x00089d24 nop
+0x00089d28 slti r1,r16,0x0226
+0x00089d2c beq r1,r0,0x00089dd0
+0x00089d30 nop
+0x00089d34 slti r1,r18,0x028a
+0x00089d38 beq r1,r0,0x00089d4c
+0x00089d3c nop
+0x00089d40 slti r1,r16,0x028a
+0x00089d44 beq r1,r0,0x00089dd0
+0x00089d48 nop
+0x00089d4c slti r1,r18,0x02ee
+0x00089d50 beq r1,r0,0x00089d64
+0x00089d54 nop
+0x00089d58 slti r1,r16,0x02ee
+0x00089d5c beq r1,r0,0x00089dd0
+0x00089d60 nop
+0x00089d64 slti r1,r18,0x0320
+0x00089d68 beq r1,r0,0x00089d7c
+0x00089d6c nop
+0x00089d70 slti r1,r16,0x0320
+0x00089d74 beq r1,r0,0x00089dd0
+0x00089d78 nop
+0x00089d7c slti r1,r18,0x0352
+0x00089d80 beq r1,r0,0x00089d94
+0x00089d84 nop
+0x00089d88 slti r1,r16,0x0352
+0x00089d8c beq r1,r0,0x00089dd0
+0x00089d90 nop
+0x00089d94 slti r1,r18,0x0384
+0x00089d98 beq r1,r0,0x00089dac
+0x00089d9c nop
+0x00089da0 slti r1,r16,0x0384
+0x00089da4 beq r1,r0,0x00089dd0
+0x00089da8 nop
+0x00089dac slti r1,r18,0x03b6
+0x00089db0 beq r1,r0,0x00089dc4
+0x00089db4 nop
+0x00089db8 slti r1,r16,0x03b6
+0x00089dbc beq r1,r0,0x00089dd0
+0x00089dc0 nop
+0x00089dc4 addiu r1,r0,0x03e7
+0x00089dc8 bne r16,r1,0x00089dd8
+0x00089dcc nop
+0x00089dd0 jal 0x0008a744
+0x00089dd4 addu r4,r30,r0
+0x00089dd8 lw r31,0x0044(r29)
+0x00089ddc lw r30,0x0040(r29)
+0x00089de0 lw r23,0x003c(r29)
+0x00089de4 lw r22,0x0038(r29)
+0x00089de8 lw r21,0x0034(r29)
+0x00089dec lw r20,0x0030(r29)
+0x00089df0 lw r19,0x002c(r29)
+0x00089df4 lw r18,0x0028(r29)
+0x00089df8 lw r17,0x0024(r29)
+0x00089dfc lw r16,0x0020(r29)
+0x00089e00 jr r31
+0x00089e04 addiu r29,r29,0x0048

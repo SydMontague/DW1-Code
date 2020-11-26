@@ -5,8 +5,8 @@ int handleBrainMoveLearnChance(digimonType) {
     specArray[specId] = load(0x12CED2 + digimonType * 52 + specId)
   }
   
-  moveArray = { -1, -1, -1}
-  chanceArray = { -1, -1, -1}
+  moveArray = { -1, -1, -1 }
+  chanceArray = { -1, -1, -1 }
   
   for(i = 0; i < 3; i++) {
     spec = specArray[i]

@@ -1,0 +1,10 @@
+void updateMinuteHand(hour, minute) {
+    store(0x150CAC, minute * 0x6000)
+}
+
+0x000dd780 sll r2,r5,0x01
+0x000dd784 add r2,r2,r5
+0x000dd788 sll r2,r2,0x0d
+0x000dd78c lui r1,0x8015
+0x000dd790 jr r31
+0x000dd794 sw r2,0x0cac(r1)

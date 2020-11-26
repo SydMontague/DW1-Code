@@ -102,7 +102,16 @@
 0x00053878    curlingInit(isTutorial = r4)
 
 == TRN_REL.BIN ==
+0x000897F8    handleBrainsTraining(digimonType = r4, mode = r5, multiplier = r6)
+0x00089E08    getTrainingFactor(digimonType = r4, stationType = r5, mode = r6) -> trainingFactor = r2
+
+0x0008A284    handleTrainingTimeSkip(tiredness = r4, energyCost = r5, happinessCost = r6)
+
 0x0008A744    handleBrainMoveLearnChance(digimonType = r4) -> success = r2
+
+0x0008D4CC    storeTrainingStats()
+
+0x0008D594    renderTrainingResult()
 
 0x0008E824    doSlotsRigging(reelId = r4, dataOffset = r5)
 
@@ -343,9 +352,6 @@
 
 0x000C574C    handlePortaPotty()
 0x000C57D0    modifyLifetime(amount = r4)
-
-
-
 0x000C5804    addEnergy(amount = r4)
 0x000C586C    subtractTiredness(amount = r4)
 0x000C58A8    addHappiness(amount = r4)
@@ -413,6 +419,8 @@
 
 0x000DAC48    renderInventoryText()
 0x000DAD04    renderInventoryTextLine(lineId = r4) -> result = r2
+
+0x000DD780    updateMinuteHand(hour = r4, minute = r5)
 
 0x000DF2D0    setConditionAnimation()
 0x000DF42C    setIdleAnimation()
